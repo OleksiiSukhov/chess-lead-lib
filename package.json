@@ -1,24 +1,32 @@
 {
-  "name": "chess-lib",
-  "version": "0.0.1",
-  "description": "Chess lib",
-  "main": "chess.js",
-  "dependencies": {},
-  "devDependencies": {
-    "typescript": "^3.5.1"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/OleksiiSukhov/chess-lib.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/OleksiiSukhov/chess-lib/issues"
-  },
-  "homepage": "https://github.com/OleksiiSukhov/chess-lib#readme"
+    "name": "chess-lib",
+    "version": "0.0.1",
+    "description": "Chess lib",
+    "main": "chess.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc",
+        "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+        "lint": "tslint -p tsconfig.json"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "prettier": "^1.18.2",
+        "tslint": "^5.17.0",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^3.5.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/OleksiiSukhov/chess-lib.git"
+    },
+    "keywords": [
+        "chess"
+    ],
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/OleksiiSukhov/chess-lib/issues"
+    },
+    "homepage": "https://github.com/OleksiiSukhov/chess-lib#readme"
 }
