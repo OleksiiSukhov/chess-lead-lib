@@ -6,12 +6,18 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc",
-        "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+        "format": "prettier --write \"src/*.ts\" \"src/**/*.ts\" \"src/**/*.js\"",
         "lint": "tslint -p tsconfig.json"
     },
+    "files": [
+        "lib/**/*"
+    ],
     "dependencies": {},
     "devDependencies": {
+        "@types/jest": "^24.0.15",
+        "jest": "^24.8.0",
         "prettier": "^1.18.2",
+        "ts-jest": "^24.0.2",
         "tslint": "^5.17.0",
         "tslint-config-prettier": "^1.18.0",
         "typescript": "^3.5.1"
