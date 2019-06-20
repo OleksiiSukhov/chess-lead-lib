@@ -1,5 +1,5 @@
 {
-    "name": "chess-lib",
+    "name": "chess-lead-lib",
     "version": "0.0.1",
     "description": "Chess lib",
     "main": "lib/index.js",
