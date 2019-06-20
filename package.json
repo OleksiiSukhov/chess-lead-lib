@@ -30,7 +30,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/OleksiiSukhov/chess-lib.git"
+        "url": "git+https://github.com/OleksiiSukhov/chess-lead-lib.git"
     },
     "keywords": [
         "chess"
@@ -38,7 +38,7 @@
     "author": "Oleksii Sukhov",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/OleksiiSukhov/chess-lib/issues"
+        "url": "https://github.com/OleksiiSukhov/chess-lead-lib/issues"
     },
-    "homepage": "https://github.com/OleksiiSukhov/chess-lib#readme"
+    "homepage": "https://github.com/OleksiiSukhov/chess-lead-lib#readme"
 }
