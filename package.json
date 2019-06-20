@@ -2,10 +2,16 @@
     "name": "chess-lib",
     "version": "0.0.1",
     "description": "Chess lib",
-    "main": "chess.js",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
     "scripts": {
         "test": "jest --config jestconfig.json",
         "build": "tsc",
+        "prepare" : "npm run build",
+        "prepublishOnly" : "npm test && npm run lint",
+        "preversion" : "npm run lint",
+        "version" : "npm run format && git add -A src",
+        "postversion" : "git push && git push --tags",
         "format": "prettier --write \"src/*.ts\" \"src/**/*.ts\" \"src/**/*.js\"",
         "lint": "tslint -p tsconfig.json"
     },
@@ -29,7 +35,7 @@
     "keywords": [
         "chess"
     ],
-    "author": "",
+    "author": "Oleksii Sukhov",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/OleksiiSukhov/chess-lib/issues"
