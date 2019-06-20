@@ -1,0 +1,19 @@
+stages:
+    - init
+    - build
+    - test
+
+init:
+  stage: init
+  script:
+    - echo "Init stage"
+
+build:
+  stage: build
+  script:
+    - echo "Build stage"
+
+test:
+  stage: test
+  script:
+    - echo "Test stage"
