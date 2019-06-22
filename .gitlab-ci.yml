@@ -1,3 +1,5 @@
+image: node:10.16.0
+
 stages:
     - init
     - build
