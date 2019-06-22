@@ -1,4 +1,8 @@
-image: node:10.16.0
+image: node:latest
+
+cache:
+  paths:
+    - node_modules/
 
 stages:
     - init
@@ -9,13 +13,19 @@ init:
   stage: init
   script:
     - echo "Init stage"
-
-build:
-  stage: build
-  script:
-    - echo "Build stage"
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
 
 test:
   stage: test
   script:
     - echo "Test stage"
+    - npm run test
+
+build:
+  stage: build
+  script:
+    - echo "Build stage"
+    - npm run build
