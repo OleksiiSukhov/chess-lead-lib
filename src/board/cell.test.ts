@@ -1,8 +1,8 @@
 /* tslint:disable:no-string-literal */
 
+import { Color } from "../models/color";
 import { Cell } from "./cell";
 import { CellColorProvider } from "./cell-color-provider";
-import { Color } from "./color";
 
 let cell: Cell;
 

@@ -1,4 +1,4 @@
-import { Color } from "./color";
+import { Color } from "../models/color";
 
 export class CellColorProvider {
   public static getCellColor(rowIndex: number, columnIndex: number): Color {

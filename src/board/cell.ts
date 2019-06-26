@@ -1,5 +1,5 @@
+import { Color } from "../models/color";
 import { CellColorProvider } from "./cell-color-provider";
-import { Color } from "./color";
 
 export class Cell {
   public rowIndex: number = 0;

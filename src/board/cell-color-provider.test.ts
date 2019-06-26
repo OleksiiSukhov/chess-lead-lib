@@ -1,5 +1,5 @@
+import { Color } from "../models/color";
 import { CellColorProvider } from "./cell-color-provider";
-import { Color } from "./color";
 
 const errorMessage = "row and column indexes should be 0 to 7";
 
