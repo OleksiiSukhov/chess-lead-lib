@@ -1,8 +1,13 @@
+import { Cell } from "../../board/cell";
 import { Color } from "../../models/color";
-import { IChessPiece as ChessPiece } from "./chess-piece";
+import { ChessPiece } from "./chess-piece";
 
 export class Bishop extends ChessPiece {
   constructor(color: Color) {
     super(color);
+  }
+
+  public availableMovements(): Cell[] {
+    throw new Error("Method not implemented.");
   }
 }
