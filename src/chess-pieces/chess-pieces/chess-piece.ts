@@ -1,4 +1,4 @@
-import { Cell } from "../../board/cell";
+import { Movements } from "../../board/movements";
 import { Color } from "../../models/color";
 
 export abstract class ChessPiece  {
@@ -9,5 +9,5 @@ export abstract class ChessPiece  {
     this.color = color;
   }
 
-  public abstract availableMovements(): Cell[];
+  public abstract movements(): Movements;
 }
