@@ -1,8 +1,8 @@
-import { Movements } from "../../board/movements";
-import { Color } from "../../models/color";
+import { Movements } from "../board/movements";
+import { Color } from "../models/color";
 import { ChessPiece } from "./chess-piece";
 
-export class Queen extends ChessPiece {
+export class Pawn extends ChessPiece {
   constructor(color: Color) {
     super(color);
   }

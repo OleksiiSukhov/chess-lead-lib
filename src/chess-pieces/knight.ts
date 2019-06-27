@@ -1,5 +1,5 @@
-import { Movements } from "../../board/movements";
-import { Color } from "../../models/color";
+import { Movements } from "../board/movements";
+import { Color } from "../models/color";
 import { ChessPiece } from "./chess-piece";
 
 export class Knight extends ChessPiece {
