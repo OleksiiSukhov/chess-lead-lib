@@ -1,4 +1,4 @@
-import { Movements } from "../board/movements";
+import { Movements } from "../board/movements/movements";
 import { Color } from "../models/color";
 
 export abstract class ChessPiece  {

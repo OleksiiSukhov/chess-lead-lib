@@ -1,4 +1,5 @@
-import { Movements } from "../board/movements";
+import { Movements } from "../board/movements/movements";
+import { RookMovements } from "../board/movements/rook-movements";
 import { Color } from "../models/color";
 import { ChessPiece } from "./chess-piece";
 
@@ -8,6 +9,6 @@ export class Rook extends ChessPiece {
   }
 
   public movements(): Movements {
-    throw new Error("Method not implemented.");
+    return new RookMovements();
   }
 }

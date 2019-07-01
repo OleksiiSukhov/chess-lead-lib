@@ -1,4 +1,5 @@
-import { Movements } from "../board/movements";
+import { Movements } from "../board/movements/movements";
+import { QueenMovements } from "../board/movements/queen-movements";
 import { Color } from "../models/color";
 import { ChessPiece } from "./chess-piece";
 
@@ -8,6 +9,6 @@ export class Queen extends ChessPiece {
   }
 
   public movements(): Movements {
-    throw new Error("Method not implemented.");
+    return new QueenMovements();
   }
 }
