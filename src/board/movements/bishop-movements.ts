@@ -36,12 +36,25 @@ export class BishopMovements extends Movements {
           continue;
         }
 
-        availableCells.push(new Cell(nextCell.rowIndex, nextCell.columnIndex));
+        const nextBoardCell = boardCells[nextCell.rowIndex][nextCell.columnIndex];
+        const nextCellChessPiece = nextBoardCell.chessPiece;
+        const currentCellChessPiece =
+          boardCells[nextCell.rowIndex][nextCell.columnIndex].chessPiece;
+
+        if (
+          nextCellChessPiece &&
+          currentCellChessPiece &&
+          nextCellChessPiece.color === currentCellChessPiece.color
+        ) {
+          availableCells.push(nextBoardCell);
+          break;
+        }
+
+        availableCells.push(nextBoardCell);
       }
     }
 
     // todo: check "check" for available cells
-    // todo: check opposite color chess pieces (enemy)
     // todo: check same color chess pieces
 
     return availableCells;
