@@ -5,9 +5,10 @@ import { Color } from "../../models/color";
 import { TestBoardAssistance } from "../../tests/test-board-assistance";
 import { Cell } from "../cell";
 import { BishopMovements } from "./bishop-movements";
+import { King } from "../../chess-pieces/king";
 
 //   _________________________________
-// 7 |   |   |   |   |   |   |   | + |
+// 7 |   |   |   |   |BKI|   |   | + |
 //   _________________________________
 // 6 | + |   |   |   |   |   | + |   |
 //   _________________________________
@@ -21,18 +22,18 @@ import { BishopMovements } from "./bishop-movements";
 //   _________________________________
 // 1 |   | + |   |   |   | + |   |   |
 //   _________________________________
-// 0 | + |   |   |   |   |   | + |   |
+// 0 | + |   |   |   |WKI|   | + |   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
-test("getAvailable should return correct available cells to move for empty board", () => {
+test("getAvailable should return correct available movement cells move for empty board", () => {
   const bishopMovements = new BishopMovements();
 
-  const whiteBishop = new Bishop(Color.White);
   const boardCells: Cell[][] = TestBoardAssistance.setupEmptyBoard();
-  const currentCell = new Cell(3, 3);
-  currentCell.chessPiece = whiteBishop;
+  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Bishop(Color.White) } as Cell;
 
   boardCells[3][3] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
 
   const expectedAvailableCells: Cell[] = [
     boardCells[6][0],
