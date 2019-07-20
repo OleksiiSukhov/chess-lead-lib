@@ -40,9 +40,8 @@ export class BishopMovements extends Movements {
       }
     }
 
-    // todo: check game status
     // todo: check "check" for available cells
-    // todo: check same color chess pieces (enemy)
+    // todo: check opposite color chess pieces (enemy)
     // todo: check same color chess pieces
 
     return availableCells;

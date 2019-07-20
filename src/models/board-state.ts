@@ -6,8 +6,9 @@ import { WinType } from "./win-type";
 
 export class BoardState {
   public isCheck: boolean = false;
-  public nextTurn: Color = Color.White;
-  public gameStatus?: GameStatus = undefined;
+  public nextTurn?: Color = undefined;
+  public winSide?: Color = undefined;
+  public gameStatus: GameStatus = GameStatus.InProgress;
   public drawType?: DrawType = undefined;
   public winType?: WinType = undefined;
   public board: Cell[][] = [];

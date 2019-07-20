@@ -37,7 +37,7 @@ test("constructor should call BoardBuilder.createInitial when boardState was not
 test("chessBoardState should return correct board state object", () => {
   const chessLead = new ChessLead();
   const testBoardState = new BoardState();
-  testBoardState.gameStatus = GameStatus.WhiteWin;
+  testBoardState.gameStatus = GameStatus.Win;
 
   chessLead["boardState"] = testBoardState;
 
@@ -63,4 +63,17 @@ test("getAcceptableMovements should return empty array when cell is empty", () =
   const cell = new Cell(0, 0);
 
   expect(chessLead.getAcceptableMovements(cell)).toStrictEqual([]);
+});
+
+test("getAcceptableMovements should return empty array when game is finished", () => {
+  const finishedGameStatuses = [GameStatus.Win, GameStatus.Draw];
+  const boardState = new BoardState();
+  const cell = new Cell(4, 2);
+
+  finishedGameStatuses.forEach(status => {
+    boardState.gameStatus = status;
+    const chessLead = new ChessLead(boardState);
+
+    expect(chessLead.getAcceptableMovements(cell)).toStrictEqual([]);
+  });
 });
