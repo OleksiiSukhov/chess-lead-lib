@@ -38,15 +38,13 @@ export class BishopMovements extends Movements {
 
         const nextBoardCell = boardCells[nextCell.rowIndex][nextCell.columnIndex];
         const nextCellChessPiece = nextBoardCell.chessPiece;
-        const currentCellChessPiece =
-          boardCells[nextCell.rowIndex][nextCell.columnIndex].chessPiece;
+        const currentCellChessPiece = currentCell.chessPiece;
 
-        if (
-          nextCellChessPiece &&
-          currentCellChessPiece &&
-          nextCellChessPiece.color === currentCellChessPiece.color
-        ) {
-          availableCells.push(nextBoardCell);
+        if (nextCellChessPiece && currentCellChessPiece) {
+          if (nextCellChessPiece.color !== currentCellChessPiece.color) {
+            availableCells.push(nextBoardCell);
+          }
+
           break;
         }
 
@@ -55,7 +53,6 @@ export class BishopMovements extends Movements {
     }
 
     // todo: check "check" for available cells
-    // todo: check same color chess pieces
 
     return availableCells;
   }
