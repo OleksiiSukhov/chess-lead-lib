@@ -2,10 +2,12 @@
 
 import { ChessLead } from ".";
 import { BoardBuilder } from "./board/board-builder";
+import { Cell } from "./board/cell";
 import { BoardState } from "./models/board-state";
 import { GameStatus } from "./models/game-status";
 import { WinType } from "./models/win-type";
 import { BoardStateValidator } from "./validators/board-state-validator";
+import { GetAcceptableMovementsInputValidator } from "./validators/get-acceptable-movements-input-validator";
 
 test("constructor should call BoardStateValidator.validate when boardState was passed", () => {
   const validateMock = jest.fn();
@@ -37,7 +39,28 @@ test("chessBoardState should return correct board state object", () => {
   const testBoardState = new BoardState();
   testBoardState.gameStatus = GameStatus.WhiteWin;
 
-  chessLead["boardState"] = testBoardState
+  chessLead["boardState"] = testBoardState;
 
   expect(chessLead.chessBoardState).toBe(testBoardState);
+});
+
+test("getAcceptableMovements should call GetAcceptableMovementsInputValidator.validate", () => {
+  const validateMock = jest.fn();
+  GetAcceptableMovementsInputValidator.validate = validateMock.bind(
+    GetAcceptableMovementsInputValidator,
+  );
+
+  const chessLead = new ChessLead();
+  const cell = new Cell(0, 0);
+
+  chessLead.getAcceptableMovements(cell);
+
+  expect(validateMock).toHaveBeenCalledWith(cell);
+});
+
+test("getAcceptableMovements should return empty array when cell is empty", () => {
+  const chessLead = new ChessLead(new BoardState());
+  const cell = new Cell(0, 0);
+
+  expect(chessLead.getAcceptableMovements(cell)).toStrictEqual([]);
 });

@@ -1,10 +1,9 @@
 /* tslint:disable:no-string-literal */
 
+import { King } from "../chess-pieces/king";
 import { Color } from "../models/color";
 import { Cell } from "./cell";
 import { CellColorProvider } from "./cell-color-provider";
-
-const errorMessage = "row and column indexes should be 0 to 7";
 
 test("color should return saved color when it was already set to White", () => {
   const cell = new Cell(0, 0);
@@ -39,7 +38,16 @@ test("rowName should return correct name of row (1-8)", () => {
 });
 
 test("columnName should return correct name of column (a-h)", () => {
-  const map: Array<[number, string]> = [[0, "a"], [0, "a"], [0, "a"], [0, "a"], [0, "a"], [0, "a"], [0, "a"], [0, "a"]];
+  const map: Array<[number, string]> = [
+    [0, "a"],
+    [0, "a"],
+    [0, "a"],
+    [0, "a"],
+    [0, "a"],
+    [0, "a"],
+    [0, "a"],
+    [0, "a"],
+  ];
 
   map.forEach(indexToName => {
     const cell = new Cell(0, indexToName[0]);
@@ -47,18 +55,55 @@ test("columnName should return correct name of column (a-h)", () => {
   });
 });
 
-test("constructor should throw error in case when row index is negative", () => {
-  expect(() => new Cell(-1, 0)).toThrow(errorMessage);
+test("isEmpty should return true when chessPiece is not defined", () => {
+  const cell = new Cell(0, 0);
+
+  expect(cell.isEmpty).toBeTruthy();
 });
 
-test("constructor should throw error in case when row index is more than 7", () => {
-  expect(() => new Cell(8, 0)).toThrow(errorMessage);
+test("isEmpty should return false when chessPiece is defined", () => {
+  const cell = new Cell(0, 0);
+  cell.chessPiece = new King(Color.Black);
+
+  expect(cell.isEmpty).toBeFalsy();
 });
 
-test("constructor should throw error in case when column index is negative", () => {
-  expect(() => new Cell(0, -1)).toThrow(errorMessage);
+test("isInBoardBoundaries should return true when row and column indexes between 0 and 7", () => {
+  for (let i = 0; i <= 7; i++) {
+    const cell = new Cell(i, 0);
+    expect(cell.isInBoardBoundaries).toBeTruthy();
+  }
+
+  for (let i = 0; i <= 7; i++) {
+    const cell = new Cell(0, i);
+    expect(cell.isInBoardBoundaries).toBeTruthy();
+  }
 });
 
-test("constructor should throw error in case when column index is more than 7", () => {
-  expect(() => new Cell(0, 8)).toThrow(errorMessage);
+test("isInBoardBoundaries should return false when row or column indexes not within 0 and 7 range", () => {
+  const invalidIndexes = [-1, 8, -7];
+
+  invalidIndexes.forEach(invalidIndex => {
+    const cell = new Cell(invalidIndex, 0);
+    expect(cell.isInBoardBoundaries).toBeFalsy();
+  });
+
+  invalidIndexes.forEach(invalidIndex => {
+    const cell = new Cell(0, invalidIndex);
+    expect(cell.isInBoardBoundaries).toBeFalsy();
+  });
+});
+
+test("isSamePositionAs should return true for cells with the same row and column indexes", () => {
+  const cell1 = new Cell(4, 2);
+  const cell2 = new Cell(4, 2);
+
+  expect(cell1.isSamePositionAs(cell2)).toBeTruthy();
+});
+
+test("isSamePositionAs should return false for cells with the same row and column indexes", () => {
+  const cell1 = new Cell(4, 2);
+  const cell2 = new Cell(5, 1);
+
+  expect(cell1.isSamePositionAs(cell2)).toBeFalsy();
 });

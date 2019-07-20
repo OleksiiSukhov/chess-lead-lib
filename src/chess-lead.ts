@@ -2,6 +2,7 @@ import { BoardBuilder } from "./board/board-builder";
 import { Cell } from "./board/cell";
 import { BoardState } from "./models/board-state";
 import { BoardStateValidator } from "./validators/board-state-validator";
+import { GetAcceptableMovementsInputValidator } from "./validators/get-acceptable-movements-input-validator";
 
 export class ChessLead {
   private boardState: BoardState;
@@ -19,6 +20,12 @@ export class ChessLead {
   }
 
   public getAcceptableMovements(cell: Cell): Cell[] {
-    throw new Error("Method not implemented.");
+    GetAcceptableMovementsInputValidator.validate(cell);
+
+    if (cell.isEmpty || !cell.chessPiece) {
+      return [];
+    }
+
+    return cell.chessPiece.movements().getAvailable(this.boardState.board, cell);
   }
 }
