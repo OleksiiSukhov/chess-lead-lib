@@ -61,6 +61,49 @@ test("getAvailable should return correct cells for empty board", () => {
   assertAvailableMovementCells(expected, currentCell);
 });
 
+
+//   _________________________________
+// 7 | + |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 | + |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 | + |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 | + |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 | + |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 | + |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 | + |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |WR | + | + | + |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells from angle of the board", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.White) } as Cell;
+
+  boardCells[0][0] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  const expected: Cell[] = [
+    boardCells[1][0],
+    boardCells[2][0],
+    boardCells[3][0],
+    boardCells[4][0],
+    boardCells[5][0],
+    boardCells[6][0],
+    boardCells[7][0],
+    boardCells[0][1],
+    boardCells[0][2],
+    boardCells[0][3],
+  ];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+
 //   _________________________________
 // 7 |   |   |   | + |BKI|   |   |   |
 //   _________________________________
