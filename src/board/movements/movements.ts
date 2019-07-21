@@ -2,12 +2,12 @@ import { Direction } from "../../models/direction";
 import { Cell } from "../cell";
 
 export abstract class Movements {
-  public maxMovementSquares: number = 0;
+  public maxMovementSquares?: number = 0;
   public canLeap: boolean = false;
   public canDoCastling: boolean = false;
   public canDoEnPassant: boolean = false;
   public canDoPromotion: boolean = false;
-  public directions: Direction[] = [];
+  public directions?: Direction[] = [];
 
   public abstract getAvailable(boardCells: Cell[][], currentCell: Cell): Cell[];
 
@@ -18,6 +18,10 @@ export abstract class Movements {
   }
 
   public getAvailableBasedOnDirections(boardCells: Cell[][], currentCell: Cell): Cell[] {
+    if (!this.directions || !this.maxMovementSquares) {
+      throw new Error("directions should be defined");
+    }
+
     const availableCells: Cell[] = [];
 
     for (const direction of this.directions) {
