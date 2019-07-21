@@ -21,7 +21,7 @@ export abstract class Movements {
     const availableCells: Cell[] = [];
 
     for (const direction of this.directions) {
-      for (let squaresCount = 0; squaresCount <= this.maxMovementSquares; squaresCount++) {
+      for (let squaresCount = 0; squaresCount < this.maxMovementSquares; squaresCount++) {
         const nextCell = new Cell(
           currentCell.rowIndex + this.getMovementSquaresCount(direction.row, squaresCount),
           currentCell.columnIndex + this.getMovementSquaresCount(direction.column, squaresCount),
