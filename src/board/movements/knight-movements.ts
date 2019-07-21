@@ -40,15 +40,15 @@ export class KnightMovements extends Movements {
       const nextCellChessPiece = nextBoardCell.chessPiece;
       const currentCellChessPiece = currentCell.chessPiece;
 
-      if (nextCellChessPiece && currentCellChessPiece) {
-        if (nextCellChessPiece.color !== currentCellChessPiece.color) {
-          availableCells.push(nextBoardCell);
-        }
+      const isCellEmpty = !nextCellChessPiece;
+      const isCellWithEnemy =
+        nextCellChessPiece &&
+        currentCellChessPiece &&
+        nextCellChessPiece.color !== currentCellChessPiece.color;
 
-        continue;
+      if (isCellEmpty || isCellWithEnemy) {
+        availableCells.push(nextBoardCell);
       }
-
-      availableCells.push(nextBoardCell);
     }
 
     // todo: check "check" for available cells

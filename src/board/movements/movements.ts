@@ -19,7 +19,7 @@ export abstract class Movements {
 
   public getAvailableBasedOnDirections(boardCells: Cell[][], currentCell: Cell): Cell[] {
     if (!this.directions || !this.maxMovementSquares) {
-      throw new Error("directions should be defined");
+      throw new Error("directions and maxMovementSquares should be defined");
     }
 
     const availableCells: Cell[] = [];
