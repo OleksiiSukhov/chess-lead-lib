@@ -1,6 +1,6 @@
 import { Cell } from "../board/cell";
 
-export class TestBoardAssistance {
+export class TestAssistance {
   public static setupEmptyBoard(): Cell[][] {
     const cells: Cell[][] = [];
 

@@ -15,53 +15,8 @@ export class BishopMovements extends Movements {
   }
 
   public getAvailable(boardCells: Cell[][], currentCell: Cell): Cell[] {
-    if (!boardCells || !currentCell) {
-      throw new Error("boardCells and currentCell should be defined");
-    }
+    this.validateGetAvailableArguments(boardCells, currentCell);
 
-    const availableCells: Cell[] = [];
-
-    for (const direction of this.directions) {
-      for (let squaresCount = 0; squaresCount <= this.maxMovementSquares; squaresCount++) {
-        const nextCell = new Cell(
-          currentCell.rowIndex + this.getMovementSquaresCount(direction.row, squaresCount),
-          currentCell.columnIndex + this.getMovementSquaresCount(direction.column, squaresCount),
-        );
-
-        if (!nextCell.isInBoardBoundaries) {
-          break;
-        }
-
-        if (nextCell.isSamePositionAs(currentCell)) {
-          continue;
-        }
-
-        const nextBoardCell = boardCells[nextCell.rowIndex][nextCell.columnIndex];
-        const nextCellChessPiece = nextBoardCell.chessPiece;
-        const currentCellChessPiece = currentCell.chessPiece;
-
-        if (nextCellChessPiece && currentCellChessPiece) {
-          if (nextCellChessPiece.color !== currentCellChessPiece.color) {
-            availableCells.push(nextBoardCell);
-          }
-
-          break;
-        }
-
-        availableCells.push(nextBoardCell);
-      }
-    }
-
-    // todo: check "check" for available cells
-
-    return availableCells;
-  }
-
-  private getMovementSquaresCount(direction: number, squaresCount: number): number {
-    if (direction === 0) {
-      return 0;
-    }
-
-    return direction + (direction === -1 ? squaresCount * -1 : squaresCount);
+    return this.getAvailableBasedOnDirections(boardCells, currentCell);
   }
 }
