@@ -12,8 +12,8 @@ export abstract class Movements {
   public abstract getAvailable(boardCells: Cell[][], currentCell: Cell): Cell[];
 
   public validateGetAvailableArguments(boardCells: Cell[][], currentCell: Cell): void {
-    if (!boardCells || !currentCell) {
-      throw new Error("boardCells and currentCell should be defined");
+    if (!boardCells || !currentCell || !currentCell.chessPiece) {
+      throw new Error("boardCells, currentCell and chessPiece on it should be defined");
     }
   }
 
