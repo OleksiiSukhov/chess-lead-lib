@@ -1,3 +1,4 @@
+import { Pawn } from "../../chess-pieces/pawn";
 import { Color } from "../../models/color";
 import { Cell } from "../cell";
 import { Movements } from "./movements";
@@ -15,28 +16,31 @@ export class PawnMovements extends Movements {
     const availableCells: Cell[] = [];
 
     if (this.isInitialPosition(currentCell)) {
-      if (pawn.color === Color.White) {
-        let nextCell = boardCells[2][currentCell.columnIndex];
-        if (nextCell.isEmpty) {
-          availableCells.push(nextCell);
-        }
-
-        nextCell = boardCells[3][currentCell.columnIndex];
-        if (nextCell.isEmpty) {
-          availableCells.push(nextCell);
-        }
-      } else {
-        let nextCell = boardCells[5][currentCell.columnIndex];
-        if (nextCell.isEmpty) {
-          availableCells.push(nextCell);
-        }
-
-        nextCell = boardCells[4][currentCell.columnIndex];
-        if (nextCell.isEmpty) {
-          availableCells.push(nextCell);
-        }
-      }
+      this.getAvailableForInitialPosition(boardCells, currentCell).forEach(cell => {
+        availableCells.push(cell);
+      });
     }
+
+    return availableCells;
+  }
+
+  private getAvailableForInitialPosition(boardCells: Cell[][], currentCell: Cell): Cell[] {
+    const availableCells: Cell[] = [];
+    const pawn: Pawn = currentCell.chessPiece as Pawn;
+
+    const initialRow = this.getInitialPosition(pawn);
+    const multiplier = pawn.color === Color.White ? 1 : -1;
+    const nextAvailableRows = [initialRow + 1 * multiplier, initialRow + 2 * multiplier];
+
+    nextAvailableRows.some(row => {
+      const nextCell = boardCells[row][currentCell.columnIndex];
+
+      if (!nextCell.isEmpty) {
+        return true;
+      }
+
+      availableCells.push(nextCell);
+    });
 
     return availableCells;
   }
@@ -48,8 +52,10 @@ export class PawnMovements extends Movements {
       throw new Error("Pawn should be defined.");
     }
 
-    const initialPositionRow = pawn.color === Color.White ? 1 : 6;
+    return currentCell.rowIndex === this.getInitialPosition(pawn) && !pawn.moved;
+  }
 
-    return currentCell.rowIndex === initialPositionRow && !pawn.moved;
+  private getInitialPosition(pawn: Pawn): number {
+    return pawn.color === Color.White ? 1 : 6;
   }
 }
