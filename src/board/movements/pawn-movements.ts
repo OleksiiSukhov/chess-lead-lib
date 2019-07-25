@@ -19,16 +19,63 @@ export class PawnMovements extends Movements {
       this.getAvailableForInitialPosition(boardCells, currentCell).forEach(cell => {
         availableCells.push(cell);
       });
+    } else {
+      const frontCell = this.getFrontAvailableCell(boardCells, currentCell);
+      if (frontCell && frontCell.isEmpty) {
+        availableCells.push(frontCell);
+      }
+
+      this.getDiagonalWithEnemy(boardCells, currentCell).forEach(cell => {
+        availableCells.push(cell);
+      });
     }
 
     return availableCells;
+  }
+
+  private getDiagonalWithEnemy(boardCells: Cell[][], currentCell: Cell): Cell[] {
+    const pawn: Pawn = currentCell.chessPiece as Pawn;
+    const currentRow = currentCell.rowIndex;
+    const currentColumn = currentCell.columnIndex;
+
+    const multiplier = pawn.color === Color.White ? 1 : -1;
+
+    const nextAvailableRow = currentRow + 1 * multiplier;
+    const nextAvailableColumns = [currentColumn + 1, currentColumn - 1];
+
+    const availableCells: Cell[] = [];
+
+    nextAvailableColumns.forEach(column => {
+      const nextCell = new Cell(nextAvailableRow, column);
+
+      if (!nextCell.isInBoardBoundaries) {
+        return;
+      }
+
+      const nextBoardCell = boardCells[nextCell.rowIndex][nextCell.columnIndex];
+
+      if (nextBoardCell.chessPiece && nextBoardCell.chessPiece.color !== pawn.color) {
+        availableCells.push(nextBoardCell);
+      }
+    });
+
+    return availableCells;
+  }
+
+  private getFrontAvailableCell(boardCells: Cell[][], currentCell: Cell): Cell | undefined {
+    const pawn: Pawn = currentCell.chessPiece as Pawn;
+    const currentRow = currentCell.rowIndex;
+    const multiplier = pawn.color === Color.White ? 1 : -1;
+    const nextAvailableRow = currentRow + 1 * multiplier;
+
+    return boardCells[nextAvailableRow][currentCell.columnIndex] || undefined;
   }
 
   private getAvailableForInitialPosition(boardCells: Cell[][], currentCell: Cell): Cell[] {
     const availableCells: Cell[] = [];
     const pawn: Pawn = currentCell.chessPiece as Pawn;
 
-    const initialRow = this.getInitialPosition(pawn);
+    const initialRow = this.getInitialPositionRow(pawn);
     const multiplier = pawn.color === Color.White ? 1 : -1;
     const nextAvailableRows = [initialRow + 1 * multiplier, initialRow + 2 * multiplier];
 
@@ -52,10 +99,10 @@ export class PawnMovements extends Movements {
       throw new Error("Pawn should be defined.");
     }
 
-    return currentCell.rowIndex === this.getInitialPosition(pawn) && !pawn.moved;
+    return currentCell.rowIndex === this.getInitialPositionRow(pawn) && !pawn.moved;
   }
 
-  private getInitialPosition(pawn: Pawn): number {
+  private getInitialPositionRow(pawn: Pawn): number {
     return pawn.color === Color.White ? 1 : 6;
   }
 }

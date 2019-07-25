@@ -138,14 +138,74 @@ test("getAvailable should return empty array for initial position when no any op
   assertAvailableMovementCells(expected, currentCell);
 });
 
-// todo: not initial position (white)
-// todo: not initial position (black)
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |WQ | + |BQ+|   |   |   |
+//   _________________________________
+// 2 |   |   |   |WP |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells not for initial position (white)", () => {
+  const currentCell = { rowIndex: 2, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
+
+  boardCells[2][3] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+  boardCells[3][4] = { rowIndex: 3, columnIndex: 4, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[3][2] = { rowIndex: 3, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
+
+  const expected: Cell[] = [boardCells[3][3], boardCells[3][4]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |BP |   |   |   |   |
+//   _________________________________
+// 4 |   |   |WQ+| + |BQ |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells not for initial position (black)", () => {
+  const currentCell = { rowIndex: 5, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
+
+  boardCells[5][3] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+  boardCells[4][4] = { rowIndex: 4, columnIndex: 4, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[4][2] = { rowIndex: 4, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
+
+  const expected: Cell[] = [boardCells[4][2], boardCells[4][3]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
 // todo: no any options to move (white)
 // todo: no any options to move (black)
 // todo: diagonal capture (initial position) (white)
 // todo: diagonal capture (initial position) (black)
-// todo: diagonal capture (not initial position) (white)
-// todo: diagonal capture (not initial position) (black)
 // todo: promotion (white)
 // todo: promotion (black)
 // todo: en passant (white)
