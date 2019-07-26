@@ -19,16 +19,16 @@ export class PawnMovements extends Movements {
       this.getAvailableForInitialPosition(boardCells, currentCell).forEach(cell => {
         availableCells.push(cell);
       });
-    } else {
-      const frontCell = this.getFrontAvailableCell(boardCells, currentCell);
-      if (frontCell && frontCell.isEmpty) {
-        availableCells.push(frontCell);
-      }
-
-      this.getDiagonalWithEnemy(boardCells, currentCell).forEach(cell => {
-        availableCells.push(cell);
-      });
     }
+
+    const frontCell = this.getFrontAvailableCell(boardCells, currentCell);
+    if (frontCell && frontCell.isEmpty) {
+      availableCells.push(frontCell);
+    }
+
+    this.getDiagonalWithEnemy(boardCells, currentCell).forEach(cell => {
+      availableCells.push(cell);
+    });
 
     return availableCells;
   }
