@@ -20,11 +20,13 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "lodash": "^4.17.14"
+    "lodash": "^4.17.14",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/jest": "^24.0.15",
     "@types/lodash": "^4.14.136",
+    "@types/uuid": "^3.4.5",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",

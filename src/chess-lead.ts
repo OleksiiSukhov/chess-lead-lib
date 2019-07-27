@@ -34,4 +34,8 @@ export class ChessLead {
 
     return cell.chessPiece.movements().getAvailable(this.boardState.board, cell);
   }
+
+  public move(): void {
+    // todo: define MovedChessPiece
+  }
 }
