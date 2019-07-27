@@ -1,4 +1,6 @@
+import { last } from "lodash";
 import { Cell } from "../board/cell";
+import { ChessPiece } from "../chess-pieces/chess-piece";
 import { Color } from "./color";
 import { DrawType } from "./draw-type";
 import { GameStatus } from "./game-status";
@@ -15,4 +17,18 @@ export class BoardState {
   public board: Cell[][] = [];
   public repetitionNumber: number = 0;
   public movements: MovedChessPiece[] = [];
+
+  public isLastMovementsPerformedBy(chessPiece: ChessPiece): boolean {
+    if (!chessPiece) {
+      throw Error("chessPiece should be defined.");
+    }
+
+    const lastMovements = last(this.movements);
+
+    if (!lastMovements) {
+      return false;
+    }
+
+    return lastMovements.chessPieceId === chessPiece.id;
+  }
 }
