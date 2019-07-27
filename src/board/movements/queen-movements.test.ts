@@ -3,6 +3,7 @@ import { isEqual, xorWith } from "lodash";
 import { King } from "../../chess-pieces/king";
 import { Queen } from "../../chess-pieces/queen";
 import { Rook } from "../../chess-pieces/rook";
+import { BoardState } from "../../models/board-state";
 import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
 import { Cell } from "../cell";
@@ -10,10 +11,12 @@ import { QueenMovements } from "./queen-movements";
 
 let queenMovements: QueenMovements;
 let boardCells: Cell[][];
+const boardState: BoardState = new BoardState();
 
 beforeEach(() => {
   queenMovements = new QueenMovements();
   boardCells = TestAssistance.setupEmptyBoard();
+  boardState.board = boardCells;
 });
 
 //   _________________________________
@@ -73,7 +76,6 @@ test("getAvailable should return correct cells for empty board", () => {
 
   assertAvailableMovementCells(expected, currentCell);
 });
-
 
 //   _________________________________
 // 7 | + |   |   |   |BKI|   |   | + |
@@ -242,6 +244,6 @@ test("getAvailable should return correct cells for board with ally on the way", 
 // todo: add test for check (no any cells available)
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-  const actual = queenMovements.getAvailable(boardCells, currentCell);
+  const actual = queenMovements.getAvailable(boardState, currentCell);
   expect(xorWith(actual, expected, isEqual).length).toBe(0);
 }

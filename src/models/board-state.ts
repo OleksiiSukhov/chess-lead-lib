@@ -2,6 +2,7 @@ import { Cell } from "../board/cell";
 import { Color } from "./color";
 import { DrawType } from "./draw-type";
 import { GameStatus } from "./game-status";
+import { MovedChessPiece } from "./moved-chess-piece";
 import { WinType } from "./win-type";
 
 export class BoardState {
@@ -13,4 +14,5 @@ export class BoardState {
   public winType?: WinType = undefined;
   public board: Cell[][] = [];
   public repetitionNumber: number = 0;
+  public movements: MovedChessPiece[] = [];
 }

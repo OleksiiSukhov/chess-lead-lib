@@ -1,3 +1,4 @@
+import { BoardState } from "../../models/board-state";
 import { Cell } from "../cell";
 import { Movements } from "./movements";
 
@@ -19,10 +20,10 @@ export class KingMovements extends Movements {
     
   }
 
-  public getAvailable(boardCells: Cell[][], currentCell: Cell): Cell[] {
-    this.validateGetAvailableArguments(boardCells, currentCell);
+  public getAvailable(boardState: BoardState, currentCell: Cell): Cell[] {
+    this.validateGetAvailableArguments(boardState.board, currentCell);
 
-    return this.getAvailableBasedOnDirections(boardCells, currentCell);
+    return this.getAvailableBasedOnDirections(boardState.board, currentCell);
   }
 
 }

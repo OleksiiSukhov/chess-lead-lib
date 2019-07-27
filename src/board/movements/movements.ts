@@ -1,3 +1,4 @@
+import { BoardState } from "../../models/board-state";
 import { Direction } from "../../models/direction";
 import { Cell } from "../cell";
 
@@ -9,7 +10,7 @@ export abstract class Movements {
   public canDoPromotion: boolean = false;
   public directions?: Direction[] = [];
 
-  public abstract getAvailable(boardCells: Cell[][], currentCell: Cell): Cell[];
+  public abstract getAvailable(boardState: BoardState, currentCell: Cell): Cell[];
 
   public validateGetAvailableArguments(boardCells: Cell[][], currentCell: Cell): void {
     if (!boardCells || !currentCell || !currentCell.chessPiece) {

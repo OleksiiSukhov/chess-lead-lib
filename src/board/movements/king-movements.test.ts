@@ -1,6 +1,7 @@
 import { isEqual, xorWith } from "lodash";
 
 import { King } from "../../chess-pieces/king";
+import { BoardState } from "../../models/board-state";
 import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
 import { Cell } from "../cell";
@@ -8,10 +9,12 @@ import { KingMovements } from "./king-movements";
 
 let kingMovements: KingMovements;
 let boardCells: Cell[][];
+const boardState: BoardState = new BoardState();
 
 beforeEach(() => {
   kingMovements = new KingMovements();
   boardCells = TestAssistance.setupEmptyBoard();
+  boardState.board = boardCells;
 });
 
 //   _________________________________
@@ -76,11 +79,7 @@ test("getAvailable should return correct cells from angle of the board", () => {
   boardCells[0][0] = currentCell;
   boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
 
-  const expected: Cell[] = [
-    boardCells[1][0],
-    boardCells[1][1],
-    boardCells[0][1],
-  ];
+  const expected: Cell[] = [boardCells[1][0], boardCells[1][1], boardCells[0][1]];
 
   assertAvailableMovementCells(expected, currentCell);
 });
@@ -103,7 +102,7 @@ test("getAvailable should return correct cells from angle of the board", () => {
 // todo: castling (not available) king should move to a square that would result in check.
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-  const actual = kingMovements.getAvailable(boardCells, currentCell);
+  const actual = kingMovements.getAvailable(boardState, currentCell);
 
   expect(xorWith(actual, expected, isEqual).length).toBe(0);
 }

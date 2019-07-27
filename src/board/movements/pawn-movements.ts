@@ -1,11 +1,12 @@
 import { Pawn } from "../../chess-pieces/pawn";
+import { BoardState } from "../../models/board-state";
 import { Color } from "../../models/color";
 import { Cell } from "../cell";
 import { Movements } from "./movements";
 
 export class PawnMovements extends Movements {
-  public getAvailable(boardCells: Cell[][], currentCell: Cell): Cell[] {
-    this.validateGetAvailableArguments(boardCells, currentCell);
+  public getAvailable(boardState: BoardState, currentCell: Cell): Cell[] {
+    this.validateGetAvailableArguments(boardState.board, currentCell);
 
     const pawn = currentCell.chessPiece;
 
@@ -16,17 +17,17 @@ export class PawnMovements extends Movements {
     const availableCells: Cell[] = [];
 
     if (this.isInitialPosition(currentCell)) {
-      this.getAvailableForInitialPosition(boardCells, currentCell).forEach(cell => {
+      this.getAvailableForInitialPosition(boardState.board, currentCell).forEach(cell => {
         availableCells.push(cell);
       });
     }
 
-    const frontCell = this.getFrontAvailableCell(boardCells, currentCell);
+    const frontCell = this.getFrontAvailableCell(boardState.board, currentCell);
     if (frontCell && frontCell.isEmpty) {
       availableCells.push(frontCell);
     }
 
-    this.getDiagonalWithEnemy(boardCells, currentCell).forEach(cell => {
+    this.getDiagonalWithEnemy(boardState.board, currentCell).forEach(cell => {
       availableCells.push(cell);
     });
 

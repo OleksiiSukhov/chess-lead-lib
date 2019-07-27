@@ -1,3 +1,4 @@
+import { BoardState } from "../../models/board-state";
 import { Cell } from "../cell";
 import { Movements } from "./movements";
 
@@ -17,12 +18,12 @@ export class KnightMovements extends Movements {
     ];
   }
 
-  public getAvailable(boardCells: Cell[][], currentCell: Cell): Cell[] {
+  public getAvailable(boardState: BoardState, currentCell: Cell): Cell[] {
     if (!this.directions) {
       throw new Error("directions should be defined");
     }
 
-    this.validateGetAvailableArguments(boardCells, currentCell);
+    this.validateGetAvailableArguments(boardState.board, currentCell);
 
     const availableCells: Cell[] = [];
 
@@ -36,7 +37,7 @@ export class KnightMovements extends Movements {
         continue;
       }
 
-      const nextBoardCell = boardCells[nextCell.rowIndex][nextCell.columnIndex];
+      const nextBoardCell = boardState.board[nextCell.rowIndex][nextCell.columnIndex];
       const nextCellChessPiece = nextBoardCell.chessPiece;
       const currentCellChessPiece = currentCell.chessPiece;
 
