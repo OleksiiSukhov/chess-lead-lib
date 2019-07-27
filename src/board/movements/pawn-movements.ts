@@ -20,6 +20,11 @@ export class PawnMovements extends Movements {
       this.getAvailableForInitialPosition(boardState.board, currentCell).forEach(cell => {
         availableCells.push(cell);
       });
+    } else {
+      const enPassantCell = this.getEnPassant(boardState, currentCell);
+      if (enPassantCell) {
+        availableCells.push(enPassantCell);
+      }
     }
 
     const frontCell = this.getFrontAvailableCell(boardState.board, currentCell);
@@ -32,6 +37,50 @@ export class PawnMovements extends Movements {
     });
 
     return availableCells;
+  }
+
+  private getEnPassant(boardState: BoardState, currentCell: Cell): Cell | undefined {
+    if (!currentCell.chessPiece) {
+      return undefined;
+    }
+
+    const initialEnPassantRow = currentCell.chessPiece.color === Color.White ? 4 : 3;
+
+    if (currentCell.rowIndex !== initialEnPassantRow) {
+      return undefined;
+    }
+
+    const neighborColumns = [currentCell.columnIndex - 1, currentCell.columnIndex + 1];
+
+    const neighborCellsOnTheSameRow: Cell[] = neighborColumns.map(
+      column => new Cell(initialEnPassantRow, column),
+    );
+
+    let enPassantCell: Cell | undefined;
+
+    neighborCellsOnTheSameRow.forEach(cell => {
+      if (!currentCell.chessPiece || !cell.isInBoardBoundaries) {
+        return;
+      }
+
+      const boardCell = boardState.board[cell.rowIndex][cell.columnIndex];
+      const boardChessPiece = boardCell.chessPiece;
+
+      if (
+        !boardChessPiece ||
+        !(boardChessPiece instanceof Pawn) ||
+        !boardState.isLastMovementsPerformedBy(boardChessPiece) ||
+        boardChessPiece.movedNumber !== 1
+      ) {
+        return;
+      }
+
+      const nextRow = currentCell.chessPiece.color === Color.White ? 5 : 2;
+
+      enPassantCell = boardState.board[nextRow][cell.columnIndex];
+    });
+
+    return enPassantCell;
   }
 
   private getDiagonalWithEnemy(boardCells: Cell[][], currentCell: Cell): Cell[] {
