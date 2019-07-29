@@ -16,6 +16,7 @@ const boardState: BoardState = new BoardState();
 beforeEach(() => {
   knightMovements = new KnightMovements();
   boardCells = TestAssistance.setupEmptyBoard();
+  TestAssistance.setupKingsOnInitialPositions(boardCells);
   boardState.board = boardCells;
 });
 
@@ -41,8 +42,6 @@ test("getAvailable should return correct cells for empty board", () => {
   const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Knight(Color.White) } as Cell;
 
   boardCells[3][3] = currentCell;
-  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
-  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
 
   const expected: Cell[] = [
     boardCells[1][2],
@@ -80,8 +79,6 @@ test("getAvailable should return correct cells from angle of the board", () => {
   const currentCell = { rowIndex: 0, columnIndex: 0, chessPiece: new Knight(Color.White) } as Cell;
 
   boardCells[0][0] = currentCell;
-  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
-  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
 
   const expected: Cell[] = [boardCells[2][1], boardCells[1][2]];
 
@@ -110,8 +107,6 @@ test("getAvailable should return correct cells for board with enemy on the way",
   const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Knight(Color.White) } as Cell;
 
   boardCells[3][3] = currentCell;
-  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
-  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
   boardCells[5][2] = { rowIndex: 5, columnIndex: 2, chessPiece: new Queen(Color.Black) } as Cell;
 
   const expected: Cell[] = [
@@ -150,8 +145,6 @@ test("getAvailable should return correct cells for board with ally on the way", 
   const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Knight(Color.White) } as Cell;
 
   boardCells[3][3] = currentCell;
-  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
-  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
   boardCells[5][2] = { rowIndex: 5, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
 
   const expected: Cell[] = [
