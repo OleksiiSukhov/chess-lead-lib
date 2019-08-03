@@ -102,7 +102,7 @@ test("getAvailable should return correct cells from angle of the board", () => {
 // todo: castling (not available) king should move to a square that would result in check.
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-  const actual = kingMovements.getAvailable(boardState, currentCell);
+  const actual = kingMovements.getAvailable(boardState, currentCell, true);
 
   expect(xorWith(actual, expected, isEqual).length).toBe(0);
 }

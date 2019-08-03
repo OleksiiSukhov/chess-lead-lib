@@ -5,7 +5,11 @@ import { Cell } from "../cell";
 import { Movements } from "./movements";
 
 export class PawnMovements extends Movements {
-  public getAvailable(boardState: BoardState, currentCell: Cell): Cell[] {
+  public getAvailable(
+    boardState: BoardState,
+    currentCell: Cell,
+    checkCheckingNeeded: boolean,
+  ): Cell[] {
     this.validateGetAvailableArguments(boardState.board, currentCell);
 
     const pawn = currentCell.chessPiece;

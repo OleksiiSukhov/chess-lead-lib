@@ -10,7 +10,11 @@ export abstract class Movements {
   public canDoPromotion: boolean = false;
   public directions?: Direction[] = [];
 
-  public abstract getAvailable(boardState: BoardState, currentCell: Cell): Cell[];
+  public abstract getAvailable(
+    boardState: BoardState,
+    currentCell: Cell,
+    checkCheckingNeeded: boolean
+  ): Cell[];
 
   public validateGetAvailableArguments(boardCells: Cell[][], currentCell: Cell): void {
     if (!boardCells || !currentCell || !currentCell.chessPiece) {

@@ -186,6 +186,6 @@ test("getAvailable should return correct cells for board with ally on the way", 
 // todo: add test for check (no any cells available)
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-  const actual = bishopMovements.getAvailable(boardState, currentCell);
+  const actual = bishopMovements.getAvailable(boardState, currentCell, true);
   expect(xorWith(actual, expected, isEqual).length).toBe(0);
 }

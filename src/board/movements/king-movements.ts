@@ -17,13 +17,15 @@ export class KingMovements extends Movements {
       { row: -1, column: 0 },
       { row: 1, column: 0 },
     ];
-    
   }
 
-  public getAvailable(boardState: BoardState, currentCell: Cell): Cell[] {
+  public getAvailable(
+    boardState: BoardState,
+    currentCell: Cell,
+    checkCheckingNeeded: boolean,
+  ): Cell[] {
     this.validateGetAvailableArguments(boardState.board, currentCell);
 
     return this.getAvailableBasedOnDirections(boardState.board, currentCell);
   }
-
 }

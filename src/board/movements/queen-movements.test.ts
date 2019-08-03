@@ -232,11 +232,33 @@ test("getAvailable should return correct cells for board with ally on the way", 
   assertAvailableMovementCells(expected, currentCell);
 });
 
+
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |BQ |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |BR |   |WQ |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+
+
 // todo: add test for check (attack enemy only)
 // todo: add test for check (hide king from enemy)
 // todo: add test for check (no any cells available)
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-  const actual = queenMovements.getAvailable(boardState, currentCell);
+  const actual = queenMovements.getAvailable(boardState, currentCell, true);
   expect(xorWith(actual, expected, isEqual).length).toBe(0);
 }

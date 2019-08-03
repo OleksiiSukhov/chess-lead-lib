@@ -18,7 +18,11 @@ export class KnightMovements extends Movements {
     ];
   }
 
-  public getAvailable(boardState: BoardState, currentCell: Cell): Cell[] {
+  public getAvailable(
+    boardState: BoardState,
+    currentCell: Cell,
+    checkCheckingNeeded: boolean,
+  ): Cell[] {
     if (!this.directions) {
       throw new Error("directions should be defined");
     }

@@ -642,9 +642,6 @@ test("getAvailable without en passant when not enemy pawn last moved(black)", ()
   assertAvailableMovementCells(expected, currentCell);
 });
 
-// todo: promotion (white)
-// todo: promotion (black)
-
 // todo: add test for check (attack enemy only)
 // todo: add test for check (hide king from enemy)
 // todo: add test for check (no any cells available)
@@ -665,6 +662,6 @@ function setupBoardStateMock(lastMovementsPerformedByResult: boolean = false): v
 }
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-  const actual = pawnMovements.getAvailable(boardState, currentCell);
+  const actual = pawnMovements.getAvailable(boardState, currentCell, true);
   expect(xorWith(actual, expected, isEqual).length).toBe(0);
 }

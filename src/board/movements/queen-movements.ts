@@ -19,7 +19,11 @@ export class QueenMovements extends Movements {
     ];
   }
 
-  public getAvailable(boardState: BoardState, currentCell: Cell): Cell[] {
+  public getAvailable(
+    boardState: BoardState,
+    currentCell: Cell,
+    checkCheckingNeeded: boolean,
+  ): Cell[] {
     this.validateGetAvailableArguments(boardState.board, currentCell);
 
     return this.getAvailableBasedOnDirections(boardState.board, currentCell);

@@ -37,5 +37,7 @@ export class ChessLead {
 
   public move(): void {
     // todo: define MovedChessPiece
+    // todo: pawn promotion
+    // todo: increment movedNumber for chess piece
   }
 }
