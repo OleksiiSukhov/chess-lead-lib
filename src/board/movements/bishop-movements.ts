@@ -22,6 +22,16 @@ export class BishopMovements extends Movements {
   ): Cell[] {
     this.validateGetAvailableArguments(boardState.board, currentCell);
 
-    return this.getAvailableBasedOnDirections(boardState.board, currentCell);
+    const availableSquares = this.getAvailableBasedOnDirections(boardState.board, currentCell);
+
+    if (!checkCheckingNeeded) {
+      return availableSquares;
+    }
+
+    return this.getAdjustedAvailableCellsWithCheckChecking(
+      availableSquares,
+      boardState,
+      currentCell,
+    );
   }
 }
