@@ -32,7 +32,7 @@ export class ChessLead {
       return [];
     }
 
-    return cell.chessPiece.movements().getAvailable(this.boardState, cell);
+    return cell.chessPiece.movements().getAvailable(this.boardState, cell, true);
   }
 
   public move(): void {
