@@ -1,14 +1,14 @@
 import { isEqual, xorWith } from "lodash";
 
 import { King } from "../../chess-pieces/king";
+import { Pawn } from "../../chess-pieces/pawn";
+import { Queen } from "../../chess-pieces/queen";
+import { Rook } from "../../chess-pieces/rook";
 import { BoardState } from "../../models/board-state";
 import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
 import { Cell } from "../cell";
 import { KingMovements } from "./king-movements";
-import { Rook } from "../../chess-pieces/rook";
-import { Queen } from "../../chess-pieces/queen";
-import { Pawn } from "../../chess-pieces/pawn";
 
 let kingMovements: KingMovements;
 let boardCells: Cell[][];
@@ -210,7 +210,40 @@ test("getAvailable should return empty array in case checkmate", () => {
   assertAvailableMovementCells(expected, currentCell);
 });
 
-// todo: can't move to cell next to enemy king
+//   _________________________________
+// 7 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   | + |WKI| + |   |   |
+//   _________________________________
+// 1 |   |   |   | + | + | + |   |   |
+//   _________________________________
+// 0 |   |   |   |   |   |   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells check - no next to enemy king cells", () => {
+  const currentCell = { rowIndex: 2, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[2][4] = currentCell;
+  boardCells[4][4] = { rowIndex: 4, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+
+  const expected: Cell[] = [
+    boardCells[2][3],
+    boardCells[1][3],
+    boardCells[1][4],
+    boardCells[1][5],
+    boardCells[2][5],
+  ];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
 
 // todo: castling (available) left
 // todo: castling (available) right
@@ -226,8 +259,6 @@ test("getAvailable should return empty array in case checkmate", () => {
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
   const actual = kingMovements.getAvailable(boardState, currentCell, true);
-
-  console.log("actual >>", actual);
 
   expect(xorWith(actual, expected, isEqual).length).toBe(0);
 }
