@@ -40,7 +40,15 @@ export class PawnMovements extends Movements {
       availableCells.push(cell);
     });
 
-    return availableCells;
+    if (!checkCheckingNeeded) {
+      return availableCells;
+    }
+
+    return this.getAdjustedAvailableCellsWithCheckChecking(
+      availableCells,
+      boardState,
+      currentCell,
+    );
   }
 
   private getEnPassant(boardState: BoardState, currentCell: Cell): Cell | undefined {

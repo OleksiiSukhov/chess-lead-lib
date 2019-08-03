@@ -26,14 +26,14 @@ export class QueenMovements extends Movements {
   ): Cell[] {
     this.validateGetAvailableArguments(boardState.board, currentCell);
 
-    const availableSquares = this.getAvailableBasedOnDirections(boardState.board, currentCell);
+    const availableCells = this.getAvailableBasedOnDirections(boardState.board, currentCell);
 
     if (!checkCheckingNeeded) {
-      return availableSquares;
+      return availableCells;
     }
 
     return this.getAdjustedAvailableCellsWithCheckChecking(
-      availableSquares,
+      availableCells,
       boardState,
       currentCell,
     );
