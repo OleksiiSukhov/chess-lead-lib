@@ -262,7 +262,7 @@ test("getAvailable should return correct cells check - hide King only", () => {
 // 0 |   |   |   |   |WKI|   |   |   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
-test("getAvailable should return empty array when King is in check and it is not possible to cover it ", () => {
+test("getAvailable should return empty array when King is in check and it is not possible to cover it", () => {
   const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Rook(Color.White) } as Cell;
 
   boardCells[3][3] = currentCell;

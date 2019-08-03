@@ -232,7 +232,121 @@ test("getAvailable should return correct cells for board with ally on the way", 
   assertAvailableMovementCells(expected, currentCell);
 });
 
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |BQ+|   |   |   |   |WQ |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells check - capture only", () => {
+  const currentCell = { rowIndex: 3, columnIndex: 6, chessPiece: new Queen(Color.White) } as Cell;
 
+  boardCells[3][6] = currentCell;
+  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
+
+  const expected: Cell[] = [boardCells[3][1]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |WQ |   |
+//   _________________________________
+// 3 |   |BQ |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   | + |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells check - hide King only", () => {
+  const currentCell = { rowIndex: 4, columnIndex: 6, chessPiece: new Queen(Color.White) } as Cell;
+
+  boardCells[4][6] = currentCell;
+  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
+
+  const expected: Cell[] = [boardCells[1][3]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |BQ+|   |   |   |WQ |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   | + |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells check - capture enemy or hide King", () => {
+  const currentCell = { rowIndex: 3, columnIndex: 5, chessPiece: new Queen(Color.White) } as Cell;
+
+  boardCells[3][5] = currentCell;
+  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
+
+  const expected: Cell[] = [boardCells[1][3], boardCells[3][1]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |BQ |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |WQ |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return empty array when King is in check and it is not possible to cover it", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 7, chessPiece: new Queen(Color.White) } as Cell;
+
+  boardCells[0][7] = currentCell;
+  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
+
+  const expected: Cell[] = [];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
 
 //   _________________________________
 // 7 |   |   |   |   |BKI|   |   |   |
@@ -252,11 +366,17 @@ test("getAvailable should return correct cells for board with ally on the way", 
 // 0 |BR |   |WQ |   |WKI|   |   |   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
+test("getAvailable should return empty array when King is in check and it is not possible to cover it - two enemies", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
 
+  boardCells[0][2] = currentCell;
+  boardCells[2][4] = { rowIndex: 2, columnIndex: 4, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.Black) } as Cell;
 
-// todo: add test for check (attack enemy only)
-// todo: add test for check (hide king from enemy)
-// todo: add test for check (no any cells available)
+  const expected: Cell[] = [];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
   const actual = queenMovements.getAvailable(boardState, currentCell, true);
