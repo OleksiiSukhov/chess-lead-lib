@@ -6,6 +6,9 @@ import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
 import { Cell } from "../cell";
 import { KingMovements } from "./king-movements";
+import { Rook } from "../../chess-pieces/rook";
+import { Queen } from "../../chess-pieces/queen";
+import { Pawn } from "../../chess-pieces/pawn";
 
 let kingMovements: KingMovements;
 let boardCells: Cell[][];
@@ -84,10 +87,130 @@ test("getAvailable should return correct cells from angle of the board", () => {
   assertAvailableMovementCells(expected, currentCell);
 });
 
-// todo: add test for check (no cells under attack)
-// todo: add test for check (attack enemy only)
-// todo: add test for check (hide from enemy behind ally)
-// todo: add test for check (no any cells available - checkmate)
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 | + | + |   |   |   |   |   |   |
+//   _________________________________
+// 0 |WKI|   |   |   |BR |   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells check - hide from enemy on available cells", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 0, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[0][0] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][4] = { rowIndex: 0, columnIndex: 4, chessPiece: new Rook(Color.Black) } as Cell;
+
+  const expected: Cell[] = [boardCells[1][0], boardCells[1][1]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |BQ+|   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |WKI|   |   |   |   |   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells check - capture only", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 0, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[0][0] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[1][0] = { rowIndex: 1, columnIndex: 0, chessPiece: new Queen(Color.Black) } as Cell;
+
+  const expected: Cell[] = [boardCells[1][0]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |BR |   |   |WP | + |   |   |
+//   _________________________________
+// 0 |BR |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return correct cells check - hide from enemy behind ally", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[1][1] = { rowIndex: 1, columnIndex: 1, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[1][4] = { rowIndex: 1, columnIndex: 4, chessPiece: new Pawn(Color.White) } as Cell;
+
+  const expected: Cell[] = [boardCells[1][5]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |BR |   |   |   |   |   |   |
+//   _________________________________
+// 0 |BR |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable should return empty array in case checkmate", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[1][1] = { rowIndex: 1, columnIndex: 1, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.Black) } as Cell;
+
+  const expected: Cell[] = [];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+// todo: can't move to cell next to enemy king
 
 // todo: castling (available) left
 // todo: castling (available) right
@@ -103,6 +226,8 @@ test("getAvailable should return correct cells from angle of the board", () => {
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
   const actual = kingMovements.getAvailable(boardState, currentCell, true);
+
+  console.log("actual >>", actual);
 
   expect(xorWith(actual, expected, isEqual).length).toBe(0);
 }

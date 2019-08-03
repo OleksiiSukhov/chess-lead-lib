@@ -64,8 +64,6 @@ export abstract class Movements {
       }
     }
 
-    // todo: check "check" for available cells
-
     return availableCells;
   }
 
@@ -82,13 +80,12 @@ export abstract class Movements {
     boardState: BoardState,
     currentCell: Cell,
   ): Cell[] {
-    const initialChessPiece = cloneDeep(currentCell.chessPiece);
+    const currentChessPiece = cloneDeep(currentCell.chessPiece);
 
-    if (!initialChessPiece) {
+    if (!currentChessPiece) {
       throw Error("Current cell chess piece should be defined.");
     }
 
-    const allyKingCell = this.getAllyKingCell(boardState.board, initialChessPiece.color);
     const boardStateCopy = cloneDeep(boardState);
 
     boardStateCopy.board[currentCell.rowIndex][currentCell.columnIndex].chessPiece = undefined;
@@ -98,13 +95,15 @@ export abstract class Movements {
         boardStateCopy.board[availableCell.rowIndex][availableCell.columnIndex],
       );
 
-      this.makeTestMovement(boardStateCopy.board, availableCell, initialChessPiece);
+      this.makeTestMovement(boardStateCopy.board, availableCell, currentChessPiece);
+      const allyKingCell = this.getAllyKingCell(boardStateCopy.board, currentChessPiece.color);
 
       initialAvailableCells = this.getAdjustedCells(
         initialAvailableCells,
         boardStateCopy,
         allyKingCell,
         availableCell,
+        currentChessPiece,
       );
 
       boardStateCopy.board[availableCell.rowIndex][availableCell.columnIndex] = previousCell;
@@ -122,15 +121,28 @@ export abstract class Movements {
     boardState: BoardState,
     allyKingCell: Cell,
     availableSquare: Cell,
+    currentChessPiece: ChessPiece,
   ): Cell[] {
     boardState.board.forEach(boardRow => {
       boardRow.forEach(boardCell => {
         if (this.isKingInCheck(boardCell, boardState, allyKingCell)) {
-          initialAvailableCells = initialAvailableCells.filter(
-            square =>
-              square.rowIndex !== availableSquare.rowIndex ||
-              square.columnIndex !== availableSquare.columnIndex,
-          );
+          initialAvailableCells = initialAvailableCells.filter(cell => {
+            // if (currentChessPiece.chessType === ChessType.King) {
+
+            //   console.log('allyKingCell >>', allyKingCell);
+            //   console.log('currentChessPiece >>', currentChessPiece);
+
+            //   return (
+            //     cell.rowIndex === availableSquare.rowIndex &&
+            //     cell.columnIndex === availableSquare.columnIndex
+            //   );
+            // }
+
+            return (
+              cell.rowIndex !== availableSquare.rowIndex ||
+              cell.columnIndex !== availableSquare.columnIndex
+            );
+          });
         }
       });
     });

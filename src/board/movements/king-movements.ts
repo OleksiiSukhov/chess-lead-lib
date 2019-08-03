@@ -26,6 +26,16 @@ export class KingMovements extends Movements {
   ): Cell[] {
     this.validateGetAvailableArguments(boardState.board, currentCell);
 
-    return this.getAvailableBasedOnDirections(boardState.board, currentCell);
+    const availableCells = this.getAvailableBasedOnDirections(boardState.board, currentCell);
+
+    if (!checkCheckingNeeded) {
+      return availableCells;
+    }
+
+    return this.getAdjustedAvailableCellsWithCheckChecking(
+      availableCells,
+      boardState,
+      currentCell,
+    );
   }
 }
