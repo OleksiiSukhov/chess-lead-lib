@@ -56,8 +56,14 @@ export class KnightMovements extends Movements {
       }
     }
 
-    // todo: check "check" for available cells
+    if (!checkCheckingNeeded) {
+      return availableCells;
+    }
 
-    return availableCells;
+    return this.getAdjustedAvailableCellsWithCheckChecking(
+      availableCells,
+      boardState,
+      currentCell,
+    );
   }
 }
