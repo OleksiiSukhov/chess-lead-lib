@@ -1,4 +1,4 @@
-import { Cell } from "../board/cell";
+import { Cell } from "../models/cell";
 import { Utils } from "./utils";
 
 test("cellsOnSamePosition should return true for cells with the same row and column indexes", () => {

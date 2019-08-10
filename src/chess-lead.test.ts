@@ -2,8 +2,8 @@
 
 import { ChessLead } from ".";
 import { BoardBuilder } from "./board/board-builder";
-import { Cell } from "./board/cell";
 import { BoardState } from "./models/board-state";
+import { Cell } from "./models/cell";
 import { GameStatus } from "./models/game-status";
 import { WinType } from "./models/win-type";
 import { BoardStateValidator } from "./validators/board-state-validator";

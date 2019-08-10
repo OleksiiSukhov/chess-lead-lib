@@ -1,5 +1,5 @@
-import { Cell } from "../board/cell";
 import { King } from "../chess-pieces/king";
+import { Cell } from "../models/cell";
 import { Color } from "../models/color";
 
 export class TestAssistance {

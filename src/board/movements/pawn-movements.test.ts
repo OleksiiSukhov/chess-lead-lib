@@ -4,10 +4,10 @@ import { Pawn } from "../../chess-pieces/pawn";
 import { Queen } from "../../chess-pieces/queen";
 import { Rook } from "../../chess-pieces/rook";
 import { BoardState } from "../../models/board-state";
+import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { GameStatus } from "../../models/game-status";
 import { TestAssistance } from "../../tests/test-assistance";
-import { Cell } from "../cell";
 import { PawnMovements } from "./pawn-movements";
 
 let pawnMovements: PawnMovements;

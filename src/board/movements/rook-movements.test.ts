@@ -1,12 +1,11 @@
 import { isEqual, xorWith } from "lodash";
 
-import { King } from "../../chess-pieces/king";
 import { Queen } from "../../chess-pieces/queen";
 import { Rook } from "../../chess-pieces/rook";
 import { BoardState } from "../../models/board-state";
+import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
-import { Cell } from "../cell";
 import { RookMovements } from "./rook-movements";
 
 let rookMovements: RookMovements;

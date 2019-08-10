@@ -1,9 +1,9 @@
 /* tslint:disable:no-string-literal */
 
+import { CellColorProvider } from "../board/cell-color-provider";
 import { King } from "../chess-pieces/king";
-import { Color } from "../models/color";
 import { Cell } from "./cell";
-import { CellColorProvider } from "./cell-color-provider";
+import { Color } from "./color";
 
 test("color should return saved color when it was already set to White", () => {
   const cell = new Cell(0, 0);

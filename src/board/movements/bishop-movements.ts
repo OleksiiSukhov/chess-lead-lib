@@ -1,5 +1,5 @@
 import { BoardState } from "../../models/board-state";
-import { Cell } from "../cell";
+import { Cell } from "../../models/cell";
 import { Movements } from "./movements";
 
 export class BishopMovements extends Movements {

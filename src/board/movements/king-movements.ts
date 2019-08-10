@@ -1,9 +1,9 @@
 import { ChessPiece } from "../../chess-pieces/chess-piece";
 import { ChessType } from "../../chess-pieces/chess-type";
 import { BoardState } from "../../models/board-state";
+import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { Utils } from "../../utils/utils";
-import { Cell } from "../cell";
 import { Movements } from "./movements";
 
 export class KingMovements extends Movements {

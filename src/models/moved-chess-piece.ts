@@ -1,4 +1,4 @@
-import { Cell } from "../board/cell";
+import { Cell } from "./cell";
 
 export class MovedChessPiece {
   public readonly chessPieceId: string;

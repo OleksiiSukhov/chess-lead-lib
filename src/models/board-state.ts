@@ -1,5 +1,5 @@
 import { last } from "lodash";
-import { Cell } from "../board/cell";
+import { Cell } from "./cell";
 import { ChessPiece } from "../chess-pieces/chess-piece";
 import { Color } from "./color";
 import { DrawType } from "./draw-type";

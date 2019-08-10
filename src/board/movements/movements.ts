@@ -2,10 +2,10 @@ import { cloneDeep } from "lodash";
 import { ChessPiece } from "../../chess-pieces/chess-piece";
 import { ChessType } from "../../chess-pieces/chess-type";
 import { BoardState } from "../../models/board-state";
+import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { Direction } from "../../models/direction";
 import { Utils } from "../../utils/utils";
-import { Cell } from "../cell";
 
 export abstract class Movements {
   public maxMovementSquares?: number = 0;

@@ -1,4 +1,4 @@
-import { Cell } from "../board/cell";
+import { Cell } from "../models/cell";
 
 export class Utils {
   public static cellsOnSamePosition(cell1: Cell, cell2: Cell): boolean {

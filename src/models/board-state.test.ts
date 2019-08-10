@@ -1,7 +1,7 @@
-import { Cell } from "../board/cell";
 import { Pawn } from "../chess-pieces/pawn";
 import { Color } from "../models/color";
 import { BoardState } from "./board-state";
+import { Cell } from "./cell";
 import { MovedChessPiece } from "./moved-chess-piece";
 
 let boardState: BoardState;

@@ -1,6 +1,6 @@
 import { BoardBuilder } from "./board/board-builder";
-import { Cell } from "./board/cell";
 import { BoardState } from "./models/board-state";
+import { Cell } from "./models/cell";
 import { GameStatus } from "./models/game-status";
 import { BoardStateValidator } from "./validators/board-state-validator";
 import { GetAcceptableMovementsInputValidator } from "./validators/get-acceptable-movements-input-validator";

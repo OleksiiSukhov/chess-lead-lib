@@ -3,9 +3,9 @@ import { isEqual, xorWith } from "lodash";
 import { Knight } from "../../chess-pieces/knight";
 import { Queen } from "../../chess-pieces/queen";
 import { BoardState } from "../../models/board-state";
+import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
-import { Cell } from "../cell";
 import { KnightMovements } from "./knight-movements";
 
 let knightMovements: KnightMovements;

@@ -1,4 +1,4 @@
-import { Cell } from "../board/cell";
+import { Cell } from "../models/cell";
 
 export class GetAcceptableMovementsInputValidator {
   public static validate(cell: Cell): void {

@@ -1,12 +1,11 @@
 import { isEqual, xorWith } from "lodash";
 
 import { Bishop } from "../../chess-pieces/bishop";
-import { King } from "../../chess-pieces/king";
 import { Queen } from "../../chess-pieces/queen";
 import { BoardState } from "../../models/board-state";
+import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
-import { Cell } from "../cell";
 import { BishopMovements } from "./bishop-movements";
 
 let bishopMovements: BishopMovements;
@@ -181,9 +180,6 @@ test("getAvailable should return correct cells for board with ally on the way", 
   assertAvailableMovementCells(expected, currentCell);
 });
 
-
-
-
 //   _________________________________
 // 7 |   |   |   |   |BKI|   |   |   |
 //   _________________________________
@@ -270,10 +266,6 @@ test("getAvailable should return empty array when King is in check and it is not
 
   assertAvailableMovementCells(expected, currentCell);
 });
-
-
-
-
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
   const actual = bishopMovements.getAvailable(boardState, currentCell, true);

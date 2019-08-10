@@ -1,7 +1,7 @@
 import { Pawn } from "../../chess-pieces/pawn";
 import { BoardState } from "../../models/board-state";
+import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
-import { Cell } from "../cell";
 import { Movements } from "./movements";
 
 export class PawnMovements extends Movements {
