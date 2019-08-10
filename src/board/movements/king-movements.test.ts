@@ -10,6 +10,7 @@ import { TestAssistance } from "../../tests/test-assistance";
 import { Cell } from "../cell";
 import { KingMovements } from "./king-movements";
 import { Bishop } from "../../chess-pieces/bishop";
+import { Knight } from "../../chess-pieces/knight";
 
 let kingMovements: KingMovements;
 let boardCells: Cell[][];
@@ -496,12 +497,272 @@ test("getAvailable for castling - available - rook crosses cell that is under at
   assertAvailableMovementCells(expected, currentCell);
 });
 
-// todo: castling (not available) king previously moved during the game.
-// todo: castling (not available) rook previously moved during the game.
-// todo: castling (not available) There are pieces between the king and the rook.
-// todo: castling (not available) king in check.
-// todo: castling (not available) king should pass through any square that is under attack by an enemy piece
-// todo: castling (not available) king should move to a square that would result in check.
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   | + | + | + |   |   |
+//   _________________________________
+// 0 |WR |   |   | + |WKI| + |   |WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable for castling - not available - king moved", () => {
+  const king = new King(Color.White);
+  king.movedNumber = 2;
+
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: king } as Cell;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][7] = { rowIndex: 0, columnIndex: 7, chessPiece: new Rook(Color.White) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.White) } as Cell;
+
+  const expected: Cell[] = [
+    boardCells[0][3],
+    boardCells[1][3],
+    boardCells[1][4],
+    boardCells[1][5],
+    boardCells[0][5],
+  ];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   | + | + | + |   |   |
+//   _________________________________
+// 0 |WR |   |   | + |WKI| + | + |WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable for castling - not available - left rook moved", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  const leftRook = new Rook(Color.White);
+  leftRook.movedNumber = 2;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][7] = { rowIndex: 0, columnIndex: 7, chessPiece: new Rook(Color.White) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: leftRook } as Cell;
+
+  const expected: Cell[] = [
+    boardCells[0][3],
+    boardCells[1][3],
+    boardCells[1][4],
+    boardCells[1][5],
+    boardCells[0][5],
+    boardCells[0][6],
+  ];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   | + | + | + |   |   |
+//   _________________________________
+// 0 |WR |   | + | + |WKI| + |   |WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable for castling - not available - right rook moved", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  const rightRook = new Rook(Color.White);
+  rightRook.movedNumber = 2;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][7] = { rowIndex: 0, columnIndex: 7, chessPiece: rightRook } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.White) } as Cell;
+
+  const expected: Cell[] = [
+    boardCells[0][2],
+    boardCells[0][3],
+    boardCells[1][3],
+    boardCells[1][4],
+    boardCells[1][5],
+    boardCells[0][5],
+  ];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   | + | + | + |   |   |
+//   _________________________________
+// 0 |WR |WKN|   | + |WKI| + |WKN|WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable for castling - not available - cells occupied", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[0][7] = { rowIndex: 0, columnIndex: 7, chessPiece: new Rook(Color.White) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.White) } as Cell;
+  boardCells[0][6] = { rowIndex: 0, columnIndex: 6, chessPiece: new Knight(Color.White) } as Cell;
+  boardCells[0][1] = { rowIndex: 0, columnIndex: 1, chessPiece: new Knight(Color.White) } as Cell;
+
+  const expected: Cell[] = [
+    boardCells[0][3],
+    boardCells[1][3],
+    boardCells[1][4],
+    boardCells[1][5],
+    boardCells[0][5],
+  ];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |BR |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   | + |   | + |   |   |
+//   _________________________________
+// 0 |WR |   |   | + |WKI| + |   |WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable for castling - not available - king is in check", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[5][4] = { rowIndex: 5, columnIndex: 4, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[0][7] = { rowIndex: 0, columnIndex: 7, chessPiece: new Rook(Color.White) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.White) } as Cell;
+
+  const expected: Cell[] = [boardCells[0][3], boardCells[1][3], boardCells[1][5], boardCells[0][5]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |BR |   |BR |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   | + |   |   |   |
+//   _________________________________
+// 0 |WR |   |   |   |WKI|   |   |WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable for castling - not available - check is on the way", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[5][3] = { rowIndex: 5, columnIndex: 3, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[5][5] = { rowIndex: 5, columnIndex: 5, chessPiece: new Rook(Color.Black) } as Cell;
+
+  boardCells[0][7] = { rowIndex: 0, columnIndex: 7, chessPiece: new Rook(Color.White) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.White) } as Cell;
+
+  const expected: Cell[] = [boardCells[1][4]];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |BR |   |   |   |BR |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   | + | + | + |   |   |
+//   _________________________________
+// 0 |WR |   |   | + |WKI| + |   |WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("getAvailable for castling - not available - king is in check at the end of movement", () => {
+  const currentCell = { rowIndex: 0, columnIndex: 4, chessPiece: new King(Color.White) } as Cell;
+
+  boardCells[0][4] = currentCell;
+  boardCells[7][4] = { rowIndex: 7, columnIndex: 4, chessPiece: new King(Color.Black) } as Cell;
+  boardCells[5][2] = { rowIndex: 5, columnIndex: 2, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[5][6] = { rowIndex: 5, columnIndex: 6, chessPiece: new Rook(Color.Black) } as Cell;
+
+  boardCells[0][7] = { rowIndex: 0, columnIndex: 7, chessPiece: new Rook(Color.White) } as Cell;
+  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.White) } as Cell;
+
+  const expected: Cell[] = [
+    boardCells[0][3],
+    boardCells[1][3],
+    boardCells[1][4],
+    boardCells[1][5],
+    boardCells[0][5],
+  ];
+
+  assertAvailableMovementCells(expected, currentCell);
+});
 
 function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
   const actual = kingMovements.getAvailable(boardState, currentCell, true);

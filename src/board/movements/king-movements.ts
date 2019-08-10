@@ -1,9 +1,9 @@
 import { ChessPiece } from "../../chess-pieces/chess-piece";
+import { ChessType } from "../../chess-pieces/chess-type";
 import { BoardState } from "../../models/board-state";
 import { Color } from "../../models/color";
 import { Cell } from "../cell";
 import { Movements } from "./movements";
-import { ChessType } from "../../chess-pieces/chess-type";
 
 export class KingMovements extends Movements {
   private readonly initialColumn: number = 4;
@@ -179,7 +179,7 @@ export class KingMovements extends Movements {
                   currentCell.columnIndex === availableCell.columnIndex,
               )
             ) {
-              cells.push(cell);
+              cells.push(availableCell);
             }
           });
       }
