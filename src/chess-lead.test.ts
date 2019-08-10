@@ -8,13 +8,11 @@ import { GameStatus } from "./models/game-status";
 import { Guard } from "./validators/guard";
 
 test("constructor should call BoardBuilder.createInitial when boardState was not passed", () => {
-  const validateMock = jest.fn();
   const createInitialMock = jest.fn();
   BoardBuilder.createInitial = createInitialMock.bind(BoardBuilder);
 
   const chessLead = new ChessLead();
 
-  expect(validateMock).not.toHaveBeenCalled();
   expect(createInitialMock).toHaveBeenCalled();
 });
 
