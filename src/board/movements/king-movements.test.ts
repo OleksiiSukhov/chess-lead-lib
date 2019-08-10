@@ -1,6 +1,8 @@
 import { isEqual, xorWith } from "lodash";
 
+import { Bishop } from "../../chess-pieces/bishop";
 import { King } from "../../chess-pieces/king";
+import { Knight } from "../../chess-pieces/knight";
 import { Pawn } from "../../chess-pieces/pawn";
 import { Queen } from "../../chess-pieces/queen";
 import { Rook } from "../../chess-pieces/rook";
@@ -9,8 +11,6 @@ import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
 import { Cell } from "../cell";
 import { KingMovements } from "./king-movements";
-import { Bishop } from "../../chess-pieces/bishop";
-import { Knight } from "../../chess-pieces/knight";
 
 let kingMovements: KingMovements;
 let boardCells: Cell[][];

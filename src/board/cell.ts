@@ -40,8 +40,4 @@ export class Cell {
     this.rowIndex = rowIndex;
     this.columnIndex = columnIndex;
   }
-
-  public isSamePositionAs(other: Cell): boolean {
-    return this.rowIndex === other.rowIndex && this.columnIndex === other.columnIndex;
-  }
 }

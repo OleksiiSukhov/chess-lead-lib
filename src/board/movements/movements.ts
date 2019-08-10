@@ -4,6 +4,7 @@ import { ChessType } from "../../chess-pieces/chess-type";
 import { BoardState } from "../../models/board-state";
 import { Color } from "../../models/color";
 import { Direction } from "../../models/direction";
+import { Utils } from "../../utils/utils";
 import { Cell } from "../cell";
 
 export abstract class Movements {
@@ -44,7 +45,7 @@ export abstract class Movements {
           break;
         }
 
-        if (nextCell.isSamePositionAs(currentCell)) {
+        if (Utils.cellsOnSamePosition(nextCell, currentCell)) {
           continue;
         }
 
@@ -103,7 +104,6 @@ export abstract class Movements {
         boardStateCopy,
         allyKingCell,
         availableCell,
-        currentChessPiece,
       );
 
       boardStateCopy.board[availableCell.rowIndex][availableCell.columnIndex] = previousCell;
@@ -121,27 +121,12 @@ export abstract class Movements {
     boardState: BoardState,
     allyKingCell: Cell,
     availableSquare: Cell,
-    currentChessPiece: ChessPiece,
   ): Cell[] {
     boardState.board.forEach(boardRow => {
       boardRow.forEach(boardCell => {
         if (this.isKingInCheck(boardCell, boardState, allyKingCell)) {
           initialAvailableCells = initialAvailableCells.filter(cell => {
-            // if (currentChessPiece.chessType === ChessType.King) {
-
-            //   console.log('allyKingCell >>', allyKingCell);
-            //   console.log('currentChessPiece >>', currentChessPiece);
-
-            //   return (
-            //     cell.rowIndex === availableSquare.rowIndex &&
-            //     cell.columnIndex === availableSquare.columnIndex
-            //   );
-            // }
-
-            return (
-              cell.rowIndex !== availableSquare.rowIndex ||
-              cell.columnIndex !== availableSquare.columnIndex
-            );
+            return !Utils.cellsOnSamePosition(cell, availableSquare);
           });
         }
       });
@@ -187,10 +172,8 @@ export abstract class Movements {
       .movements()
       .getAvailable(boardState, boardCellToCheck, false);
 
-    return currentEnemyAvailableCells.some(
-      enemyAvailableCell =>
-        enemyAvailableCell.rowIndex === allyKingCell.rowIndex &&
-        enemyAvailableCell.columnIndex === allyKingCell.columnIndex,
+    return currentEnemyAvailableCells.some(enemyAvailableCell =>
+      Utils.cellsOnSamePosition(enemyAvailableCell, allyKingCell),
     );
   }
 }

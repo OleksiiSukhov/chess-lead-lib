@@ -2,6 +2,7 @@ import { ChessPiece } from "../../chess-pieces/chess-piece";
 import { ChessType } from "../../chess-pieces/chess-type";
 import { BoardState } from "../../models/board-state";
 import { Color } from "../../models/color";
+import { Utils } from "../../utils/utils";
 import { Cell } from "../cell";
 import { Movements } from "./movements";
 
@@ -149,10 +150,8 @@ export class KingMovements extends Movements {
   }
 
   private isCellInCheck(boardState: BoardState, kingCell: Cell, color: Color): boolean {
-    return this.getAllEnemiesAvailableCells(boardState, color).some(
-      enemyAvailableCell =>
-        enemyAvailableCell.rowIndex === kingCell.rowIndex &&
-        enemyAvailableCell.columnIndex === kingCell.columnIndex,
+    return this.getAllEnemiesAvailableCells(boardState, color).some(enemyAvailableCell =>
+      Utils.cellsOnSamePosition(enemyAvailableCell, kingCell),
     );
   }
 
@@ -172,13 +171,7 @@ export class KingMovements extends Movements {
           .movements()
           .getAvailable(boardState, cell, false)
           .forEach(availableCell => {
-            if (
-              !cells.find(
-                currentCell =>
-                  currentCell.rowIndex === availableCell.rowIndex &&
-                  currentCell.columnIndex === availableCell.columnIndex,
-              )
-            ) {
+            if (!cells.find(currentCell => Utils.cellsOnSamePosition(currentCell, availableCell))) {
               cells.push(availableCell);
             }
           });

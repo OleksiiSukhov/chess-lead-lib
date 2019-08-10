@@ -93,17 +93,3 @@ test("isInBoardBoundaries should return false when row or column indexes not wit
     expect(cell.isInBoardBoundaries).toBeFalsy();
   });
 });
-
-test("isSamePositionAs should return true for cells with the same row and column indexes", () => {
-  const cell1 = new Cell(4, 2);
-  const cell2 = new Cell(4, 2);
-
-  expect(cell1.isSamePositionAs(cell2)).toBeTruthy();
-});
-
-test("isSamePositionAs should return false for cells with the same row and column indexes", () => {
-  const cell1 = new Cell(4, 2);
-  const cell2 = new Cell(5, 1);
-
-  expect(cell1.isSamePositionAs(cell2)).toBeFalsy();
-});
