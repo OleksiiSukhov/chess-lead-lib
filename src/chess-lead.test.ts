@@ -5,26 +5,10 @@ import { BoardBuilder } from "./board/board-builder";
 import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
 import { GameStatus } from "./models/game-status";
-import { WinType } from "./models/win-type";
-import { BoardStateValidator } from "./validators/board-state-validator";
 import { Guard } from "./validators/guard";
-
-test("constructor should call BoardStateValidator.validate when boardState was passed", () => {
-  const validateMock = jest.fn();
-  BoardStateValidator.validate = validateMock.bind(BoardStateValidator);
-
-  const initialBoardState = new BoardState();
-  initialBoardState.winType = WinType.Checkmate;
-
-  const chessLead = new ChessLead(initialBoardState);
-
-  expect(validateMock).toHaveBeenCalledWith(initialBoardState);
-});
 
 test("constructor should call BoardBuilder.createInitial when boardState was not passed", () => {
   const validateMock = jest.fn();
-  BoardStateValidator.validate = validateMock.bind(BoardStateValidator);
-
   const createInitialMock = jest.fn();
   BoardBuilder.createInitial = createInitialMock.bind(BoardBuilder);
 
@@ -46,9 +30,7 @@ test("chessBoardState should return correct board state object", () => {
 
 test("getAcceptableMovements should call GetAcceptableMovementsInputValidator.validate", () => {
   const validateMock = jest.fn();
-  Guard.validateCell = validateMock.bind(
-    Guard,
-  );
+  Guard.validateCell = validateMock.bind(Guard);
 
   const chessLead = new ChessLead();
   const cell = new Cell(0, 0);

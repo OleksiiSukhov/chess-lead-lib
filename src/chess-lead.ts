@@ -2,7 +2,6 @@ import { BoardBuilder } from "./board/board-builder";
 import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
 import { GameStatus } from "./models/game-status";
-import { BoardStateValidator } from "./validators/board-state-validator";
 import { Guard } from "./validators/guard";
 
 export class ChessLead {
@@ -12,12 +11,7 @@ export class ChessLead {
   }
 
   constructor(boardState?: BoardState) {
-    if (boardState !== undefined) {
-      BoardStateValidator.validate(boardState);
-      this.boardState = boardState;
-    } else {
-      this.boardState = BoardBuilder.createInitial();
-    }
+    this.boardState = boardState ? boardState : BoardBuilder.createInitial();
   }
 
   public getAcceptableMovements(cell: Cell): Cell[] {
