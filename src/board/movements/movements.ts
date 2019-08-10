@@ -6,6 +6,7 @@ import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { Direction } from "../../models/direction";
 import { Utils } from "../../utils/utils";
+import { Guard } from "../../validators/guard";
 
 export abstract class Movements {
   public maxMovementSquares?: number = 0;
@@ -21,21 +22,20 @@ export abstract class Movements {
     checkCheckingNeeded: boolean,
   ): Cell[];
 
-  public validateGetAvailableArguments(boardCells: Cell[][], currentCell: Cell): void {
-    if (!boardCells || !currentCell || !currentCell.chessPiece) {
-      throw new Error("boardCells, currentCell and chessPiece on it should be defined");
-    }
-  }
-
   public getAvailableBasedOnDirections(boardCells: Cell[][], currentCell: Cell): Cell[] {
-    if (!this.directions || !this.maxMovementSquares) {
-      throw new Error("directions and maxMovementSquares should be defined");
-    }
+    Guard.validateGetAvailableBasedOnDirectionsArguments(
+      this.directions,
+      this.maxMovementSquares,
+    );
 
     const availableCells: Cell[] = [];
 
-    for (const direction of this.directions) {
-      for (let squaresCount = 0; squaresCount < this.maxMovementSquares; squaresCount++) {
+    for (const direction of this.directions as Direction[]) {
+      for (
+        let squaresCount = 0;
+        squaresCount < (this.maxMovementSquares as number);
+        squaresCount++
+      ) {
         const nextCell = new Cell(
           currentCell.rowIndex + this.getMovementSquaresCount(direction.row, squaresCount),
           currentCell.columnIndex + this.getMovementSquaresCount(direction.column, squaresCount),
@@ -81,12 +81,7 @@ export abstract class Movements {
     boardState: BoardState,
     currentCell: Cell,
   ): Cell[] {
-    const currentChessPiece = cloneDeep(currentCell.chessPiece);
-
-    if (!currentChessPiece) {
-      throw Error("Current cell chess piece should be defined.");
-    }
-
+    const currentChessPiece = cloneDeep(currentCell.chessPiece) as ChessPiece;
     const boardStateCopy = cloneDeep(boardState);
 
     boardStateCopy.board[currentCell.rowIndex][currentCell.columnIndex].chessPiece = undefined;
@@ -102,7 +97,7 @@ export abstract class Movements {
       initialAvailableCells = this.getAdjustedCells(
         initialAvailableCells,
         boardStateCopy,
-        allyKingCell,
+        allyKingCell as Cell,
         availableCell,
       );
 
@@ -135,7 +130,7 @@ export abstract class Movements {
     return initialAvailableCells;
   }
 
-  private getAllyKingCell(board: Cell[][], currentColor: Color): Cell {
+  private getAllyKingCell(board: Cell[][], currentColor: Color): Cell | undefined {
     for (let row = 0; row < 8; row++) {
       for (let cell = 0; cell < 8; cell++) {
         const chessPiece = board[row][cell].chessPiece;
@@ -150,7 +145,7 @@ export abstract class Movements {
       }
     }
 
-    throw Error("Ally King was not found.");
+    Guard.throwAllyKingWasNotFound();
   }
 
   private isKingInCheck(

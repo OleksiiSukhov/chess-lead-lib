@@ -4,6 +4,7 @@ import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { Utils } from "../../utils/utils";
+import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
 
 export class KingMovements extends Movements {
@@ -30,7 +31,7 @@ export class KingMovements extends Movements {
     currentCell: Cell,
     checkCheckingNeeded: boolean,
   ): Cell[] {
-    this.validateGetAvailableArguments(boardState.board, currentCell);
+    Guard.validateGetAvailableArguments(boardState.board, currentCell);
 
     const availableCells = this.getAvailableBasedOnDirections(boardState.board, currentCell);
 
@@ -46,17 +47,16 @@ export class KingMovements extends Movements {
   }
 
   private getCastlingAcceptableCells(boardState: BoardState, currentCell: Cell): Cell[] {
+    Guard.validateChessPiece(currentCell.chessPiece);
+
     const acceptableCells: Cell[] = [];
+    const currentChessPiece = currentCell.chessPiece as ChessPiece;
 
-    if (!currentCell.chessPiece) {
-      throw Error("King is not found.");
-    }
-
-    if (currentCell.chessPiece.moved) {
+    if (currentChessPiece.moved) {
       return acceptableCells;
     }
 
-    if (this.isCellInCheck(boardState, currentCell, currentCell.chessPiece.color)) {
+    if (this.isCellInCheck(boardState, currentCell, currentChessPiece.color)) {
       return acceptableCells;
     }
 

@@ -1,5 +1,6 @@
 import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
+import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
 
 export class RookMovements extends Movements {
@@ -20,7 +21,7 @@ export class RookMovements extends Movements {
     currentCell: Cell,
     checkCheckingNeeded: boolean,
   ): Cell[] {
-    this.validateGetAvailableArguments(boardState.board, currentCell);
+    Guard.validateGetAvailableArguments(boardState.board, currentCell);
 
     const availableCells = this.getAvailableBasedOnDirections(boardState.board, currentCell);
 
@@ -28,10 +29,6 @@ export class RookMovements extends Movements {
       return availableCells;
     }
 
-    return this.getAdjustedAvailableCellsWithCheckChecking(
-      availableCells,
-      boardState,
-      currentCell,
-    );
+    return this.getAdjustedAvailableCellsWithCheckChecking(availableCells, boardState, currentCell);
   }
 }

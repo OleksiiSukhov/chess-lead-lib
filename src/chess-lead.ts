@@ -3,7 +3,7 @@ import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
 import { GameStatus } from "./models/game-status";
 import { BoardStateValidator } from "./validators/board-state-validator";
-import { GetAcceptableMovementsInputValidator } from "./validators/get-acceptable-movements-input-validator";
+import { Guard } from "./validators/guard";
 
 export class ChessLead {
   private boardState: BoardState;
@@ -21,7 +21,7 @@ export class ChessLead {
   }
 
   public getAcceptableMovements(cell: Cell): Cell[] {
-    GetAcceptableMovementsInputValidator.validate(cell);
+    Guard.validateCell(cell);
 
     if (
       cell.isEmpty ||

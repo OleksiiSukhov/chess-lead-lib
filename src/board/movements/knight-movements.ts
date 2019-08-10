@@ -1,5 +1,7 @@
 import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
+import { Direction } from "../../models/direction";
+import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
 
 export class KnightMovements extends Movements {
@@ -23,15 +25,13 @@ export class KnightMovements extends Movements {
     currentCell: Cell,
     checkCheckingNeeded: boolean,
   ): Cell[] {
-    if (!this.directions) {
-      throw new Error("directions should be defined");
-    }
+    Guard.validateDirections(this.directions);
 
-    this.validateGetAvailableArguments(boardState.board, currentCell);
+    Guard.validateGetAvailableArguments(boardState.board, currentCell);
 
     const availableCells: Cell[] = [];
 
-    for (const direction of this.directions) {
+    for (const direction of this.directions as Direction[]) {
       const nextCell = new Cell(
         currentCell.rowIndex + direction.row,
         currentCell.columnIndex + direction.column,

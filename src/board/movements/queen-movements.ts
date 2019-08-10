@@ -1,5 +1,6 @@
 import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
+import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
 
 export class QueenMovements extends Movements {
@@ -24,7 +25,7 @@ export class QueenMovements extends Movements {
     currentCell: Cell,
     checkCheckingNeeded: boolean,
   ): Cell[] {
-    this.validateGetAvailableArguments(boardState.board, currentCell);
+    Guard.validateGetAvailableArguments(boardState.board, currentCell);
 
     const availableCells = this.getAvailableBasedOnDirections(boardState.board, currentCell);
 

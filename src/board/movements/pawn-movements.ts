@@ -1,7 +1,9 @@
+import { ChessPiece } from "../../chess-pieces/chess-piece";
 import { Pawn } from "../../chess-pieces/pawn";
 import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
+import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
 
 export class PawnMovements extends Movements {
@@ -10,13 +12,7 @@ export class PawnMovements extends Movements {
     currentCell: Cell,
     checkCheckingNeeded: boolean,
   ): Cell[] {
-    this.validateGetAvailableArguments(boardState.board, currentCell);
-
-    const pawn = currentCell.chessPiece;
-
-    if (!pawn) {
-      throw new Error("Pawn should be defined.");
-    }
+    Guard.validateGetAvailableArguments(boardState.board, currentCell);
 
     const availableCells: Cell[] = [];
 
@@ -44,11 +40,7 @@ export class PawnMovements extends Movements {
       return availableCells;
     }
 
-    return this.getAdjustedAvailableCellsWithCheckChecking(
-      availableCells,
-      boardState,
-      currentCell,
-    );
+    return this.getAdjustedAvailableCellsWithCheckChecking(availableCells, boardState, currentCell);
   }
 
   private getEnPassant(boardState: BoardState, currentCell: Cell): Cell | undefined {
@@ -155,11 +147,8 @@ export class PawnMovements extends Movements {
   }
 
   private isInitialPosition(currentCell: Cell): boolean {
-    const pawn = currentCell.chessPiece;
-
-    if (!pawn) {
-      throw new Error("Pawn should be defined.");
-    }
+    Guard.validateChessPiece(currentCell.chessPiece);
+    const pawn = currentCell.chessPiece as ChessPiece;
 
     return currentCell.rowIndex === this.getInitialPositionRow(pawn) && !pawn.moved;
   }

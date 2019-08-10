@@ -1,6 +1,7 @@
 import { last } from "lodash";
-import { Cell } from "./cell";
 import { ChessPiece } from "../chess-pieces/chess-piece";
+import { Guard } from "../validators/guard";
+import { Cell } from "./cell";
 import { Color } from "./color";
 import { DrawType } from "./draw-type";
 import { GameStatus } from "./game-status";
@@ -19,9 +20,7 @@ export class BoardState {
   public movements: MovedChessPiece[] = [];
 
   public isLastMovementsPerformedBy(chessPiece: ChessPiece): boolean {
-    if (!chessPiece) {
-      throw Error("chessPiece should be defined.");
-    }
+    Guard.validateChessPiece(chessPiece);
 
     const lastMovements = last(this.movements);
 

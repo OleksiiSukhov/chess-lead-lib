@@ -7,7 +7,7 @@ import { Cell } from "./models/cell";
 import { GameStatus } from "./models/game-status";
 import { WinType } from "./models/win-type";
 import { BoardStateValidator } from "./validators/board-state-validator";
-import { GetAcceptableMovementsInputValidator } from "./validators/get-acceptable-movements-input-validator";
+import { Guard } from "./validators/guard";
 
 test("constructor should call BoardStateValidator.validate when boardState was passed", () => {
   const validateMock = jest.fn();
@@ -46,8 +46,8 @@ test("chessBoardState should return correct board state object", () => {
 
 test("getAcceptableMovements should call GetAcceptableMovementsInputValidator.validate", () => {
   const validateMock = jest.fn();
-  GetAcceptableMovementsInputValidator.validate = validateMock.bind(
-    GetAcceptableMovementsInputValidator,
+  Guard.validateCell = validateMock.bind(
+    Guard,
   );
 
   const chessLead = new ChessLead();
