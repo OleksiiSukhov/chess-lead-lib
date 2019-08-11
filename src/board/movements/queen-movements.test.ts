@@ -1,23 +1,21 @@
-import { isEqual, xorWith } from "lodash";
-
 import { Queen } from "../../chess-pieces/queen";
 import { Rook } from "../../chess-pieces/rook";
 import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
-import { TestAssistance } from "../../tests/test-assistance";
-import { QueenMovements } from "./queen-movements";
 import { BoardBuilder } from "../board-builder";
+import { QueenMovements } from "./queen-movements";
+import { TestAssistance } from "./test-assistance";
 
-let queenMovements: QueenMovements;
 let boardCells: Cell[][];
 const boardState: BoardState = new BoardState();
+let testAssistance: TestAssistance;
 
 beforeEach(() => {
-  queenMovements = new QueenMovements();
   boardCells = BoardBuilder.setupEmptyBoard();
-  TestAssistance.setupKingsOnInitialPositions(boardCells);
   boardState.board = boardCells;
+  testAssistance = new TestAssistance(boardState, new QueenMovements());
+  testAssistance.setupKingsOnInitialPositions();
 });
 
 //   _________________________________
@@ -39,9 +37,7 @@ beforeEach(() => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for empty board", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[3][3] = currentCell;
+  boardCells[3][3].chessPiece = new Queen(Color.White);
 
   const expected: Cell[] = [
     boardCells[6][0],
@@ -73,7 +69,7 @@ test("getAvailable should return correct cells for empty board", () => {
     boardCells[7][3],
   ];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][3]);
 });
 
 //   _________________________________
@@ -95,9 +91,7 @@ test("getAvailable should return correct cells for empty board", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells from angle of the board", () => {
-  const currentCell = { rowIndex: 0, columnIndex: 0, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[0][0] = currentCell;
+  boardCells[0][0].chessPiece = new Queen(Color.White);
 
   const expected: Cell[] = [
     boardCells[1][1],
@@ -119,7 +113,7 @@ test("getAvailable should return correct cells from angle of the board", () => {
     boardCells[0][3],
   ];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[0][0]);
 });
 
 //   _________________________________
@@ -141,11 +135,9 @@ test("getAvailable should return correct cells from angle of the board", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for board with enemy on the way", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[3][3] = currentCell;
-  boardCells[5][1] = { rowIndex: 5, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[3][3].chessPiece = new Queen(Color.White);
+  boardCells[5][1].chessPiece = new Queen(Color.Black);
+  boardCells[3][1].chessPiece = new Rook(Color.Black);
 
   const expected: Cell[] = [
     boardCells[5][1],
@@ -175,7 +167,7 @@ test("getAvailable should return correct cells for board with enemy on the way",
     boardCells[7][3],
   ];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][3]);
 });
 
 //   _________________________________
@@ -197,11 +189,9 @@ test("getAvailable should return correct cells for board with enemy on the way",
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for board with ally on the way", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[3][3] = currentCell;
-  boardCells[5][1] = { rowIndex: 5, columnIndex: 1, chessPiece: new Queen(Color.White) } as Cell;
-  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Rook(Color.White) } as Cell;
+  boardCells[3][3].chessPiece = new Queen(Color.White);
+  boardCells[5][1].chessPiece = new Queen(Color.White);
+  boardCells[3][1].chessPiece = new Rook(Color.White);
 
   const expected: Cell[] = [
     boardCells[4][2],
@@ -229,7 +219,7 @@ test("getAvailable should return correct cells for board with ally on the way", 
     boardCells[7][3],
   ];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][3]);
 });
 
 //   _________________________________
@@ -251,14 +241,12 @@ test("getAvailable should return correct cells for board with ally on the way", 
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells check - capture only", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 6, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[3][6] = currentCell;
+  boardCells[3][6].chessPiece = new Queen(Color.White);
   boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
 
   const expected: Cell[] = [boardCells[3][1]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][6]);
 });
 
 //   _________________________________
@@ -280,14 +268,12 @@ test("getAvailable should return correct cells check - capture only", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells check - hide King only", () => {
-  const currentCell = { rowIndex: 4, columnIndex: 6, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[4][6] = currentCell;
-  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[4][6].chessPiece = new Queen(Color.White);
+  boardCells[3][1].chessPiece = new Queen(Color.Black);
 
   const expected: Cell[] = [boardCells[1][3]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[4][6]);
 });
 
 //   _________________________________
@@ -309,14 +295,12 @@ test("getAvailable should return correct cells check - hide King only", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells check - capture enemy or hide King", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 5, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[3][5] = currentCell;
-  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[3][5].chessPiece = new Queen(Color.White);
+  boardCells[3][1].chessPiece = new Queen(Color.Black);
 
   const expected: Cell[] = [boardCells[1][3], boardCells[3][1]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][5]);
 });
 
 //   _________________________________
@@ -338,14 +322,12 @@ test("getAvailable should return correct cells check - capture enemy or hide Kin
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return empty array when King is in check and it is not possible to cover it", () => {
-  const currentCell = { rowIndex: 0, columnIndex: 7, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[0][7] = currentCell;
-  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[0][7].chessPiece = new Queen(Color.White);
+  boardCells[3][1].chessPiece = new Queen(Color.Black);
 
   const expected: Cell[] = [];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[0][7]);
 });
 
 //   _________________________________
@@ -367,18 +349,11 @@ test("getAvailable should return empty array when King is in check and it is not
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return empty array when King is in check and it is not possible to cover it - two enemies", () => {
-  const currentCell = { rowIndex: 0, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
-
-  boardCells[0][2] = currentCell;
-  boardCells[2][4] = { rowIndex: 2, columnIndex: 4, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[0][0] = { rowIndex: 0, columnIndex: 0, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[0][2].chessPiece = new Queen(Color.White);
+  boardCells[2][4].chessPiece = new Queen(Color.Black);
+  boardCells[0][0].chessPiece = new Rook(Color.Black);
 
   const expected: Cell[] = [];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[0][2]);
 });
-
-function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-  const actual = queenMovements.getAvailable(boardState, currentCell, true);
-  expect(xorWith(actual, expected, isEqual).length).toBe(0);
-}

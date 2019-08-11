@@ -1,5 +1,3 @@
-import { isEqual, xorWith } from "lodash";
-
 import { Pawn } from "../../chess-pieces/pawn";
 import { Queen } from "../../chess-pieces/queen";
 import { Rook } from "../../chess-pieces/rook";
@@ -7,18 +5,16 @@ import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { GameStatus } from "../../models/game-status";
-import { TestAssistance } from "../../tests/test-assistance";
-import { PawnMovements } from "./pawn-movements";
 import { BoardBuilder } from "../board-builder";
+import { PawnMovements } from "./pawn-movements";
+import { TestAssistance } from "./test-assistance";
 
-let pawnMovements: PawnMovements;
 let boardCells: Cell[][];
 let boardState: BoardState;
+let testAssistance: TestAssistance;
 
 beforeEach(() => {
-  pawnMovements = new PawnMovements();
   boardCells = BoardBuilder.setupEmptyBoard();
-  TestAssistance.setupKingsOnInitialPositions(boardCells);
   setupBoardStateMock();
 });
 
@@ -41,13 +37,11 @@ beforeEach(() => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for initial position (white)", () => {
-  const currentCell = { rowIndex: 1, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
-
-  boardCells[1][3] = currentCell;
+  boardCells[1][3].chessPiece = new Pawn(Color.White);
 
   const expected: Cell[] = [boardCells[3][3], boardCells[2][3]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[1][3]);
 });
 
 //   _________________________________
@@ -69,13 +63,11 @@ test("getAvailable should return correct cells for initial position (white)", ()
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for initial position (black)", () => {
-  const currentCell = { rowIndex: 6, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
-
-  boardCells[6][3] = currentCell;
+  boardCells[6][3].chessPiece = new Pawn(Color.Black);
 
   const expected: Cell[] = [boardCells[5][3], boardCells[4][3]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[6][3]);
 });
 
 //   _________________________________
@@ -97,14 +89,12 @@ test("getAvailable should return correct cells for initial position (black)", ()
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return empty array for initial position when no any options (white)", () => {
-  const currentCell = { rowIndex: 1, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
-
-  boardCells[1][3] = currentCell;
-  boardCells[2][3] = { rowIndex: 2, columnIndex: 3, chessPiece: new Queen(Color.White) } as Cell;
+  boardCells[1][3].chessPiece = new Pawn(Color.White);
+  boardCells[2][3].chessPiece = new Queen(Color.White);
 
   const expected: Cell[] = [];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[1][3]);
 });
 
 //   _________________________________
@@ -126,14 +116,12 @@ test("getAvailable should return empty array for initial position when no any op
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return empty array for initial position when no any options (black)", () => {
-  const currentCell = { rowIndex: 6, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
-
-  boardCells[6][3] = currentCell;
-  boardCells[5][3] = { rowIndex: 5, columnIndex: 3, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[6][3].chessPiece = new Pawn(Color.Black);
+  boardCells[5][3].chessPiece = new Queen(Color.Black);
 
   const expected: Cell[] = [];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[6][3]);
 });
 
 //   _________________________________
@@ -155,15 +143,13 @@ test("getAvailable should return empty array for initial position when no any op
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for diagonal capture (white)", () => {
-  const currentCell = { rowIndex: 2, columnIndex: 2, chessPiece: new Pawn(Color.White) } as Cell;
-
-  boardCells[2][2] = currentCell;
-  boardCells[3][3] = { rowIndex: 3, columnIndex: 3, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[3][1] = { rowIndex: 3, columnIndex: 1, chessPiece: new Queen(Color.White) } as Cell;
+  boardCells[2][2].chessPiece = new Pawn(Color.White);
+  boardCells[3][3].chessPiece = new Queen(Color.Black);
+  boardCells[3][1].chessPiece = new Queen(Color.White);
 
   const expected: Cell[] = [boardCells[3][2], boardCells[3][3]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[2][2]);
 });
 
 //   _________________________________
@@ -185,15 +171,13 @@ test("getAvailable should return correct cells for diagonal capture (white)", ()
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for diagonal capture (black)", () => {
-  const currentCell = { rowIndex: 5, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
-
-  boardCells[5][3] = currentCell;
-  boardCells[4][4] = { rowIndex: 4, columnIndex: 4, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[4][2] = { rowIndex: 4, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
+  boardCells[5][3].chessPiece = new Pawn(Color.Black);
+  boardCells[4][4].chessPiece = new Queen(Color.Black);
+  boardCells[4][2].chessPiece = new Queen(Color.White);
 
   const expected: Cell[] = [boardCells[4][2], boardCells[4][3]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[5][3]);
 });
 
 //   _________________________________
@@ -215,15 +199,13 @@ test("getAvailable should return correct cells for diagonal capture (black)", ()
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for initial position and diagonal capture (white)", () => {
-  const currentCell = { rowIndex: 1, columnIndex: 2, chessPiece: new Pawn(Color.White) } as Cell;
-
-  boardCells[1][2] = currentCell;
-  boardCells[2][3] = { rowIndex: 2, columnIndex: 3, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[2][1] = { rowIndex: 2, columnIndex: 1, chessPiece: new Queen(Color.White) } as Cell;
+  boardCells[1][2].chessPiece = new Pawn(Color.White);
+  boardCells[2][3].chessPiece = new Queen(Color.Black);
+  boardCells[2][1].chessPiece = new Queen(Color.White);
 
   const expected: Cell[] = [boardCells[2][2], boardCells[3][2], boardCells[2][3]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[1][2]);
 });
 
 //   _________________________________
@@ -245,15 +227,13 @@ test("getAvailable should return correct cells for initial position and diagonal
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells for initial position and diagonal capture (black)", () => {
-  const currentCell = { rowIndex: 6, columnIndex: 2, chessPiece: new Pawn(Color.Black) } as Cell;
-
-  boardCells[6][2] = currentCell;
-  boardCells[5][3] = { rowIndex: 5, columnIndex: 3, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[5][1] = { rowIndex: 5, columnIndex: 1, chessPiece: new Queen(Color.White) } as Cell;
+  boardCells[6][2].chessPiece = new Pawn(Color.Black);
+  boardCells[5][3].chessPiece = new Queen(Color.Black);
+  boardCells[5][1].chessPiece = new Queen(Color.White);
 
   const expected: Cell[] = [boardCells[4][2], boardCells[5][2], boardCells[5][1]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[6][2]);
 });
 
 //   _________________________________
@@ -275,14 +255,12 @@ test("getAvailable should return correct cells for initial position and diagonal
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return empty array when no any options (white)", () => {
-  const currentCell = { rowIndex: 2, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
-
-  boardCells[2][3] = currentCell;
-  boardCells[3][3] = { rowIndex: 3, columnIndex: 3, chessPiece: new Queen(Color.White) } as Cell;
+  boardCells[2][3].chessPiece = new Pawn(Color.White);
+  boardCells[3][3].chessPiece = new Queen(Color.White);
 
   const expected: Cell[] = [];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[2][3]);
 });
 
 //   _________________________________
@@ -304,14 +282,12 @@ test("getAvailable should return empty array when no any options (white)", () =>
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return empty array when no any options (black)", () => {
-  const currentCell = { rowIndex: 5, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
-
-  boardCells[5][3] = currentCell;
-  boardCells[4][3] = { rowIndex: 4, columnIndex: 3, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[5][3].chessPiece = new Pawn(Color.Black);
+  boardCells[4][3].chessPiece = new Queen(Color.Black);
 
   const expected: Cell[] = [];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[5][3]);
 });
 
 //   _________________________________
@@ -333,18 +309,17 @@ test("getAvailable should return empty array when no any options (black)", () =>
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable for en passant when all conditions are true (white)", () => {
-  const currentCell = { rowIndex: 4, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
   const enemyChessPiece = new Pawn(Color.Black);
   enemyChessPiece.movedNumber = 1;
 
-  boardCells[4][3] = currentCell;
-  boardCells[5][2] = { rowIndex: 5, columnIndex: 2, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[4][4] = { rowIndex: 4, columnIndex: 4, chessPiece: enemyChessPiece } as Cell;
+  boardCells[4][3].chessPiece = new Pawn(Color.White);
+  boardCells[5][2].chessPiece = new Queen(Color.Black);
+  boardCells[4][4].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[5][2], boardCells[5][3], boardCells[5][4]];
 
   setupBoardStateMock(true);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[4][3]);
 });
 
 //   _________________________________
@@ -366,18 +341,17 @@ test("getAvailable for en passant when all conditions are true (white)", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable for en passant when all conditions are true (black)", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
   const enemyChessPiece = new Pawn(Color.White);
   enemyChessPiece.movedNumber = 1;
 
-  boardCells[3][3] = currentCell;
-  boardCells[2][2] = { rowIndex: 2, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
-  boardCells[3][4] = { rowIndex: 3, columnIndex: 4, chessPiece: enemyChessPiece } as Cell;
+  boardCells[3][3].chessPiece = new Pawn(Color.Black);
+  boardCells[2][2].chessPiece = new Queen(Color.White);
+  boardCells[3][4].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[2][2], boardCells[2][3], boardCells[2][4]];
 
   setupBoardStateMock(true);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][3]);
 });
 
 //   _________________________________
@@ -399,18 +373,17 @@ test("getAvailable for en passant when all conditions are true (black)", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable without en passant when it is not first move (white)", () => {
-  const currentCell = { rowIndex: 4, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
   const enemyChessPiece = new Pawn(Color.Black);
   enemyChessPiece.movedNumber = 2;
 
-  boardCells[4][3] = currentCell;
-  boardCells[5][2] = { rowIndex: 5, columnIndex: 2, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[4][4] = { rowIndex: 4, columnIndex: 4, chessPiece: enemyChessPiece } as Cell;
+  boardCells[4][3].chessPiece = new Pawn(Color.White);
+  boardCells[5][2].chessPiece = new Queen(Color.Black);
+  boardCells[4][4].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[5][2], boardCells[5][3]];
 
   setupBoardStateMock(true);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[4][3]);
 });
 
 //   _________________________________
@@ -432,18 +405,17 @@ test("getAvailable without en passant when it is not first move (white)", () => 
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable without en passant when it is not first move (black)", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
   const enemyChessPiece = new Pawn(Color.White);
   enemyChessPiece.movedNumber = 2;
 
-  boardCells[3][3] = currentCell;
-  boardCells[2][2] = { rowIndex: 2, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
-  boardCells[3][4] = { rowIndex: 3, columnIndex: 4, chessPiece: enemyChessPiece } as Cell;
+  boardCells[3][3].chessPiece = new Pawn(Color.Black);
+  boardCells[2][2].chessPiece = new Queen(Color.White);
+  boardCells[3][4].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[2][2], boardCells[2][3]];
 
   setupBoardStateMock(true);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][3]);
 });
 
 //   _________________________________
@@ -465,18 +437,17 @@ test("getAvailable without en passant when it is not first move (black)", () => 
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable without en passant when one square move (white)", () => {
-  const currentCell = { rowIndex: 5, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
   const enemyChessPiece = new Pawn(Color.Black);
   enemyChessPiece.movedNumber = 1;
 
-  boardCells[5][3] = currentCell;
-  boardCells[6][2] = { rowIndex: 6, columnIndex: 2, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[5][4] = { rowIndex: 5, columnIndex: 4, chessPiece: enemyChessPiece } as Cell;
+  boardCells[5][3].chessPiece = new Pawn(Color.White);
+  boardCells[6][2].chessPiece = new Queen(Color.Black);
+  boardCells[5][4].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[6][2], boardCells[6][3]];
 
   setupBoardStateMock(true);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[5][3]);
 });
 
 //   _________________________________
@@ -498,18 +469,17 @@ test("getAvailable without en passant when one square move (white)", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable without en passant when one square move (black)", () => {
-  const currentCell = { rowIndex: 2, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
   const enemyChessPiece = new Pawn(Color.White);
   enemyChessPiece.movedNumber = 1;
 
-  boardCells[2][3] = currentCell;
-  boardCells[1][2] = { rowIndex: 1, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
-  boardCells[2][4] = { rowIndex: 2, columnIndex: 4, chessPiece: enemyChessPiece } as Cell;
+  boardCells[2][3].chessPiece = new Pawn(Color.Black);
+  boardCells[1][2].chessPiece = new Queen(Color.White);
+  boardCells[2][4].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[1][2], boardCells[1][3]];
 
   setupBoardStateMock(true);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[2][3]);
 });
 
 //   _________________________________
@@ -531,17 +501,16 @@ test("getAvailable without en passant when one square move (black)", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable without en passant when enemy is not pawn (white)", () => {
-  const currentCell = { rowIndex: 4, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
   const enemyChessPiece = new Queen(Color.Black);
   enemyChessPiece.movedNumber = 1;
 
-  boardCells[4][3] = currentCell;
-  boardCells[4][2] = { rowIndex: 4, columnIndex: 2, chessPiece: enemyChessPiece } as Cell;
+  boardCells[4][3].chessPiece = new Pawn(Color.White);
+  boardCells[4][2].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[5][3]];
 
   setupBoardStateMock(true);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[4][3]);
 });
 
 //   _________________________________
@@ -563,17 +532,16 @@ test("getAvailable without en passant when enemy is not pawn (white)", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable without en passant when enemy is not pawn (black)", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
   const enemyChessPiece = new Queen(Color.White);
   enemyChessPiece.movedNumber = 1;
 
-  boardCells[3][3] = currentCell;
-  boardCells[3][2] = { rowIndex: 3, columnIndex: 2, chessPiece: enemyChessPiece } as Cell;
+  boardCells[3][3].chessPiece = new Pawn(Color.Black);
+  boardCells[3][2].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[2][3]];
 
   setupBoardStateMock(true);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][3]);
 });
 
 //   _________________________________
@@ -595,18 +563,17 @@ test("getAvailable without en passant when enemy is not pawn (black)", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable without en passant when not enemy pawn last moved (white)", () => {
-  const currentCell = { rowIndex: 4, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
   const enemyChessPiece = new Pawn(Color.Black);
   enemyChessPiece.movedNumber = 1;
 
-  boardCells[4][3] = currentCell;
-  boardCells[5][2] = { rowIndex: 5, columnIndex: 2, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[4][4] = { rowIndex: 4, columnIndex: 4, chessPiece: enemyChessPiece } as Cell;
+  boardCells[4][3].chessPiece = new Pawn(Color.White);
+  boardCells[5][2].chessPiece = new Queen(Color.Black);
+  boardCells[4][4].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[5][2], boardCells[5][3]];
 
   setupBoardStateMock(false);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[4][3]);
 });
 
 //   _________________________________
@@ -628,18 +595,17 @@ test("getAvailable without en passant when not enemy pawn last moved (white)", (
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable without en passant when not enemy pawn last moved(black)", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Pawn(Color.Black) } as Cell;
   const enemyChessPiece = new Pawn(Color.White);
   enemyChessPiece.movedNumber = 1;
 
-  boardCells[3][3] = currentCell;
-  boardCells[2][2] = { rowIndex: 2, columnIndex: 2, chessPiece: new Queen(Color.White) } as Cell;
-  boardCells[3][4] = { rowIndex: 3, columnIndex: 4, chessPiece: enemyChessPiece } as Cell;
+  boardCells[3][3].chessPiece = new Pawn(Color.Black);
+  boardCells[2][2].chessPiece = new Queen(Color.White);
+  boardCells[3][4].chessPiece = enemyChessPiece;
 
   const expected: Cell[] = [boardCells[2][2], boardCells[2][3]];
 
   setupBoardStateMock(false);
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][3]);
 });
 
 //   _________________________________
@@ -661,14 +627,12 @@ test("getAvailable without en passant when not enemy pawn last moved(black)", ()
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells check - capture only", () => {
-  const currentCell = { rowIndex: 2, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
-
-  boardCells[2][3] = currentCell;
-  boardCells[3][4] = { rowIndex: 3, columnIndex: 4, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[2][3].chessPiece = new Pawn(Color.White);
+  boardCells[3][4].chessPiece = new Queen(Color.Black);
 
   const expected: Cell[] = [boardCells[3][4]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[2][3]);
 });
 
 //   _________________________________
@@ -690,15 +654,13 @@ test("getAvailable should return correct cells check - capture only", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return correct cells check - hide King only", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 4, chessPiece: new Pawn(Color.White) } as Cell;
-
-  boardCells[3][4] = currentCell;
-  boardCells[5][4] = { rowIndex: 5, columnIndex: 4, chessPiece: new Queen(Color.Black) } as Cell;
-  boardCells[4][5] = { rowIndex: 4, columnIndex: 5, chessPiece: new Rook(Color.Black) } as Cell;
+  boardCells[3][4].chessPiece = new Pawn(Color.White);
+  boardCells[5][4].chessPiece = new Queen(Color.Black);
+  boardCells[4][5].chessPiece = new Rook(Color.Black);
 
   const expected: Cell[] = [boardCells[4][4]];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][4]);
 });
 
 //   _________________________________
@@ -720,14 +682,12 @@ test("getAvailable should return correct cells check - hide King only", () => {
 //   _________________________________
 //     0   1   2   3   4   5   6   7
 test("getAvailable should return empty array when King is in check and it is not possible to cover it", () => {
-  const currentCell = { rowIndex: 3, columnIndex: 3, chessPiece: new Pawn(Color.White) } as Cell;
-
-  boardCells[3][3] = currentCell;
-  boardCells[2][4] = { rowIndex: 2, columnIndex: 4, chessPiece: new Queen(Color.Black) } as Cell;
+  boardCells[3][3].chessPiece = new Pawn(Color.White);
+  boardCells[2][4].chessPiece = new Queen(Color.Black);
 
   const expected: Cell[] = [];
 
-  assertAvailableMovementCells(expected, currentCell);
+  testAssistance.assertAvailableMovementCells(expected, boardCells[3][3]);
 });
 
 function setupBoardStateMock(lastMovementsPerformedByResult: boolean = false): void {
@@ -743,9 +703,6 @@ function setupBoardStateMock(lastMovementsPerformedByResult: boolean = false): v
   }));
 
   boardState = new BoardStateMock();
-}
-
-function assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-  const actual = pawnMovements.getAvailable(boardState, currentCell, true);
-  expect(xorWith(actual, expected, isEqual).length).toBe(0);
+  testAssistance = new TestAssistance(boardState, new PawnMovements());
+  testAssistance.setupKingsOnInitialPositions();
 }
