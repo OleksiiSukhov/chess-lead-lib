@@ -9,6 +9,7 @@ import { Color } from "../../models/color";
 import { GameStatus } from "../../models/game-status";
 import { TestAssistance } from "../../tests/test-assistance";
 import { PawnMovements } from "./pawn-movements";
+import { BoardBuilder } from "../board-builder";
 
 let pawnMovements: PawnMovements;
 let boardCells: Cell[][];
@@ -16,7 +17,7 @@ let boardState: BoardState;
 
 beforeEach(() => {
   pawnMovements = new PawnMovements();
-  boardCells = TestAssistance.setupEmptyBoard();
+  boardCells = BoardBuilder.setupEmptyBoard();
   TestAssistance.setupKingsOnInitialPositions(boardCells);
   setupBoardStateMock();
 });

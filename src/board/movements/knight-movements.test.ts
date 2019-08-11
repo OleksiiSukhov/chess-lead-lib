@@ -7,6 +7,7 @@ import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
 import { KnightMovements } from "./knight-movements";
+import { BoardBuilder } from "../board-builder";
 
 let knightMovements: KnightMovements;
 let boardCells: Cell[][];
@@ -14,7 +15,7 @@ const boardState: BoardState = new BoardState();
 
 beforeEach(() => {
   knightMovements = new KnightMovements();
-  boardCells = TestAssistance.setupEmptyBoard();
+  boardCells = BoardBuilder.setupEmptyBoard();
   TestAssistance.setupKingsOnInitialPositions(boardCells);
   boardState.board = boardCells;
 });

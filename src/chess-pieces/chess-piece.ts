@@ -6,8 +6,12 @@ import { ChessType } from "./chess-type";
 export abstract class ChessPiece {
   public readonly color: Color;
   public readonly chessType: ChessType;
-  public readonly id: string;
   public movedNumber: number = 0;
+  private chessPieceId: string;
+
+  public get id(): string {
+    return this.chessPieceId;
+  }
 
   public get moved(): boolean {
     return this.movedNumber > 0;
@@ -16,7 +20,7 @@ export abstract class ChessPiece {
   constructor(color: Color, chessType: ChessType) {
     this.color = color;
     this.chessType = chessType;
-    this.id = v4();
+    this.chessPieceId = v4();
   }
 
   public abstract movements(): Movements;

@@ -6,6 +6,7 @@ import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { TestAssistance } from "../../tests/test-assistance";
+import { BoardBuilder } from "../board-builder";
 import { RookMovements } from "./rook-movements";
 
 let rookMovements: RookMovements;
@@ -14,7 +15,7 @@ const boardState: BoardState = new BoardState();
 
 beforeEach(() => {
   rookMovements = new RookMovements();
-  boardCells = TestAssistance.setupEmptyBoard();
+  boardCells = BoardBuilder.setupEmptyBoard();
   TestAssistance.setupKingsOnInitialPositions(boardCells);
   boardState.board = boardCells;
 });
