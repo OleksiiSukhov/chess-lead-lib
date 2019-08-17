@@ -6,6 +6,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json",
+    "test:coverage": "jest --config jestconfig.json --coverage",
     "test:watch": "jest --watch --config jestconfig.json",
     "build": "tsc",
     "prepare": "npm run build",

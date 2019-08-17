@@ -1,6 +1,9 @@
 # app
 /lib
 
+# tests
+/coverage
+
 # dependencies
 node_modules
 
