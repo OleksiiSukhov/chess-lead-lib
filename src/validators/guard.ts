@@ -1,6 +1,9 @@
 import { ChessPiece } from "../chess-pieces/chess-piece";
+import { BoardState } from "../models/board-state";
 import { Cell } from "../models/cell";
+import { Color } from "../models/color";
 import { Direction } from "../models/direction";
+import { GameStatus } from "../models/game-status";
 
 export class Guard {
   public static throwAllyKingWasNotFound(): void{
@@ -37,6 +40,16 @@ export class Guard {
   ): void {
     if (!directions || !maxMovementSquares) {
       throw new Error("directions and maxMovementSquares should be defined.");
+    }
+  }
+
+  public static validateResignation(boardState: BoardState, resignationColor: Color): void {
+    if(boardState.gameStatus !== GameStatus.InProgress){
+      throw new Error("The game is over. Resignation is not possible.");
+    }
+
+    if(boardState.nextTurn !== resignationColor){
+      throw new Error("Resignation is not possible while opposite color turn.");
     }
   }
 

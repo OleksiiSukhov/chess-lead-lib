@@ -2,7 +2,9 @@ import { Pawn } from "../chess-pieces/pawn";
 import { Color } from "../models/color";
 import { BoardState } from "./board-state";
 import { Cell } from "./cell";
+import { GameStatus } from "./game-status";
 import { MovedChessPiece } from "./moved-chess-piece";
+import { WinType } from "./win-type";
 
 let boardState: BoardState;
 let blackPawn: Pawn;
@@ -41,4 +43,46 @@ test("isLastMovementsPerformedBy should return false when there are no any movem
   boardState.movements = [];
 
   expect(boardState.isLastMovementsPerformedBy(blackPawn)).toBeFalsy();
+});
+
+test("resign should correctly set appropriate properties", () => {
+  boardState.nextTurn = Color.White;
+
+  const expectedBoardState = {
+    ...boardState,
+    nextTurn: undefined,
+    winSide: Color.Black,
+    gameStatus: GameStatus.Win,
+    winType: WinType.Resignation,
+  };
+
+  boardState.resign(Color.White);
+
+  expect(boardState).toEqual(expectedBoardState);
+});
+
+test("resign should throw error when wrong side resigns", () => {
+  boardState.nextTurn = Color.Black;
+
+  expect(() => boardState.resign(Color.White)).toThrow(
+    "Resignation is not possible while opposite color turn.",
+  );
+});
+
+test("resign should throw error when game is over - Win", () => {
+  boardState.nextTurn = Color.White;
+  boardState.gameStatus = GameStatus.Win;
+
+  expect(() => boardState.resign(Color.White)).toThrow(
+    "The game is over. Resignation is not possible.",
+  );
+});
+
+test("resign should throw error when game is over - Draw", () => {
+  boardState.nextTurn = Color.White;
+  boardState.gameStatus = GameStatus.Draw;
+
+  expect(() => boardState.resign(Color.White)).toThrow(
+    "The game is over. Resignation is not possible.",
+  );
 });

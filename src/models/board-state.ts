@@ -30,4 +30,13 @@ export class BoardState {
 
     return lastMovements.chessPieceId === chessPiece.id;
   }
+
+  public resign(color: Color): void {
+    Guard.validateResignation(this, color);
+
+    this.winSide = color === Color.White ? Color.Black : Color.White;
+    this.gameStatus = GameStatus.Win;
+    this.nextTurn = undefined;
+    this.winType = WinType.Resignation;
+  }
 }
