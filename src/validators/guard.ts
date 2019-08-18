@@ -73,8 +73,14 @@ export class Guard {
   }
 
   public static validateGameStatus(chessLead: ChessLead): void {
-    if(chessLead.isGameFinished()){
+    if (chessLead.isGameFinished()) {
       throw Error("The game is over. Movement is not possible.");
+    }
+  }
+
+  public static validateChessPieceColor(boardState: BoardState, cell: Cell): void {
+    if ((cell.chessPiece as ChessPiece).color !== boardState.nextTurn) {
+      throw Error("Wrong turn color for specified fromCell.");
     }
   }
 

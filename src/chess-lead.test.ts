@@ -81,6 +81,7 @@ test("getAcceptableMovements should return empty array when game is finished", (
 //     0   1   2   3   4   5   6   7
 test("move should change position of the chess piece", () => {
   const boardState = new BoardState();
+  boardState.nextTurn = Color.White;
   boardState.board = BoardBuilder.setupEmptyBoard();
   const chessPieceToMove = new Rook(Color.White);
 
@@ -98,6 +99,7 @@ test("move should change position of the chess piece", () => {
 
 test("move should throw error when movement is forbidden", () => {
   const boardState = new BoardState();
+  boardState.nextTurn = Color.White;
   boardState.board = BoardBuilder.setupEmptyBoard();
   const chessPieceToMove = new Rook(Color.White);
 
@@ -114,6 +116,7 @@ test("move should throw error when movement is forbidden", () => {
 
 test("move should throw error when fromCell is empty", () => {
   const boardState = new BoardState();
+  boardState.nextTurn = Color.White;
   boardState.board = BoardBuilder.setupEmptyBoard();
 
   boardState.board[7][4].chessPiece = new King(Color.Black);
@@ -129,6 +132,7 @@ test("move should throw error when fromCell is empty", () => {
 [GameStatus.Draw, GameStatus.Win].forEach(gameStatus => {
   test(`move should throw error when game is over - ${gameStatus}`, () => {
     const boardState = new BoardState();
+    boardState.nextTurn = Color.White;
     boardState.board = BoardBuilder.setupEmptyBoard();
     boardState.gameStatus = gameStatus;
 
@@ -148,6 +152,7 @@ test("move should throw error when fromCell is empty", () => {
 
 test("move should increment movedNumber for moved chess piece", () => {
   const boardState = new BoardState();
+  boardState.nextTurn = Color.White;
   boardState.board = BoardBuilder.setupEmptyBoard();
   const chessPieceToMove = new Rook(Color.White);
   chessPieceToMove.movedNumber = 3;
@@ -161,4 +166,21 @@ test("move should increment movedNumber for moved chess piece", () => {
   chessLead.move(boardState.board[0][0], boardState.board[0][2]);
 
   expect(chessPieceToMove.movedNumber).toBe(4);
+});
+
+test("move should throw error when wrong turn color", () => {
+  const boardState = new BoardState();
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  boardState.nextTurn = Color.Black;
+  const chessPieceToMove = new Rook(Color.White);
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[0][0].chessPiece = chessPieceToMove;
+
+  const chessLead = new ChessLead(boardState);
+
+  expect(() => chessLead.move(boardState.board[0][0], boardState.board[1][2])).toThrow(
+    "Wrong turn color for specified fromCell.",
+  );
 });

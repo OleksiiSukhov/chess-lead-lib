@@ -4,6 +4,7 @@ import { Cell } from "./models/cell";
 import { Color } from "./models/color";
 import { GameStatus } from "./models/game-status";
 import { Guard } from "./validators/guard";
+import { ChessPiece } from "./chess-pieces/chess-piece";
 
 export class ChessLead {
   private boardState: BoardState;
@@ -28,17 +29,16 @@ export class ChessLead {
   public move(fromCell: Cell, toCell: Cell): void {
     Guard.validateGameStatus(this);
     Guard.validateChessPieceOnCell(fromCell);
+    Guard.validateChessPieceColor(this.boardState, fromCell);
     Guard.validateMovement(this, fromCell, toCell);
-
-    if (!fromCell.chessPiece) {
-      return;
-    }
 
     // todo: set new game status
     // todo: define MovedChessPiece
     // todo: pawn promotion
+    // todo: implement castling (move rook in addition)
+    // todo: switch turn color (if possible based on new game status)
 
-    toCell.chessPiece = fromCell.chessPiece;
+    toCell.chessPiece = fromCell.chessPiece as ChessPiece;
     toCell.chessPiece.movedNumber++;
     fromCell.chessPiece = undefined;
   }
