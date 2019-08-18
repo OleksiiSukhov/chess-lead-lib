@@ -25,20 +25,29 @@ export class ChessLead {
     return cell.chessPiece.movements().getAvailable(this.boardState, cell, true);
   }
 
-  public move(): void {
-    // todo: validate acceptable movements
-    // todo: check game status
+  public move(fromCell: Cell, toCell: Cell): void {
+    Guard.validateGameStatus(this);
+    Guard.validateChessPieceOnCell(fromCell);
+    Guard.validateMovement(this, fromCell, toCell);
+
+    if (!fromCell.chessPiece) {
+      return;
+    }
+
     // todo: set new game status
     // todo: define MovedChessPiece
     // todo: pawn promotion
-    // todo: increment movedNumber for chess piece
+
+    toCell.chessPiece = fromCell.chessPiece;
+    toCell.chessPiece.movedNumber++;
+    fromCell.chessPiece = undefined;
   }
 
   public resign(color: Color): void {
     this.boardState.resign(color);
   }
 
-  private isGameFinished(): boolean {
+  public isGameFinished(): boolean {
     return (
       this.boardState.gameStatus === GameStatus.Win ||
       this.boardState.gameStatus === GameStatus.Draw

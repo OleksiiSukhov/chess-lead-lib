@@ -1,12 +1,14 @@
+import { ChessLead } from "..";
 import { ChessPiece } from "../chess-pieces/chess-piece";
 import { BoardState } from "../models/board-state";
 import { Cell } from "../models/cell";
 import { Color } from "../models/color";
 import { Direction } from "../models/direction";
 import { GameStatus } from "../models/game-status";
+import { Utils } from "../utils/utils";
 
 export class Guard {
-  public static throwAllyKingWasNotFound(): void{
+  public static throwAllyKingWasNotFound(): void {
     throw Error("Ally King was not found.");
   }
 
@@ -44,12 +46,35 @@ export class Guard {
   }
 
   public static validateResignation(boardState: BoardState, resignationColor: Color): void {
-    if(boardState.gameStatus !== GameStatus.InProgress){
+    if (boardState.gameStatus !== GameStatus.InProgress) {
       throw new Error("The game is over. Resignation is not possible.");
     }
 
-    if(boardState.nextTurn !== resignationColor){
+    if (boardState.nextTurn !== resignationColor) {
       throw new Error("Resignation is not possible while opposite color turn.");
+    }
+  }
+
+  public static validateMovement(chessLead: ChessLead, fromCell: Cell, toCell: Cell): void {
+    const acceptableMovements = chessLead.getAcceptableMovements(fromCell);
+    const acceptableToCell = acceptableMovements.find(cell =>
+      Utils.cellsOnSamePosition(cell, toCell),
+    );
+
+    if (!acceptableToCell) {
+      throw Error("Movement to specified cell is forbidden.");
+    }
+  }
+
+  public static validateChessPieceOnCell(cell: Cell): void {
+    if (!cell.chessPiece) {
+      throw Error("fromCell cannot be empty.");
+    }
+  }
+
+  public static validateGameStatus(chessLead: ChessLead): void {
+    if(chessLead.isGameFinished()){
+      throw Error("The game is over. Movement is not possible.");
     }
   }
 

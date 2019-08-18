@@ -16,16 +16,8 @@ export class TestAssistance {
   }
 
   public setupKingsOnInitialPositions(): void {
-    this.boardState.board[7][4] = {
-      rowIndex: 7,
-      columnIndex: 4,
-      chessPiece: new King(Color.Black),
-    } as Cell;
-    this.boardState.board[0][4] = {
-      rowIndex: 0,
-      columnIndex: 4,
-      chessPiece: new King(Color.White),
-    } as Cell;
+    this.boardState.board[7][4].chessPiece = new King(Color.Black);
+    this.boardState.board[0][4].chessPiece = new King(Color.White);
   }
 
   public assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {

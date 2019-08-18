@@ -699,6 +699,7 @@ function setupBoardStateMock(lastMovementsPerformedByResult: boolean = false): v
     isLastMovementsPerformedBy: jest.fn().mockImplementation(() => {
       return lastMovementsPerformedByResult;
     }),
+    resign: jest.fn(),
     repetitionNumber: 0,
   }));
 

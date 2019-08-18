@@ -2,8 +2,11 @@
 
 import { ChessLead } from ".";
 import { BoardBuilder } from "./board/board-builder";
+import { King } from "./chess-pieces/king";
+import { Rook } from "./chess-pieces/rook";
 import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
+import { Color } from "./models/color";
 import { GameStatus } from "./models/game-status";
 import { Guard } from "./validators/guard";
 
@@ -56,4 +59,106 @@ test("getAcceptableMovements should return empty array when game is finished", (
 
     expect(chessLead.getAcceptableMovements(cell)).toStrictEqual([]);
   });
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 | + |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |WR |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should change position of the chess piece", () => {
+  const boardState = new BoardState();
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  const chessPieceToMove = new Rook(Color.White);
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[0][0].chessPiece = chessPieceToMove;
+
+  const chessLead = new ChessLead(boardState);
+
+  chessLead.move(boardState.board[0][0], boardState.board[0][2]);
+
+  expect(boardState.board[0][0].chessPiece).toBeUndefined();
+  expect(boardState.board[0][2].chessPiece).toEqual(chessPieceToMove);
+});
+
+test("move should throw error when movement is forbidden", () => {
+  const boardState = new BoardState();
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  const chessPieceToMove = new Rook(Color.White);
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[0][0].chessPiece = chessPieceToMove;
+
+  const chessLead = new ChessLead(boardState);
+
+  expect(() => chessLead.move(boardState.board[0][0], boardState.board[1][2])).toThrow(
+    "Movement to specified cell is forbidden.",
+  );
+});
+
+test("move should throw error when fromCell is empty", () => {
+  const boardState = new BoardState();
+  boardState.board = BoardBuilder.setupEmptyBoard();
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+
+  const chessLead = new ChessLead(boardState);
+
+  expect(() => chessLead.move(boardState.board[0][0], boardState.board[1][3])).toThrow(
+    "fromCell cannot be empty.",
+  );
+});
+
+[GameStatus.Draw, GameStatus.Win].forEach(gameStatus => {
+  test(`move should throw error when game is over - ${gameStatus}`, () => {
+    const boardState = new BoardState();
+    boardState.board = BoardBuilder.setupEmptyBoard();
+    boardState.gameStatus = gameStatus;
+
+    const chessPieceToMove = new Rook(Color.White);
+
+    boardState.board[7][4].chessPiece = new King(Color.Black);
+    boardState.board[0][4].chessPiece = new King(Color.White);
+    boardState.board[0][0].chessPiece = chessPieceToMove;
+
+    const chessLead = new ChessLead(boardState);
+
+    expect(() => chessLead.move(boardState.board[0][0], boardState.board[0][2])).toThrow(
+      "The game is over. Movement is not possible.",
+    );
+  });
+});
+
+test("move should increment movedNumber for moved chess piece", () => {
+  const boardState = new BoardState();
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  const chessPieceToMove = new Rook(Color.White);
+  chessPieceToMove.movedNumber = 3;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[0][0].chessPiece = chessPieceToMove;
+
+  const chessLead = new ChessLead(boardState);
+
+  chessLead.move(boardState.board[0][0], boardState.board[0][2]);
+
+  expect(chessPieceToMove.movedNumber).toBe(4);
 });
