@@ -700,6 +700,8 @@ function setupBoardStateMock(lastMovementsPerformedByResult: boolean = false): v
       return lastMovementsPerformedByResult;
     }),
     resign: jest.fn(),
+    isGameFinished: jest.fn(),
+    switchNextTurn: jest.fn(),
     repetitionNumber: 0,
   }));
 

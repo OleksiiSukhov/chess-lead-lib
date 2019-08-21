@@ -184,3 +184,21 @@ test("move should throw error when wrong turn color", () => {
     "Wrong turn color for specified fromCell.",
   );
 });
+
+test("move should switch next turn to opposite color", () => {
+  const boardState = new BoardState();
+  boardState.nextTurn = Color.White;
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  const chessPieceToMove = new Rook(Color.White);
+  chessPieceToMove.movedNumber = 3;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[0][0].chessPiece = chessPieceToMove;
+
+  const chessLead = new ChessLead(boardState);
+
+  chessLead.move(boardState.board[0][0], boardState.board[0][2]);
+
+  expect(chessLead.chessBoardState.nextTurn).toBe(Color.Black);
+});

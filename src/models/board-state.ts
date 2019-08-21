@@ -39,4 +39,16 @@ export class BoardState {
     this.nextTurn = undefined;
     this.winType = WinType.Resignation;
   }
+
+  public isGameFinished(): boolean {
+    return this.gameStatus === GameStatus.Win || this.gameStatus === GameStatus.Draw;
+  }
+
+  public switchNextTurn(): void {
+    if (this.isGameFinished()) {
+      this.nextTurn = undefined;
+    } else {
+      this.nextTurn = this.nextTurn === Color.White ? Color.Black : Color.White;
+    }
+  }
 }
