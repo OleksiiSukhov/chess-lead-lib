@@ -3,7 +3,6 @@ import { ChessPiece } from "./chess-pieces/chess-piece";
 import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
 import { Color } from "./models/color";
-import { GameStatus } from "./models/game-status";
 import { Guard } from "./validators/guard";
 
 export class ChessLead {
@@ -39,8 +38,10 @@ export class ChessLead {
     toCell.chessPiece.movedNumber++;
     fromCell.chessPiece = undefined;
 
-    // todo: set new game status
+    this.chessBoardState.setNewGameStatus();
+
     // todo: define MovedChessPiece
+    // todo: handle Draw
 
     this.chessBoardState.switchNextTurn();
   }

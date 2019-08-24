@@ -1,4 +1,5 @@
 import { last } from "lodash";
+import { Movements } from "../board/movements/movements";
 import { ChessPiece } from "../chess-pieces/chess-piece";
 import { Guard } from "../validators/guard";
 import { Cell } from "./cell";
@@ -50,5 +51,50 @@ export class BoardState {
     } else {
       this.nextTurn = this.nextTurn === Color.White ? Color.Black : Color.White;
     }
+  }
+
+  public setNewGameStatus(): void {
+    const enemyColor = this.nextTurn === Color.White ? Color.Black : Color.White;
+    const enemyKingCell = Movements.getKingCell(this.board, enemyColor) as Cell;
+    const enemyKing = enemyKingCell.chessPiece;
+
+    if (!enemyKing) {
+      throw Error("Enemy king was not found.");
+    }
+
+    if (this.isEnemyKingInCheck(enemyKingCell)) {
+      this.isCheck = true;
+
+      const enemyKingAvailableCells = enemyKing.movements().getAvailable(this, enemyKingCell, true);
+
+      if (enemyKingAvailableCells.length) {
+        this.gameStatus = GameStatus.InProgress;
+      } else {
+        this.gameStatus = GameStatus.Win;
+        this.winType = WinType.Checkmate;
+        this.winSide = this.nextTurn;
+      }
+    } else {
+      this.isCheck = false;
+    }
+  }
+
+  private isEnemyKingInCheck(enemyKingCell: Cell): boolean {
+    const allyCells = this.getAllyCells();
+    return allyCells.some(allyCell => Movements.isKingInCheck(allyCell, this, enemyKingCell));
+  }
+
+  private getAllyCells(): Cell[] {
+    const cells: Cell[] = [];
+
+    this.board.forEach(row => {
+      row.forEach(cell => {
+        if (cell.chessPiece && cell.chessPiece.color === this.nextTurn) {
+          cells.push(cell);
+        }
+      });
+    });
+
+    return cells;
   }
 }

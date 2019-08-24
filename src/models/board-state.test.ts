@@ -1,4 +1,7 @@
+import { BoardBuilder } from "../board/board-builder";
+import { King } from "../chess-pieces/king";
 import { Pawn } from "../chess-pieces/pawn";
+import { Rook } from "../chess-pieces/rook";
 import { Color } from "../models/color";
 import { BoardState } from "./board-state";
 import { Cell } from "./cell";
@@ -85,4 +88,71 @@ test("resign should throw error when game is over - Draw", () => {
   expect(() => boardState.resign(Color.White)).toThrow(
     "The game is over. Resignation is not possible.",
   );
+});
+
+//   _________________________________
+// 7 |WR |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should change game status - check", () => {
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  boardState.nextTurn = Color.White;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[7][0].chessPiece = new Rook(Color.White);
+
+  boardState.setNewGameStatus();
+
+  expect(boardState.isCheck).toBeTruthy();
+  expect(boardState.gameStatus).toBe(GameStatus.InProgress);
+});
+
+//   _________________________________
+// 7 |WR |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |WR |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should change game status - checkmate", () => {
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  boardState.nextTurn = Color.White;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[7][0].chessPiece = new Rook(Color.White);
+  boardState.board[6][1].chessPiece = new Rook(Color.White);
+
+  boardState.setNewGameStatus();
+
+  expect(boardState.isCheck).toBeTruthy();
+  expect(boardState.gameStatus).toBe(GameStatus.Win);
+  expect(boardState.winType).toBe(WinType.Checkmate);
+  expect(boardState.winSide).toBe(Color.White);
 });

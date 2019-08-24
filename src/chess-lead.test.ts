@@ -162,6 +162,16 @@ test("move should call validators", () => {
   expect(validateMovementMock).toHaveBeenCalled();
 });
 
+test("move should call setNewGameStatus", () => {
+  setupMoveValidatorMocks();
+  const boardState = getBoardStateMock();
+  const chessLead = new ChessLead(boardState);
+
+  chessLead.move(boardState.board[0][0], boardState.board[1][2]);
+
+  expect(boardState.setNewGameStatus).toHaveBeenCalled();
+});
+
 function setupMoveValidatorMocks(): void {
   setupValidateGameStatusMock();
   setupValidateChessPieceOnCellMock();
@@ -214,6 +224,7 @@ function getBoardStateMock(): BoardState {
     resign: jest.fn(),
     isGameFinished: jest.fn(),
     switchNextTurn: jest.fn(),
+    setNewGameStatus: jest.fn(),
     repetitionNumber: 0,
   }));
 

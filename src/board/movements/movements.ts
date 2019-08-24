@@ -9,6 +9,44 @@ import { Utils } from "../../utils/utils";
 import { Guard } from "../../validators/guard";
 
 export abstract class Movements {
+  public static getKingCell(board: Cell[][], currentColor: Color): Cell | undefined {
+    for (let row = 0; row < 8; row++) {
+      for (let cell = 0; cell < 8; cell++) {
+        const chessPiece = board[row][cell].chessPiece;
+
+        if (
+          chessPiece &&
+          chessPiece.chessType === ChessType.King &&
+          chessPiece.color === currentColor
+        ) {
+          return board[row][cell];
+        }
+      }
+    }
+
+    Guard.throwAllyKingWasNotFound();
+  }
+
+  public static isKingInCheck(
+    boardCellToCheck: Cell,
+    boardState: BoardState,
+    kingCell: Cell,
+  ): boolean {
+    const chessPiece = boardCellToCheck.chessPiece;
+
+    if (!chessPiece || !kingCell.chessPiece || chessPiece.color === kingCell.chessPiece.color) {
+      return false;
+    }
+
+    const currentEnemyAvailableCells = chessPiece
+      .movements()
+      .getAvailable(boardState, boardCellToCheck, false);
+
+    return currentEnemyAvailableCells.some(enemyAvailableCell =>
+      Utils.cellsOnSamePosition(enemyAvailableCell, kingCell),
+    );
+  }
+
   public maxMovementSquares?: number = 0;
   public canLeap: boolean = false;
   public canDoCastling: boolean = false;
@@ -23,10 +61,7 @@ export abstract class Movements {
   ): Cell[];
 
   public getAvailableBasedOnDirections(boardCells: Cell[][], currentCell: Cell): Cell[] {
-    Guard.validateGetAvailableBasedOnDirectionsArguments(
-      this.directions,
-      this.maxMovementSquares,
-    );
+    Guard.validateGetAvailableBasedOnDirectionsArguments(this.directions, this.maxMovementSquares);
 
     const availableCells: Cell[] = [];
 
@@ -92,7 +127,7 @@ export abstract class Movements {
       );
 
       this.makeTestMovement(boardStateCopy.board, availableCell, currentChessPiece);
-      const allyKingCell = this.getAllyKingCell(boardStateCopy.board, currentChessPiece.color);
+      const allyKingCell = Movements.getKingCell(boardStateCopy.board, currentChessPiece.color);
 
       initialAvailableCells = this.getAdjustedCells(
         initialAvailableCells,
@@ -119,7 +154,7 @@ export abstract class Movements {
   ): Cell[] {
     boardState.board.forEach(boardRow => {
       boardRow.forEach(boardCell => {
-        if (this.isKingInCheck(boardCell, boardState, allyKingCell)) {
+        if (Movements.isKingInCheck(boardCell, boardState, allyKingCell)) {
           initialAvailableCells = initialAvailableCells.filter(cell => {
             return !Utils.cellsOnSamePosition(cell, availableSquare);
           });
@@ -128,47 +163,5 @@ export abstract class Movements {
     });
 
     return initialAvailableCells;
-  }
-
-  private getAllyKingCell(board: Cell[][], currentColor: Color): Cell | undefined {
-    for (let row = 0; row < 8; row++) {
-      for (let cell = 0; cell < 8; cell++) {
-        const chessPiece = board[row][cell].chessPiece;
-
-        if (
-          chessPiece &&
-          chessPiece.chessType === ChessType.King &&
-          chessPiece.color === currentColor
-        ) {
-          return board[row][cell];
-        }
-      }
-    }
-
-    Guard.throwAllyKingWasNotFound();
-  }
-
-  private isKingInCheck(
-    boardCellToCheck: Cell,
-    boardState: BoardState,
-    allyKingCell: Cell,
-  ): boolean {
-    const chessPiece = boardCellToCheck.chessPiece;
-
-    if (
-      !chessPiece ||
-      !allyKingCell.chessPiece ||
-      chessPiece.color === allyKingCell.chessPiece.color
-    ) {
-      return false;
-    }
-
-    const currentEnemyAvailableCells = chessPiece
-      .movements()
-      .getAvailable(boardState, boardCellToCheck, false);
-
-    return currentEnemyAvailableCells.some(enemyAvailableCell =>
-      Utils.cellsOnSamePosition(enemyAvailableCell, allyKingCell),
-    );
   }
 }
