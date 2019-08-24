@@ -37,12 +37,11 @@ export class ChessLead {
     toCell.chessPiece = fromCell.chessPiece as ChessPiece;
     toCell.chessPiece.movedNumber++;
     fromCell.chessPiece = undefined;
-    
+
 
     this.chessBoardState.setNewGameStatus();
 
     // todo: define MovedChessPiece
-    // todo: handle Draw
 
     this.chessBoardState.switchNextTurn();
   }

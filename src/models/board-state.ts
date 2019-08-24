@@ -57,10 +57,18 @@ export class BoardState {
     const enemyColor = this.nextTurn === Color.White ? Color.Black : Color.White;
     const enemyKingCell = Movements.getKingCell(this.board, enemyColor) as Cell;
 
-    this.isCheck = this.isEnemyKingInCheck(enemyKingCell);
+    const allyCells = this.getOccupiedCells(this.nextTurn);
+    const enemyCells = this.getOccupiedCells(enemyColor);
+
+    if (allyCells.length === 1 && enemyCells.length === 1) {
+      this.gameStatus = GameStatus.Draw;
+      this.drawType = DrawType.InsufficientMaterial;
+      return;
+    }
+
+    this.isCheck = this.isEnemyKingInCheck(enemyKingCell, allyCells);
 
     if (this.isCheck) {
-      const enemyCells = this.getOccupiedCells(enemyColor);
       const enemyKingCanMove = enemyCells.some(enemyCell => {
         const chessPiece = enemyCell.chessPiece;
         return chessPiece && chessPiece.movements().getAvailable(this, enemyCell, true).length > 0;
@@ -73,10 +81,16 @@ export class BoardState {
         this.winSide = this.nextTurn;
       }
     }
+
+    // todo: set DrwType Stalemate here
   }
 
-  private isEnemyKingInCheck(enemyKingCell: Cell): boolean {
-    const allyCells = this.getOccupiedCells(this.nextTurn);
+  public setDrawByAgreement(): void {
+    // todo: to be implemented
+    // ByAgreement = "ByAgreement",
+  }
+
+  private isEnemyKingInCheck(enemyKingCell: Cell, allyCells: Cell[]): boolean {
     return allyCells.some(allyCell => Movements.isKingInCheck(allyCell, this, enemyKingCell));
   }
 

@@ -6,6 +6,7 @@ import { Rook } from "../chess-pieces/rook";
 import { Color } from "../models/color";
 import { BoardState } from "./board-state";
 import { Cell } from "./cell";
+import { DrawType } from "./draw-type";
 import { GameStatus } from "./game-status";
 import { MovedChessPiece } from "./moved-chess-piece";
 import { WinType } from "./win-type";
@@ -190,6 +191,22 @@ test("move should change game status - not checkmate - hide king possible", () =
 
   expect(boardState.isCheck).toBeTruthy();
   expect(boardState.gameStatus).toBe(GameStatus.InProgress);
+  expect(boardState.winType).toBeUndefined();
+  expect(boardState.winSide).toBeUndefined();
+});
+
+test("move should change game status - draw - kings only", () => {
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  boardState.nextTurn = Color.White;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+
+  boardState.setNewGameStatus();
+
+  expect(boardState.isCheck).toBeFalsy();
+  expect(boardState.gameStatus).toBe(GameStatus.Draw);
+  expect(boardState.drawType).toBe(DrawType.InsufficientMaterial);
   expect(boardState.winType).toBeUndefined();
   expect(boardState.winSide).toBeUndefined();
 });
