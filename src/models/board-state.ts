@@ -56,40 +56,36 @@ export class BoardState {
   public setNewGameStatus(): void {
     const enemyColor = this.nextTurn === Color.White ? Color.Black : Color.White;
     const enemyKingCell = Movements.getKingCell(this.board, enemyColor) as Cell;
-    const enemyKing = enemyKingCell.chessPiece;
 
-    if (!enemyKing) {
-      throw Error("Enemy king was not found.");
-    }
+    this.isCheck = this.isEnemyKingInCheck(enemyKingCell);
 
-    if (this.isEnemyKingInCheck(enemyKingCell)) {
-      this.isCheck = true;
+    if (this.isCheck) {
+      const enemyCells = this.getOccupiedCells(enemyColor);
+      const enemyKingCanMove = enemyCells.some(enemyCell => {
+        const chessPiece = enemyCell.chessPiece;
+        return chessPiece && chessPiece.movements().getAvailable(this, enemyCell, true).length > 0;
+      });
 
-      const enemyKingAvailableCells = enemyKing.movements().getAvailable(this, enemyKingCell, true);
+      this.gameStatus = enemyKingCanMove ? GameStatus.InProgress : GameStatus.Win;
 
-      if (enemyKingAvailableCells.length) {
-        this.gameStatus = GameStatus.InProgress;
-      } else {
-        this.gameStatus = GameStatus.Win;
+      if (this.gameStatus === GameStatus.Win) {
         this.winType = WinType.Checkmate;
         this.winSide = this.nextTurn;
       }
-    } else {
-      this.isCheck = false;
     }
   }
 
   private isEnemyKingInCheck(enemyKingCell: Cell): boolean {
-    const allyCells = this.getAllyCells();
+    const allyCells = this.getOccupiedCells(this.nextTurn);
     return allyCells.some(allyCell => Movements.isKingInCheck(allyCell, this, enemyKingCell));
   }
 
-  private getAllyCells(): Cell[] {
+  private getOccupiedCells(color: Color | undefined): Cell[] {
     const cells: Cell[] = [];
 
     this.board.forEach(row => {
       row.forEach(cell => {
-        if (cell.chessPiece && cell.chessPiece.color === this.nextTurn) {
+        if (cell.chessPiece && cell.chessPiece.color === color) {
           cells.push(cell);
         }
       });

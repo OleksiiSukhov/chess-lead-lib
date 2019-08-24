@@ -1,4 +1,5 @@
 import { BoardBuilder } from "../board/board-builder";
+import { Bishop } from "../chess-pieces/bishop";
 import { King } from "../chess-pieces/king";
 import { Pawn } from "../chess-pieces/pawn";
 import { Rook } from "../chess-pieces/rook";
@@ -155,4 +156,40 @@ test("move should change game status - checkmate", () => {
   expect(boardState.gameStatus).toBe(GameStatus.Win);
   expect(boardState.winType).toBe(WinType.Checkmate);
   expect(boardState.winSide).toBe(Color.White);
+});
+
+//   _________________________________
+// 7 |WR |   | + |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |WR |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |BB |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should change game status - not checkmate - hide king possible", () => {
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  boardState.nextTurn = Color.White;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[4][5].chessPiece = new Bishop(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[7][0].chessPiece = new Rook(Color.White);
+  boardState.board[6][1].chessPiece = new Rook(Color.White);
+
+  boardState.setNewGameStatus();
+
+  expect(boardState.isCheck).toBeTruthy();
+  expect(boardState.gameStatus).toBe(GameStatus.InProgress);
+  expect(boardState.winType).toBeUndefined();
+  expect(boardState.winSide).toBeUndefined();
 });

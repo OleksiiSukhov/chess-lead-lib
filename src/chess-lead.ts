@@ -33,10 +33,11 @@ export class ChessLead {
 
     // todo: pawn promotion
     // todo: implement castling (move rook in addition)
-    
+
     toCell.chessPiece = fromCell.chessPiece as ChessPiece;
     toCell.chessPiece.movedNumber++;
     fromCell.chessPiece = undefined;
+    
 
     this.chessBoardState.setNewGameStatus();
 
