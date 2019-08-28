@@ -57,8 +57,8 @@ export class BoardState {
     const enemyColor = this.nextTurn === Color.White ? Color.Black : Color.White;
     const enemyKingCell = Movements.getKingCell(this.board, enemyColor) as Cell;
 
-    const allyCells = this.getOccupiedCells(this.nextTurn);
-    const enemyCells = this.getOccupiedCells(enemyColor);
+    const allyCells = Movements.getOccupiedCells(this.board, this.nextTurn);
+    const enemyCells = Movements.getOccupiedCells(this.board, enemyColor);
 
     if (allyCells.length === 1 && enemyCells.length === 1) {
       this.gameStatus = GameStatus.Draw;
@@ -66,7 +66,9 @@ export class BoardState {
       return;
     }
 
-    this.isCheck = this.isEnemyKingInCheck(enemyKingCell, allyCells);
+    this.isCheck = allyCells.some(allyCell =>
+      Movements.isKingInCheck(allyCell, this, enemyKingCell),
+    );
 
     if (this.isCheck) {
       const enemyKingCanMove = enemyCells.some(enemyCell => {
@@ -88,23 +90,5 @@ export class BoardState {
   public setDrawByAgreement(): void {
     // todo: to be implemented
     // ByAgreement = "ByAgreement",
-  }
-
-  private isEnemyKingInCheck(enemyKingCell: Cell, allyCells: Cell[]): boolean {
-    return allyCells.some(allyCell => Movements.isKingInCheck(allyCell, this, enemyKingCell));
-  }
-
-  private getOccupiedCells(color: Color | undefined): Cell[] {
-    const cells: Cell[] = [];
-
-    this.board.forEach(row => {
-      row.forEach(cell => {
-        if (cell.chessPiece && cell.chessPiece.color === color) {
-          cells.push(cell);
-        }
-      });
-    });
-
-    return cells;
   }
 }

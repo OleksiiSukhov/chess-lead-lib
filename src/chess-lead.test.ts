@@ -224,6 +224,7 @@ function getBoardStateMock(): BoardState {
     resign: jest.fn(),
     isGameFinished: jest.fn(),
     switchNextTurn: jest.fn(),
+    setDrawByAgreement: jest.fn(),
     setNewGameStatus: jest.fn(),
     repetitionNumber: 0,
   }));

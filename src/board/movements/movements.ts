@@ -47,6 +47,20 @@ export abstract class Movements {
     );
   }
 
+  public static getOccupiedCells(board: Cell[][], color: Color | undefined): Cell[] {
+    const cells: Cell[] = [];
+
+    board.forEach(row => {
+      row.forEach(cell => {
+        if (cell.chessPiece && cell.chessPiece.color === color) {
+          cells.push(cell);
+        }
+      });
+    });
+
+    return cells;
+  }
+
   public maxMovementSquares?: number = 0;
   public canLeap: boolean = false;
   public canDoCastling: boolean = false;
