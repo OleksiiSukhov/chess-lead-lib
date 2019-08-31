@@ -70,21 +70,25 @@ export class BoardState {
       Movements.isKingInCheck(allyCell, this, enemyKingCell),
     );
 
-    if (this.isCheck) {
-      const enemyKingCanMove = enemyCells.some(enemyCell => {
-        const chessPiece = enemyCell.chessPiece;
-        return chessPiece && chessPiece.movements().getAvailable(this, enemyCell, true).length > 0;
-      });
+    const enemyKingCanMove = enemyCells.some(enemyCell => {
+      const chessPiece = enemyCell.chessPiece;
+      return chessPiece && chessPiece.movements().getAvailable(this, enemyCell, true).length > 0;
+    });
 
+    if (this.isCheck) {
       this.gameStatus = enemyKingCanMove ? GameStatus.InProgress : GameStatus.Win;
 
       if (this.gameStatus === GameStatus.Win) {
         this.winType = WinType.Checkmate;
         this.winSide = this.nextTurn;
       }
-    }
+    } else {
+      this.gameStatus = enemyKingCanMove ? GameStatus.InProgress : GameStatus.Draw;
 
-    // todo: set DrwType Stalemate here
+      if (this.gameStatus === GameStatus.Draw) {
+        this.drawType = DrawType.Stalemate;
+      }
+    }
   }
 
   public setDrawByAgreement(): void {

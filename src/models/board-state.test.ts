@@ -10,6 +10,7 @@ import { DrawType } from "./draw-type";
 import { GameStatus } from "./game-status";
 import { MovedChessPiece } from "./moved-chess-piece";
 import { WinType } from "./win-type";
+import { Queen } from "../chess-pieces/queen";
 
 let boardState: BoardState;
 let blackPawn: Pawn;
@@ -207,6 +208,42 @@ test("move should change game status - draw - kings only", () => {
   expect(boardState.isCheck).toBeFalsy();
   expect(boardState.gameStatus).toBe(GameStatus.Draw);
   expect(boardState.drawType).toBe(DrawType.InsufficientMaterial);
+  expect(boardState.winType).toBeUndefined();
+  expect(boardState.winSide).toBeUndefined();
+});
+
+//   _________________________________
+// 7 |BKI|   |   |   |   |   |   |   |
+//   _________________________________
+// 6 |   |   |WR |   |   |   |   |   |
+//   _________________________________
+// 5 |   |WR |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should change game status - draw - Stalemate", () => {
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  boardState.nextTurn = Color.White;
+
+  boardState.board[7][0].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[5][1].chessPiece = new Rook(Color.White);
+  boardState.board[6][2].chessPiece = new Rook(Color.White);
+
+  boardState.setNewGameStatus();
+
+  expect(boardState.isCheck).toBeFalsy();
+  expect(boardState.gameStatus).toBe(GameStatus.Draw);
+  expect(boardState.drawType).toBe(DrawType.Stalemate);
   expect(boardState.winType).toBeUndefined();
   expect(boardState.winSide).toBeUndefined();
 });
