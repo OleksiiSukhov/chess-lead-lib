@@ -1,4 +1,4 @@
-export enum ChessType {
+export enum ChessType { // todo: rename to ChessPieceType
   King = "King",
   Bishop = "Bishop",
   Knight = "Knight",

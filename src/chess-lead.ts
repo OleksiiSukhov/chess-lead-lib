@@ -5,6 +5,7 @@ import { Cell } from "./models/cell";
 import { Color } from "./models/color";
 import { MovedChessPiece } from "./models/moved-chess-piece";
 import { Guard } from "./validators/guard";
+import { ChessType } from "./chess-pieces/chess-type";
 
 export class ChessLead {
   private boardState: BoardState;
@@ -26,17 +27,23 @@ export class ChessLead {
     return cell.chessPiece.movements().getAvailable(this.chessBoardState, cell, true);
   }
 
-  public move(fromCell: Cell, toCell: Cell): void {
+  public move(fromCell: Cell, toCell: Cell, newChessType?: ChessType): void {
     Guard.validateGameStatus(this);
     Guard.validateChessPieceOnCell(fromCell);
     Guard.validateChessPieceColor(this.boardState, fromCell);
     Guard.validateMovement(this, fromCell, toCell);
+    Guard.validatePromotion(fromCell, toCell, newChessType);
 
-    // todo: pawn promotion
     // todo: implement castling (move rook in addition)
 
-    toCell.chessPiece = fromCell.chessPiece as ChessPiece;
-    toCell.chessPiece.movedNumber++;
+    if (newChessType) {
+      toCell.chessPiece = BoardBuilder.createChessPiece(newChessType, this.chessBoardState
+        .nextTurn as Color);
+    } else {
+      toCell.chessPiece = fromCell.chessPiece as ChessPiece;
+      toCell.chessPiece.movedNumber++;
+    }
+
     fromCell.chessPiece = undefined;
 
     this.chessBoardState.setNewGameStatus();

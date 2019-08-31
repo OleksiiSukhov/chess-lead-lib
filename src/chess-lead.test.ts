@@ -2,8 +2,11 @@
 
 import { ChessLead } from ".";
 import { BoardBuilder } from "./board/board-builder";
+import { Bishop } from "./chess-pieces/bishop";
 import { ChessPiece } from "./chess-pieces/chess-piece";
+import { ChessType } from "./chess-pieces/chess-type";
 import { King } from "./chess-pieces/king";
+import { Pawn } from "./chess-pieces/pawn";
 import { Rook } from "./chess-pieces/rook";
 import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
@@ -226,6 +229,79 @@ test("move should add new MovedChessPiece to performed list of movements", () =>
   expectedMovements.push(movement);
 
   expect(boardState.movements).toEqual(expectedMovements);
+});
+
+//   _________________________________
+// 7 |   | + |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |WP |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should perform Pawn promotion", () => {
+  const boardState = getBoardStateMock();
+  boardState.nextTurn = Color.White;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[6][1].chessPiece = new Pawn(Color.White);
+
+  const chessLead = new ChessLead(boardState);
+
+  chessLead.move(boardState.board[6][1], boardState.board[7][1], ChessType.Bishop);
+
+  const newChessPiece = boardState.board[7][1].chessPiece as ChessPiece;
+
+  expect(newChessPiece).not.toBeUndefined();
+  expect(boardState.board[6][1].chessPiece).toBeUndefined();
+  expect(newChessPiece.chessType).toBe(ChessType.Bishop);
+  expect(newChessPiece).toBeInstanceOf(Bishop);
+  expect(newChessPiece.color).toBe(Color.White);
+});
+
+//   _________________________________
+// 7 |   | + |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |WP |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should perform Pawn promotion - set check", () => {
+  const boardState = new BoardState();
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  boardState.nextTurn = Color.White;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[6][1].chessPiece = new Pawn(Color.White);
+
+  const chessLead = new ChessLead(boardState);
+
+  chessLead.move(boardState.board[6][1], boardState.board[7][1], ChessType.Rook);
+
+  expect(chessLead.chessBoardState.isCheck).toBeTruthy();
 });
 
 function setupMoveValidatorMocks(): void {
