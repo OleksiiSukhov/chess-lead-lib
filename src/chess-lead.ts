@@ -38,7 +38,6 @@ export class ChessLead {
     toCell.chessPiece.movedNumber++;
     fromCell.chessPiece = undefined;
 
-
     this.chessBoardState.setNewGameStatus();
 
     // todo: define MovedChessPiece
@@ -48,5 +47,9 @@ export class ChessLead {
 
   public resign(color: Color): void {
     this.chessBoardState.resign(color);
+  }
+
+  public setDrawByAgreement(): void {
+    this.chessBoardState.setDrawByAgreement();
   }
 }

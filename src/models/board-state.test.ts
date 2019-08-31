@@ -10,7 +10,6 @@ import { DrawType } from "./draw-type";
 import { GameStatus } from "./game-status";
 import { MovedChessPiece } from "./moved-chess-piece";
 import { WinType } from "./win-type";
-import { Queen } from "../chess-pieces/queen";
 
 let boardState: BoardState;
 let blackPawn: Pawn;
@@ -111,7 +110,7 @@ test("resign should throw error when game is over - Draw", () => {
 // 0 |   |   |   |   |WKI|   |   |   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
-test("move should change game status - check", () => {
+test("setNewGameStatus should change game status - check", () => {
   boardState.board = BoardBuilder.setupEmptyBoard();
   boardState.nextTurn = Color.White;
 
@@ -143,7 +142,7 @@ test("move should change game status - check", () => {
 // 0 |   |   |   |   |WKI|   |   |   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
-test("move should change game status - checkmate", () => {
+test("setNewGameStatus should change game status - checkmate", () => {
   boardState.board = BoardBuilder.setupEmptyBoard();
   boardState.nextTurn = Color.White;
 
@@ -178,7 +177,7 @@ test("move should change game status - checkmate", () => {
 // 0 |   |   |   |   |WKI|   |   |   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
-test("move should change game status - not checkmate - hide king possible", () => {
+test("setNewGameStatus should change game status - not checkmate - hide king possible", () => {
   boardState.board = BoardBuilder.setupEmptyBoard();
   boardState.nextTurn = Color.White;
 
@@ -196,7 +195,7 @@ test("move should change game status - not checkmate - hide king possible", () =
   expect(boardState.winSide).toBeUndefined();
 });
 
-test("move should change game status - draw - kings only", () => {
+test("setNewGameStatus should change game status - draw - kings only", () => {
   boardState.board = BoardBuilder.setupEmptyBoard();
   boardState.nextTurn = Color.White;
 
@@ -230,7 +229,7 @@ test("move should change game status - draw - kings only", () => {
 // 0 |   |   |   |   |WKI|   |   |   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
-test("move should change game status - draw - Stalemate", () => {
+test("setNewGameStatus should change game status - draw - Stalemate", () => {
   boardState.board = BoardBuilder.setupEmptyBoard();
   boardState.nextTurn = Color.White;
 
@@ -246,4 +245,18 @@ test("move should change game status - draw - Stalemate", () => {
   expect(boardState.drawType).toBe(DrawType.Stalemate);
   expect(boardState.winType).toBeUndefined();
   expect(boardState.winSide).toBeUndefined();
+});
+
+test("setDrawByAgreement should change game status accordingly", () => {
+  boardState.board = BoardBuilder.setupEmptyBoard();
+  boardState.nextTurn = Color.White;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[0][0].chessPiece = new Rook(Color.White);
+
+  boardState.setDrawByAgreement();
+
+  expect(boardState.gameStatus).toBe(GameStatus.Draw);
+  expect(boardState.drawType).toBe(DrawType.ByAgreement);
 });

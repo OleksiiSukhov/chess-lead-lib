@@ -92,7 +92,7 @@ export class BoardState {
   }
 
   public setDrawByAgreement(): void {
-    // todo: to be implemented
-    // ByAgreement = "ByAgreement",
+    this.gameStatus = GameStatus.Draw;
+    this.drawType = DrawType.ByAgreement;
   }
 }
