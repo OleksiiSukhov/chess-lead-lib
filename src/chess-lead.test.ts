@@ -2,12 +2,14 @@
 
 import { ChessLead } from ".";
 import { BoardBuilder } from "./board/board-builder";
+import { ChessPiece } from "./chess-pieces/chess-piece";
 import { King } from "./chess-pieces/king";
 import { Rook } from "./chess-pieces/rook";
 import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
 import { Color } from "./models/color";
 import { GameStatus } from "./models/game-status";
+import { MovedChessPiece } from "./models/moved-chess-piece";
 import { Guard } from "./validators/guard";
 
 let validateGameStatus: any;
@@ -16,12 +18,16 @@ let validateChessPieceColor: any;
 let validateMovement: any;
 let validateCell: any;
 
+let createInitial: any;
+
 beforeEach(() => {
   validateGameStatus = Guard.validateGameStatus;
   validateChessPieceOnCell = Guard.validateChessPieceOnCell;
   validateChessPieceColor = Guard.validateChessPieceColor;
   validateMovement = Guard.validateMovement;
   validateCell = Guard.validateCell;
+
+  createInitial = BoardBuilder.createInitial;
 });
 
 afterEach(() => {
@@ -30,6 +36,8 @@ afterEach(() => {
   Guard.validateChessPieceColor = validateChessPieceColor.bind(Guard);
   Guard.validateMovement = validateMovement.bind(Guard);
   Guard.validateCell = validateCell.bind(Guard);
+
+  BoardBuilder.createInitial = createInitial.bind(BoardBuilder);
 });
 
 test("constructor should call BoardBuilder.createInitial when boardState was not passed", () => {
@@ -170,6 +178,54 @@ test("move should call setNewGameStatus", () => {
   chessLead.move(boardState.board[0][0], boardState.board[1][2]);
 
   expect(boardState.setNewGameStatus).toHaveBeenCalled();
+});
+
+//   _________________________________
+// 7 |BR |BKN|BB |BQ |BKI|BB |BKN|BR |
+//   _________________________________
+// 6 |BP |BP |BP |BP | 2 |BP |BP |BP |
+//   _________________________________
+// 5 |   |   |   |   |BP |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |WP |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |WP |WP |WP |WP | 1 |WP |WP |WP |
+//   _________________________________
+// 0 |WR |WKN|WB |WQ |WKI|WB |WKN|WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should add new MovedChessPiece to performed list of movements", () => {
+  setupMoveValidatorMocks();
+
+  const expectedMovements: MovedChessPiece[] = [];
+  const boardState = BoardBuilder.createInitial();
+  const chessLead = new ChessLead(boardState);
+
+  expect(boardState.movements).toEqual(expectedMovements);
+
+  let chessPieceId = (boardState.board[1][4].chessPiece as ChessPiece).id;
+  let movement = new MovedChessPiece(chessPieceId);
+  movement.fromCell = boardState.board[1][4];
+  movement.toCell = boardState.board[3][4];
+
+  chessLead.move(boardState.board[1][4], boardState.board[3][4]);
+  expectedMovements.push(movement);
+
+  expect(boardState.movements).toEqual(expectedMovements);
+
+  chessPieceId = (boardState.board[6][4].chessPiece as ChessPiece).id;
+  movement = new MovedChessPiece(chessPieceId);
+  movement.fromCell = boardState.board[6][4];
+  movement.toCell = boardState.board[5][4];
+
+  chessLead.move(boardState.board[6][4], boardState.board[5][4]);
+  expectedMovements.push(movement);
+
+  expect(boardState.movements).toEqual(expectedMovements);
 });
 
 function setupMoveValidatorMocks(): void {

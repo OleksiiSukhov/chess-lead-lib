@@ -3,6 +3,7 @@ import { ChessPiece } from "./chess-pieces/chess-piece";
 import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
 import { Color } from "./models/color";
+import { MovedChessPiece } from "./models/moved-chess-piece";
 import { Guard } from "./validators/guard";
 
 export class ChessLead {
@@ -40,7 +41,10 @@ export class ChessLead {
 
     this.chessBoardState.setNewGameStatus();
 
-    // todo: define MovedChessPiece
+    const movement = new MovedChessPiece(toCell.chessPiece.id);
+    movement.fromCell = fromCell;
+    movement.toCell = toCell;
+    this.chessBoardState.movements.push(movement);
 
     this.chessBoardState.switchNextTurn();
   }
