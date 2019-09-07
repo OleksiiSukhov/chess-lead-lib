@@ -34,14 +34,28 @@ export class ChessLead {
     Guard.validateMovement(this, fromCell, toCell);
     Guard.validatePromotion(fromCell, toCell, newChessPieceType);
 
-    // todo: implement castling (move rook in addition)
-
     if (newChessPieceType) {
       toCell.chessPiece = BoardBuilder.createChessPiece(newChessPieceType, this.chessBoardState
         .nextTurn as Color);
     } else {
       toCell.chessPiece = fromCell.chessPiece as ChessPiece;
       toCell.chessPiece.movedNumber++;
+
+      const isCastling = Math.abs(fromCell.columnIndex - toCell.columnIndex) === 2;
+
+      if (toCell.chessPiece.chessPieceType === ChessPieceType.King && isCastling) {
+        const isLeftCastling = fromCell.columnIndex > toCell.columnIndex;
+        const fromRookColumn = isLeftCastling ? 0 : 7;
+        const toRookColumn = isLeftCastling ? 3 : 5;
+
+        const fromRookCell = this.boardState.board[fromCell.rowIndex][fromRookColumn];
+        const toRookCell = this.boardState.board[fromCell.rowIndex][toRookColumn];
+
+        toRookCell.chessPiece = fromRookCell.chessPiece as ChessPiece;
+        toRookCell.chessPiece.movedNumber++;
+
+        fromRookCell.chessPiece = undefined;
+      }
     }
 
     fromCell.chessPiece = undefined;

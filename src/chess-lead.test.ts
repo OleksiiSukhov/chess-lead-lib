@@ -140,7 +140,7 @@ test("move should increment movedNumber for moved chess piece", () => {
   chessPiece.movedNumber = 3;
   const chessLead = new ChessLead(boardState);
 
-  chessLead.move(boardState.board[0][0], boardState.board[1][2]);
+  chessLead.move(boardState.board[0][0], boardState.board[1][1]);
 
   expect(chessPiece.movedNumber).toBe(4);
 });
@@ -151,7 +151,7 @@ test("move should call switchNextTurn", () => {
   boardState.nextTurn = Color.White;
   const chessLead = new ChessLead(boardState);
 
-  chessLead.move(boardState.board[0][0], boardState.board[1][2]);
+  chessLead.move(boardState.board[0][0], boardState.board[1][1]);
 
   expect(boardState.switchNextTurn).toHaveBeenCalled();
 });
@@ -165,7 +165,7 @@ test("move should call validators", () => {
   const boardState = getBoardStateMock();
   const chessLead = new ChessLead(boardState);
 
-  chessLead.move(boardState.board[0][0], boardState.board[1][2]);
+  chessLead.move(boardState.board[0][0], boardState.board[1][1]);
 
   expect(validateGameStatusMock).toHaveBeenCalled();
   expect(validateChessPieceOnCellMock).toHaveBeenCalled();
@@ -178,7 +178,7 @@ test("move should call setNewGameStatus", () => {
   const boardState = getBoardStateMock();
   const chessLead = new ChessLead(boardState);
 
-  chessLead.move(boardState.board[0][0], boardState.board[1][2]);
+  chessLead.move(boardState.board[0][0], boardState.board[1][1]);
 
   expect(boardState.setNewGameStatus).toHaveBeenCalled();
 });
@@ -270,7 +270,6 @@ test("move should perform Pawn promotion - White", () => {
   expect(newChessPiece.color).toBe(Color.White);
 });
 
-
 //   _________________________________
 // 7 |   |   |   |   |BKI|   |   |   |
 //   _________________________________
@@ -344,6 +343,157 @@ test("move should perform Pawn promotion - set check", () => {
   expect(chessLead.chessBoardState.isCheck).toBeTruthy();
 });
 
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |WR |   | + |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should perform castling - White - Left", () => {
+  const boardState = getBoardStateMock();
+  boardState.nextTurn = Color.White;
+
+  const king = new King(Color.White);
+  const rook = new Rook(Color.White);
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = king;
+  boardState.board[0][0].chessPiece = rook;
+
+  const chessLead = new ChessLead(boardState);
+  chessLead.move(boardState.board[0][4], boardState.board[0][2]);
+
+  expect(boardState.board[0][2].chessPiece).toEqual(king);
+  expect(boardState.board[0][3].chessPiece).toEqual(rook);
+  expect(boardState.board[0][4].chessPiece).toBeUndefined();
+  expect(boardState.board[0][0].chessPiece).toBeUndefined();
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   | + |WR |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should perform castling - White - Right", () => {
+  const boardState = getBoardStateMock();
+  boardState.nextTurn = Color.White;
+
+  const king = new King(Color.White);
+  const rook = new Rook(Color.White);
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = king;
+  boardState.board[0][7].chessPiece = rook;
+
+  const chessLead = new ChessLead(boardState);
+  chessLead.move(boardState.board[0][4], boardState.board[0][6]);
+
+  expect(boardState.board[0][6].chessPiece).toEqual(king);
+  expect(boardState.board[0][5].chessPiece).toEqual(rook);
+  expect(boardState.board[0][4].chessPiece).toBeUndefined();
+  expect(boardState.board[0][7].chessPiece).toBeUndefined();
+});
+
+//   _________________________________
+// 7 |BR |   | + |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should perform castling - Black - Left", () => {
+  const boardState = getBoardStateMock();
+  boardState.nextTurn = Color.Black;
+
+  const king = new King(Color.Black);
+  const rook = new Rook(Color.Black);
+
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[7][4].chessPiece = king;
+  boardState.board[7][0].chessPiece = rook;
+
+  const chessLead = new ChessLead(boardState);
+  chessLead.move(boardState.board[7][4], boardState.board[7][2]);
+
+  expect(boardState.board[7][2].chessPiece).toEqual(king);
+  expect(boardState.board[7][3].chessPiece).toEqual(rook);
+  expect(boardState.board[7][4].chessPiece).toBeUndefined();
+  expect(boardState.board[7][0].chessPiece).toBeUndefined();
+});
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   | + |BR |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   |   |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should perform castling - Black - Right", () => {
+  const boardState = getBoardStateMock();
+  boardState.nextTurn = Color.Black;
+
+  const king = new King(Color.Black);
+  const rook = new Rook(Color.Black);
+
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[7][4].chessPiece = king;
+  boardState.board[7][7].chessPiece = rook;
+
+  const chessLead = new ChessLead(boardState);
+  chessLead.move(boardState.board[7][4], boardState.board[7][6]);
+
+  expect(boardState.board[7][6].chessPiece).toEqual(king);
+  expect(boardState.board[7][5].chessPiece).toEqual(rook);
+  expect(boardState.board[7][4].chessPiece).toBeUndefined();
+  expect(boardState.board[7][7].chessPiece).toBeUndefined();
+});
 
 function setupMoveValidatorMocks(): void {
   setupValidateGameStatusMock();
