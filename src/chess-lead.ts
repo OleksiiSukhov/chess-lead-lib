@@ -41,21 +41,7 @@ export class ChessLead {
       toCell.chessPiece = fromCell.chessPiece as ChessPiece;
       toCell.chessPiece.movedNumber++;
 
-      const isCastling = Math.abs(fromCell.columnIndex - toCell.columnIndex) === 2;
-
-      if (toCell.chessPiece.chessPieceType === ChessPieceType.King && isCastling) {
-        const isLeftCastling = fromCell.columnIndex > toCell.columnIndex;
-        const fromRookColumn = isLeftCastling ? 0 : 7;
-        const toRookColumn = isLeftCastling ? 3 : 5;
-
-        const fromRookCell = this.boardState.board[fromCell.rowIndex][fromRookColumn];
-        const toRookCell = this.boardState.board[fromCell.rowIndex][toRookColumn];
-
-        toRookCell.chessPiece = fromRookCell.chessPiece as ChessPiece;
-        toRookCell.chessPiece.movedNumber++;
-
-        fromRookCell.chessPiece = undefined;
-      }
+      this.performCastlingIfNeeded(fromCell, toCell, toCell.chessPiece.chessPieceType);
     }
 
     fromCell.chessPiece = undefined;
@@ -76,5 +62,31 @@ export class ChessLead {
 
   public setDrawByAgreement(): void {
     this.chessBoardState.setDrawByAgreement();
+  }
+
+  public performCastlingIfNeeded(
+    fromCell: Cell,
+    toCell: Cell,
+    chessPieceType: ChessPieceType,
+  ): void {
+    const isCastling =
+      chessPieceType === ChessPieceType.King &&
+      Math.abs(fromCell.columnIndex - toCell.columnIndex) === 2;
+
+    if (!isCastling) {
+      return;
+    }
+
+    const isLeftCastling = fromCell.columnIndex > toCell.columnIndex;
+    const fromRookColumn = isLeftCastling ? 0 : 7;
+    const toRookColumn = isLeftCastling ? 3 : 5;
+
+    const fromRookCell = this.boardState.board[fromCell.rowIndex][fromRookColumn];
+    const toRookCell = this.boardState.board[fromCell.rowIndex][toRookColumn];
+
+    toRookCell.chessPiece = fromRookCell.chessPiece as ChessPiece;
+    toRookCell.chessPiece.movedNumber++;
+
+    fromRookCell.chessPiece = undefined;
   }
 }
