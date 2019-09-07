@@ -1,6 +1,6 @@
 import { Bishop } from "../chess-pieces/bishop";
 import { ChessPiece } from "../chess-pieces/chess-piece";
-import { ChessType } from "../chess-pieces/chess-type";
+import { ChessPieceType } from "../chess-pieces/chess-piece-type";
 import { King } from "../chess-pieces/king";
 import { Knight } from "../chess-pieces/knight";
 import { Pawn } from "../chess-pieces/pawn";
@@ -38,23 +38,23 @@ export class BoardBuilder {
     return cells;
   }
 
-  public static createChessPiece(chessType: ChessType, color: Color): ChessPiece {
-    switch (chessType) {
-      case ChessType.Pawn:
+  public static createChessPiece(chessPieceType: ChessPieceType, color: Color): ChessPiece {
+    switch (chessPieceType) {
+      case ChessPieceType.Pawn:
         return new Pawn(color);
-      case ChessType.Rook:
+      case ChessPieceType.Rook:
         return new Rook(color);
-      case ChessType.Knight:
+      case ChessPieceType.Knight:
         return new Knight(color);
-      case ChessType.Bishop:
+      case ChessPieceType.Bishop:
         return new Bishop(color);
-      case ChessType.Queen:
+      case ChessPieceType.Queen:
         return new Queen(color);
-      case ChessType.King:
+      case ChessPieceType.King:
         return new King(color);
 
       default:
-        throw Error("Not supported chessType.");
+        throw Error("Not supported chessPieceType.");
     }
   }
 
@@ -62,20 +62,20 @@ export class BoardBuilder {
     const row = color === Color.White ? 1 : 6;
 
     for (let column = 0; column < 8; column++) {
-      board[row][column].chessPiece = BoardBuilder.createChessPiece(ChessType.Pawn, color);
+      board[row][column].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Pawn, color);
     }
   }
 
   private static setMainChessPieces(board: Cell[][], color: Color): void {
     const row = color === Color.White ? 0 : 7;
 
-    board[row][0].chessPiece = BoardBuilder.createChessPiece(ChessType.Rook, color);
-    board[row][1].chessPiece = BoardBuilder.createChessPiece(ChessType.Knight, color);
-    board[row][2].chessPiece = BoardBuilder.createChessPiece(ChessType.Bishop, color);
-    board[row][3].chessPiece = BoardBuilder.createChessPiece(ChessType.Queen, color);
-    board[row][4].chessPiece = BoardBuilder.createChessPiece(ChessType.King, color);
-    board[row][5].chessPiece = BoardBuilder.createChessPiece(ChessType.Bishop, color);
-    board[row][6].chessPiece = BoardBuilder.createChessPiece(ChessType.Knight, color);
-    board[row][7].chessPiece = BoardBuilder.createChessPiece(ChessType.Rook, color);
+    board[row][0].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Rook, color);
+    board[row][1].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Knight, color);
+    board[row][2].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Bishop, color);
+    board[row][3].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Queen, color);
+    board[row][4].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.King, color);
+    board[row][5].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Bishop, color);
+    board[row][6].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Knight, color);
+    board[row][7].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Rook, color);
   }
 }

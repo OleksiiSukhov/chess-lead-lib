@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { ChessPiece } from "../../chess-pieces/chess-piece";
-import { ChessType } from "../../chess-pieces/chess-type";
+import { ChessPieceType } from "../../chess-pieces/chess-piece-type";
 import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
@@ -16,7 +16,7 @@ export abstract class Movements {
 
         if (
           chessPiece &&
-          chessPiece.chessType === ChessType.King &&
+          chessPiece.chessPieceType === ChessPieceType.King &&
           chessPiece.color === currentColor
         ) {
           return board[row][cell];

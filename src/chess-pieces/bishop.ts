@@ -2,11 +2,11 @@ import { BishopMovements } from "../board/movements/bishop-movements";
 import { Movements } from "../board/movements/movements";
 import { Color } from "../models/color";
 import { ChessPiece } from "./chess-piece";
-import { ChessType } from "./chess-type";
+import { ChessPieceType } from "./chess-piece-type";
 
 export class Bishop extends ChessPiece {
   constructor(color: Color) {
-    super(color, ChessType.Bishop);
+    super(color, ChessPieceType.Bishop);
   }
 
   public movements(): Movements {

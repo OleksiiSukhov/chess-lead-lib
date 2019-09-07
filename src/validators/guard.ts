@@ -1,6 +1,6 @@
 import { ChessLead } from "..";
 import { ChessPiece } from "../chess-pieces/chess-piece";
-import { ChessType } from "../chess-pieces/chess-type";
+import { ChessPieceType } from "../chess-pieces/chess-piece-type";
 import { BoardState } from "../models/board-state";
 import { Cell } from "../models/cell";
 import { Color } from "../models/color";
@@ -67,18 +67,22 @@ export class Guard {
     }
   }
 
-  public static validatePromotion(fromCell: Cell, toCell: Cell, newChessType?: ChessType): void {
+  public static validatePromotion(
+    fromCell: Cell,
+    toCell: Cell,
+    newChessPieceType?: ChessPieceType,
+  ): void {
     const chessPiece = fromCell.chessPiece as ChessPiece;
 
-    if (chessPiece.chessType === ChessType.Pawn && toCell.rowIndex === 7) {
-      if (newChessType === undefined) {
+    if (chessPiece.chessPieceType === ChessPieceType.Pawn && toCell.rowIndex === 7) {
+      if (newChessPieceType === undefined) {
         throw Error("Pawn must be promoted. New ChessPiece type should be specified.");
       }
 
-      if (newChessType === ChessType.Pawn || newChessType === ChessType.King) {
+      if (newChessPieceType === ChessPieceType.Pawn || newChessPieceType === ChessPieceType.King) {
         throw Error("Pawn cannot be promoted to Pawn or King.");
       }
-    } else if (newChessType !== undefined) {
+    } else if (newChessPieceType !== undefined) {
       throw Error("ChessPiece type should be specified only in case of Pawn promotion.");
     }
   }

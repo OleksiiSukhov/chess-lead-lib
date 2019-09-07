@@ -1,11 +1,11 @@
 import * as v4 from "uuid/v4";
 import { Movements } from "../board/movements/movements";
 import { Color } from "../models/color";
-import { ChessType } from "./chess-type";
+import { ChessPieceType } from "./chess-piece-type";
 
 export abstract class ChessPiece {
   public readonly color: Color;
-  public readonly chessType: ChessType;
+  public readonly chessPieceType: ChessPieceType;
   public movedNumber: number = 0;
   private chessPieceId: string;
 
@@ -17,9 +17,9 @@ export abstract class ChessPiece {
     return this.movedNumber > 0;
   }
 
-  constructor(color: Color, chessType: ChessType) {
+  constructor(color: Color, chessPieceType: ChessPieceType) {
     this.color = color;
-    this.chessType = chessType;
+    this.chessPieceType = chessPieceType;
     this.chessPieceId = v4();
   }
 

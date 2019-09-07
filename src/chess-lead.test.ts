@@ -4,7 +4,7 @@ import { ChessLead } from ".";
 import { BoardBuilder } from "./board/board-builder";
 import { Bishop } from "./chess-pieces/bishop";
 import { ChessPiece } from "./chess-pieces/chess-piece";
-import { ChessType } from "./chess-pieces/chess-type";
+import { ChessPieceType } from "./chess-pieces/chess-piece-type";
 import { King } from "./chess-pieces/king";
 import { Pawn } from "./chess-pieces/pawn";
 import { Rook } from "./chess-pieces/rook";
@@ -259,13 +259,13 @@ test("move should perform Pawn promotion", () => {
 
   const chessLead = new ChessLead(boardState);
 
-  chessLead.move(boardState.board[6][1], boardState.board[7][1], ChessType.Bishop);
+  chessLead.move(boardState.board[6][1], boardState.board[7][1], ChessPieceType.Bishop);
 
   const newChessPiece = boardState.board[7][1].chessPiece as ChessPiece;
 
   expect(newChessPiece).not.toBeUndefined();
   expect(boardState.board[6][1].chessPiece).toBeUndefined();
-  expect(newChessPiece.chessType).toBe(ChessType.Bishop);
+  expect(newChessPiece.chessPieceType).toBe(ChessPieceType.Bishop);
   expect(newChessPiece).toBeInstanceOf(Bishop);
   expect(newChessPiece.color).toBe(Color.White);
 });
@@ -299,7 +299,7 @@ test("move should perform Pawn promotion - set check", () => {
 
   const chessLead = new ChessLead(boardState);
 
-  chessLead.move(boardState.board[6][1], boardState.board[7][1], ChessType.Rook);
+  chessLead.move(boardState.board[6][1], boardState.board[7][1], ChessPieceType.Rook);
 
   expect(chessLead.chessBoardState.isCheck).toBeTruthy();
 });

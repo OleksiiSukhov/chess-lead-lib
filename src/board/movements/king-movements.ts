@@ -1,5 +1,5 @@
 import { ChessPiece } from "../../chess-pieces/chess-piece";
-import { ChessType } from "../../chess-pieces/chess-type";
+import { ChessPieceType } from "../../chess-pieces/chess-piece-type";
 import { BoardState } from "../../models/board-state";
 import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
@@ -83,7 +83,7 @@ export class KingMovements extends Movements {
     const initialKingRow = this.getInitialRow(chessPiece.color);
     const rook = boardState.board[initialKingRow][rookInitialColumn].chessPiece;
 
-    if (!rook || rook.chessType !== ChessType.Rook) {
+    if (!rook || rook.chessPieceType !== ChessPieceType.Rook) {
       return undefined;
     }
 

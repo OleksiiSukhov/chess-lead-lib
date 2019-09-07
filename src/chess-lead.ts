@@ -5,7 +5,7 @@ import { Cell } from "./models/cell";
 import { Color } from "./models/color";
 import { MovedChessPiece } from "./models/moved-chess-piece";
 import { Guard } from "./validators/guard";
-import { ChessType } from "./chess-pieces/chess-type";
+import { ChessPieceType } from "./chess-pieces/chess-piece-type";
 
 export class ChessLead {
   private boardState: BoardState;
@@ -27,17 +27,17 @@ export class ChessLead {
     return cell.chessPiece.movements().getAvailable(this.chessBoardState, cell, true);
   }
 
-  public move(fromCell: Cell, toCell: Cell, newChessType?: ChessType): void {
+  public move(fromCell: Cell, toCell: Cell, newChessPieceType?: ChessPieceType): void {
     Guard.validateGameStatus(this);
     Guard.validateChessPieceOnCell(fromCell);
     Guard.validateChessPieceColor(this.boardState, fromCell);
     Guard.validateMovement(this, fromCell, toCell);
-    Guard.validatePromotion(fromCell, toCell, newChessType);
+    Guard.validatePromotion(fromCell, toCell, newChessPieceType);
 
     // todo: implement castling (move rook in addition)
 
-    if (newChessType) {
-      toCell.chessPiece = BoardBuilder.createChessPiece(newChessType, this.chessBoardState
+    if (newChessPieceType) {
+      toCell.chessPiece = BoardBuilder.createChessPiece(newChessPieceType, this.chessBoardState
         .nextTurn as Color);
     } else {
       toCell.chessPiece = fromCell.chessPiece as ChessPiece;
