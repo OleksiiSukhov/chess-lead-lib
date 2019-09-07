@@ -74,7 +74,10 @@ export class Guard {
   ): void {
     const chessPiece = fromCell.chessPiece as ChessPiece;
 
-    if (chessPiece.chessPieceType === ChessPieceType.Pawn && toCell.rowIndex === 7) {
+    if (
+      chessPiece.chessPieceType === ChessPieceType.Pawn &&
+      (toCell.rowIndex === 7 || toCell.rowIndex === 0)
+    ) {
       if (newChessPieceType === undefined) {
         throw Error("Pawn must be promoted. New ChessPiece type should be specified.");
       }

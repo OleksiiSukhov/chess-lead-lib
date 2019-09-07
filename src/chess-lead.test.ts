@@ -249,7 +249,7 @@ test("move should add new MovedChessPiece to performed list of movements", () =>
 // 0 |   |   |   |   |WKI|   |   |   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
-test("move should perform Pawn promotion", () => {
+test("move should perform Pawn promotion - White", () => {
   const boardState = getBoardStateMock();
   boardState.nextTurn = Color.White;
 
@@ -268,6 +268,46 @@ test("move should perform Pawn promotion", () => {
   expect(newChessPiece.chessPieceType).toBe(ChessPieceType.Bishop);
   expect(newChessPiece).toBeInstanceOf(Bishop);
   expect(newChessPiece.color).toBe(Color.White);
+});
+
+
+//   _________________________________
+// 7 |   |   |   |   |BKI|   |   |   |
+//   _________________________________
+// 6 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 5 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 4 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 3 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 2 |   |   |   |   |   |   |   |   |
+//   _________________________________
+// 1 |   |BP |   |   |   |   |   |   |
+//   _________________________________
+// 0 |   | + |   |   |WKI|   |   |   |
+//   _________________________________
+//     0   1   2   3   4   5   6   7
+test("move should perform Pawn promotion - Black", () => {
+  const boardState = getBoardStateMock();
+  boardState.nextTurn = Color.Black;
+
+  boardState.board[7][4].chessPiece = new King(Color.Black);
+  boardState.board[0][4].chessPiece = new King(Color.White);
+  boardState.board[1][1].chessPiece = new Pawn(Color.Black);
+
+  const chessLead = new ChessLead(boardState);
+
+  chessLead.move(boardState.board[1][1], boardState.board[0][1], ChessPieceType.Bishop);
+
+  const newChessPiece = boardState.board[0][1].chessPiece as ChessPiece;
+
+  expect(newChessPiece).not.toBeUndefined();
+  expect(boardState.board[1][1].chessPiece).toBeUndefined();
+  expect(newChessPiece.chessPieceType).toBe(ChessPieceType.Bishop);
+  expect(newChessPiece).toBeInstanceOf(Bishop);
+  expect(newChessPiece.color).toBe(Color.Black);
 });
 
 //   _________________________________
@@ -303,6 +343,7 @@ test("move should perform Pawn promotion - set check", () => {
 
   expect(chessLead.chessBoardState.isCheck).toBeTruthy();
 });
+
 
 function setupMoveValidatorMocks(): void {
   setupValidateGameStatusMock();

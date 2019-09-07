@@ -1,11 +1,11 @@
 import { BoardBuilder } from "./board/board-builder";
 import { ChessPiece } from "./chess-pieces/chess-piece";
+import { ChessPieceType } from "./chess-pieces/chess-piece-type";
 import { BoardState } from "./models/board-state";
 import { Cell } from "./models/cell";
 import { Color } from "./models/color";
 import { MovedChessPiece } from "./models/moved-chess-piece";
 import { Guard } from "./validators/guard";
-import { ChessPieceType } from "./chess-pieces/chess-piece-type";
 
 export class ChessLead {
   private boardState: BoardState;

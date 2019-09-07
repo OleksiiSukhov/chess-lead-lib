@@ -1,5 +1,5 @@
 export enum WinType {
   Checkmate = "Checkmate",
   Resignation = "Resignation",
-  WinOnTime = "WinOnTime",
+  WinOnTime = "WinOnTime", // todo: Implement WinOnTime
 }
