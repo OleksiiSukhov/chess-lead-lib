@@ -33,10 +33,6 @@ export class QueenMovements extends Movements {
       return availableCells;
     }
 
-    return this.getAdjustedAvailableCellsWithCheckChecking(
-      availableCells,
-      boardState,
-      currentCell,
-    );
+    return this.getAdjustedAvailableCellsWithCheckChecking(availableCells, boardState, currentCell);
   }
 }

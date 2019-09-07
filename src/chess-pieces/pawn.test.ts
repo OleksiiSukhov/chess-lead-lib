@@ -6,4 +6,3 @@ test("movements should return object of PawnMovements", () => {
   const pawn = new Pawn(Color.Black);
   expect(pawn.movements()).toBeInstanceOf(PawnMovements);
 });
-

@@ -6,4 +6,3 @@ test("movements should return object of KingMovements", () => {
   const king = new King(Color.Black);
   expect(king.movements()).toBeInstanceOf(KingMovements);
 });
-

@@ -6,4 +6,3 @@ test("movements should return object of BishopMovements", () => {
   const bishop = new Bishop(Color.Black);
   expect(bishop.movements()).toBeInstanceOf(BishopMovements);
 });
-

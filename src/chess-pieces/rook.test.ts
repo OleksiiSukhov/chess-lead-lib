@@ -6,4 +6,3 @@ test("movements should return object of RookMovements", () => {
   const rook = new Rook(Color.Black);
   expect(rook.movements()).toBeInstanceOf(RookMovements);
 });
-
