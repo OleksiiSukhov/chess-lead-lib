@@ -2,11 +2,11 @@ import { last } from "lodash";
 import { Movements } from "../board/movements/movements";
 import { ChessPiece } from "../chess-pieces/chess-piece";
 import { Guard } from "../validators/guard";
-import { Cell } from "./cell";
 import { Color } from "./color";
 import { DrawType } from "./draw-type";
 import { GameStatus } from "./game-status";
 import { MovedChessPiece } from "./moved-chess-piece";
+import { Square } from "./square";
 import { WinType } from "./win-type";
 
 export class BoardState {
@@ -16,7 +16,7 @@ export class BoardState {
   public gameStatus: GameStatus = GameStatus.InProgress;
   public drawType?: DrawType = undefined;
   public winType?: WinType = undefined;
-  public board: Cell[][] = [];
+  public board: Square[][] = [];
   public repetitionNumber: number = 0;
   public movements: MovedChessPiece[] = [];
 
@@ -41,6 +41,7 @@ export class BoardState {
     this.winType = WinType.Resignation;
   }
 
+  // todo: rename to isGameOver
   public isGameFinished(): boolean {
     return this.gameStatus === GameStatus.Win || this.gameStatus === GameStatus.Draw;
   }
@@ -55,24 +56,24 @@ export class BoardState {
 
   public setNewGameStatus(): void {
     const enemyColor = this.nextTurn === Color.White ? Color.Black : Color.White;
-    const enemyKingCell = Movements.getKingCell(this.board, enemyColor) as Cell;
+    const enemyKingSquare = Movements.getKingSquare(this.board, enemyColor) as Square;
 
-    const allyCells = Movements.getOccupiedCells(this.board, this.nextTurn);
-    const enemyCells = Movements.getOccupiedCells(this.board, enemyColor);
+    const allySquares = Movements.getOccupiedSquares(this.board, this.nextTurn);
+    const enemySquares = Movements.getOccupiedSquares(this.board, enemyColor);
 
-    if (allyCells.length === 1 && enemyCells.length === 1) {
+    if (allySquares.length === 1 && enemySquares.length === 1) {
       this.gameStatus = GameStatus.Draw;
       this.drawType = DrawType.InsufficientMaterial;
       return;
     }
 
-    this.isCheck = allyCells.some(allyCell =>
-      Movements.isKingInCheck(allyCell, this, enemyKingCell),
+    this.isCheck = allySquares.some(allySquare =>
+      Movements.isKingInCheck(allySquare, this, enemyKingSquare),
     );
 
-    const enemyKingCanMove = enemyCells.some(enemyCell => {
-      const chessPiece = enemyCell.chessPiece;
-      return chessPiece && chessPiece.movements().getAvailable(this, enemyCell, true).length > 0;
+    const enemyKingCanMove = enemySquares.some(enemySquare => {
+      const chessPiece = enemySquare.chessPiece;
+      return chessPiece && chessPiece.movements().getAvailable(this, enemySquare, true).length > 0;
     });
 
     if (this.isCheck) {

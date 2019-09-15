@@ -1,16 +1,16 @@
-import { Cell } from "../models/cell";
+import { Square } from "../models/square";
 import { Utils } from "./utils";
 
-test("cellsOnSamePosition should return true for cells with the same row and column indexes", () => {
-  const cell1 = new Cell(4, 2);
-  const cell2 = new Cell(4, 2);
+test("squaresOnSamePosition should return true for squares with the same row and column indexes", () => {
+  const square1 = new Square(4, 2);
+  const square2 = new Square(4, 2);
 
-  expect(Utils.cellsOnSamePosition(cell1, cell2)).toBeTruthy();
+  expect(Utils.squaresOnSamePosition(square1, square2)).toBeTruthy();
 });
 
-test("cellsOnSamePosition should return false for cells with the same row and column indexes", () => {
-  const cell1 = new Cell(4, 2);
-  const cell2 = new Cell(5, 1);
+test("squaresOnSamePosition should return false for squares with the same row and column indexes", () => {
+  const square1 = new Square(4, 2);
+  const square2 = new Square(5, 1);
 
-  expect(Utils.cellsOnSamePosition(cell1, cell2)).toBeFalsy();
+  expect(Utils.squaresOnSamePosition(square1, square2)).toBeFalsy();
 });

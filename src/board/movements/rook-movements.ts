@@ -1,5 +1,5 @@
 import { BoardState } from "../../models/board-state";
-import { Cell } from "../../models/cell";
+import { Square } from "../../models/square";
 import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
 
@@ -18,17 +18,21 @@ export class RookMovements extends Movements {
 
   public getAvailable(
     boardState: BoardState,
-    currentCell: Cell,
+    currentSquare: Square,
     checkCheckingNeeded: boolean,
-  ): Cell[] {
-    Guard.validateGetAvailableArguments(boardState.board, currentCell);
+  ): Square[] {
+    Guard.validateGetAvailableArguments(boardState.board, currentSquare);
 
-    const availableCells = this.getAvailableBasedOnDirections(boardState.board, currentCell);
+    const availableSquares = this.getAvailableBasedOnDirections(boardState.board, currentSquare);
 
     if (!checkCheckingNeeded) {
-      return availableCells;
+      return availableSquares;
     }
 
-    return this.getAdjustedAvailableCellsWithCheckChecking(availableCells, boardState, currentCell);
+    return this.getAdjustedAvailableSquaresWithCheckChecking(
+      availableSquares,
+      boardState,
+      currentSquare,
+    );
   }
 }

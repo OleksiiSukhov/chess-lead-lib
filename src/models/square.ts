@@ -1,8 +1,8 @@
-import { CellColorProvider } from "../board/cell-color-provider";
+import { SquareColorProvider } from "../board/square-color-provider";
 import { ChessPiece } from "../chess-pieces/chess-piece";
 import { Color } from "./color";
 
-export class Cell {
+export class Square {
   public readonly rowIndex: number = 0;
   public readonly columnIndex: number = 0;
   public chessPiece?: ChessPiece = undefined;
@@ -18,12 +18,12 @@ export class Cell {
   }
 
   private color?: Color;
-  public get cellColor(): Color {
+  public get squareColor(): Color {
     if (this.color) {
       return this.color;
     }
 
-    return CellColorProvider.getCellColor(this.rowIndex, this.columnIndex);
+    return SquareColorProvider.getSquareColor(this.rowIndex, this.columnIndex);
   }
 
   public get isEmpty(): boolean {

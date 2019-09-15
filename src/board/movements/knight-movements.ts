@@ -1,6 +1,6 @@
 import { BoardState } from "../../models/board-state";
-import { Cell } from "../../models/cell";
 import { Direction } from "../../models/direction";
+import { Square } from "../../models/square";
 import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
 
@@ -22,44 +22,48 @@ export class KnightMovements extends Movements {
 
   public getAvailable(
     boardState: BoardState,
-    currentCell: Cell,
+    currentSquare: Square,
     checkCheckingNeeded: boolean,
-  ): Cell[] {
+  ): Square[] {
     Guard.validateDirections(this.directions);
 
-    Guard.validateGetAvailableArguments(boardState.board, currentCell);
+    Guard.validateGetAvailableArguments(boardState.board, currentSquare);
 
-    const availableCells: Cell[] = [];
+    const availableSquares: Square[] = [];
 
     for (const direction of this.directions as Direction[]) {
-      const nextCell = new Cell(
-        currentCell.rowIndex + direction.row,
-        currentCell.columnIndex + direction.column,
+      const nextSquare = new Square(
+        currentSquare.rowIndex + direction.row,
+        currentSquare.columnIndex + direction.column,
       );
 
-      if (!nextCell.isInBoardBoundaries) {
+      if (!nextSquare.isInBoardBoundaries) {
         continue;
       }
 
-      const nextBoardCell = boardState.board[nextCell.rowIndex][nextCell.columnIndex];
-      const nextCellChessPiece = nextBoardCell.chessPiece;
-      const currentCellChessPiece = currentCell.chessPiece;
+      const nextBoardSquare = boardState.board[nextSquare.rowIndex][nextSquare.columnIndex];
+      const nextSquareChessPiece = nextBoardSquare.chessPiece;
+      const currentSquareChessPiece = currentSquare.chessPiece;
 
-      const isCellEmpty = !nextCellChessPiece;
-      const isCellWithEnemy =
-        nextCellChessPiece &&
-        currentCellChessPiece &&
-        nextCellChessPiece.color !== currentCellChessPiece.color;
+      const isSquareEmpty = !nextSquareChessPiece;
+      const isSquareWithEnemy =
+        nextSquareChessPiece &&
+        currentSquareChessPiece &&
+        nextSquareChessPiece.color !== currentSquareChessPiece.color;
 
-      if (isCellEmpty || isCellWithEnemy) {
-        availableCells.push(nextBoardCell);
+      if (isSquareEmpty || isSquareWithEnemy) {
+        availableSquares.push(nextBoardSquare);
       }
     }
 
     if (!checkCheckingNeeded) {
-      return availableCells;
+      return availableSquares;
     }
 
-    return this.getAdjustedAvailableCellsWithCheckChecking(availableCells, boardState, currentCell);
+    return this.getAdjustedAvailableSquaresWithCheckChecking(
+      availableSquares,
+      boardState,
+      currentSquare,
+    );
   }
 }

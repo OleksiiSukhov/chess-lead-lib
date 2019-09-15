@@ -7,8 +7,8 @@ import { Pawn } from "../chess-pieces/pawn";
 import { Queen } from "../chess-pieces/queen";
 import { Rook } from "../chess-pieces/rook";
 import { BoardState } from "../models/board-state";
-import { Cell } from "../models/cell";
 import { Color } from "../models/color";
+import { Square } from "../models/square";
 
 export class BoardBuilder {
   public static createInitial(): BoardState {
@@ -25,17 +25,17 @@ export class BoardBuilder {
     return boardState;
   }
 
-  public static setupEmptyBoard(): Cell[][] {
-    const cells: Cell[][] = [];
+  public static setupEmptyBoard(): Square[][] {
+    const squares: Square[][] = [];
 
     for (let row = 0; row < 8; row++) {
-      cells.push([]);
+      squares.push([]);
       for (let column = 0; column < 8; column++) {
-        cells[row].push(new Cell(row, column));
+        squares[row].push(new Square(row, column));
       }
     }
 
-    return cells;
+    return squares;
   }
 
   public static createChessPiece(chessPieceType: ChessPieceType, color: Color): ChessPiece {
@@ -58,7 +58,7 @@ export class BoardBuilder {
     }
   }
 
-  private static setPawns(board: Cell[][], color: Color): void {
+  private static setPawns(board: Square[][], color: Color): void {
     const row = color === Color.White ? 1 : 6;
 
     for (let column = 0; column < 8; column++) {
@@ -66,7 +66,7 @@ export class BoardBuilder {
     }
   }
 
-  private static setMainChessPieces(board: Cell[][], color: Color): void {
+  private static setMainChessPieces(board: Square[][], color: Color): void {
     const row = color === Color.White ? 0 : 7;
 
     board[row][0].chessPiece = BoardBuilder.createChessPiece(ChessPieceType.Rook, color);

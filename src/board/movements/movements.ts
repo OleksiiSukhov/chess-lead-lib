@@ -2,24 +2,24 @@ import { cloneDeep } from "lodash";
 import { ChessPiece } from "../../chess-pieces/chess-piece";
 import { ChessPieceType } from "../../chess-pieces/chess-piece-type";
 import { BoardState } from "../../models/board-state";
-import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
 import { Direction } from "../../models/direction";
+import { Square } from "../../models/square";
 import { Utils } from "../../utils/utils";
 import { Guard } from "../../validators/guard";
 
 export abstract class Movements {
-  public static getKingCell(board: Cell[][], currentColor: Color): Cell | undefined {
+  public static getKingSquare(board: Square[][], currentColor: Color): Square | undefined {
     for (let row = 0; row < 8; row++) {
-      for (let cell = 0; cell < 8; cell++) {
-        const chessPiece = board[row][cell].chessPiece;
+      for (let square = 0; square < 8; square++) {
+        const chessPiece = board[row][square].chessPiece;
 
         if (
           chessPiece &&
           chessPiece.chessPieceType === ChessPieceType.King &&
           chessPiece.color === currentColor
         ) {
-          return board[row][cell];
+          return board[row][square];
         }
       }
     }
@@ -28,37 +28,37 @@ export abstract class Movements {
   }
 
   public static isKingInCheck(
-    boardCellToCheck: Cell,
+    boardSquareToCheck: Square,
     boardState: BoardState,
-    kingCell: Cell,
+    kingSquare: Square,
   ): boolean {
-    const chessPiece = boardCellToCheck.chessPiece;
+    const chessPiece = boardSquareToCheck.chessPiece;
 
-    if (!chessPiece || !kingCell.chessPiece || chessPiece.color === kingCell.chessPiece.color) {
+    if (!chessPiece || !kingSquare.chessPiece || chessPiece.color === kingSquare.chessPiece.color) {
       return false;
     }
 
-    const currentEnemyAvailableCells = chessPiece
+    const currentEnemyAvailableSquares = chessPiece
       .movements()
-      .getAvailable(boardState, boardCellToCheck, false);
+      .getAvailable(boardState, boardSquareToCheck, false);
 
-    return currentEnemyAvailableCells.some(enemyAvailableCell =>
-      Utils.cellsOnSamePosition(enemyAvailableCell, kingCell),
+    return currentEnemyAvailableSquares.some(enemyAvailableSquare =>
+      Utils.squaresOnSamePosition(enemyAvailableSquare, kingSquare),
     );
   }
 
-  public static getOccupiedCells(board: Cell[][], color: Color | undefined): Cell[] {
-    const cells: Cell[] = [];
+  public static getOccupiedSquares(board: Square[][], color: Color | undefined): Square[] {
+    const squares: Square[] = [];
 
     board.forEach(row => {
-      row.forEach(cell => {
-        if (cell.chessPiece && cell.chessPiece.color === color) {
-          cells.push(cell);
+      row.forEach(square => {
+        if (square.chessPiece && square.chessPiece.color === color) {
+          squares.push(square);
         }
       });
     });
 
-    return cells;
+    return squares;
   }
 
   public maxMovementSquares?: number = 0;
@@ -70,14 +70,14 @@ export abstract class Movements {
 
   public abstract getAvailable(
     boardState: BoardState,
-    currentCell: Cell,
+    currentSquare: Square,
     checkCheckingNeeded: boolean,
-  ): Cell[];
+  ): Square[];
 
-  public getAvailableBasedOnDirections(boardCells: Cell[][], currentCell: Cell): Cell[] {
+  public getAvailableBasedOnDirections(boardSquares: Square[][], currentSquare: Square): Square[] {
     Guard.validateGetAvailableBasedOnDirectionsArguments(this.directions, this.maxMovementSquares);
 
-    const availableCells: Cell[] = [];
+    const availableSquares: Square[] = [];
 
     for (const direction of this.directions as Direction[]) {
       for (
@@ -85,36 +85,36 @@ export abstract class Movements {
         squaresCount < (this.maxMovementSquares as number);
         squaresCount++
       ) {
-        const nextCell = new Cell(
-          currentCell.rowIndex + this.getMovementSquaresCount(direction.row, squaresCount),
-          currentCell.columnIndex + this.getMovementSquaresCount(direction.column, squaresCount),
+        const nextSquare = new Square(
+          currentSquare.rowIndex + this.getMovementSquaresCount(direction.row, squaresCount),
+          currentSquare.columnIndex + this.getMovementSquaresCount(direction.column, squaresCount),
         );
 
-        if (!nextCell.isInBoardBoundaries) {
+        if (!nextSquare.isInBoardBoundaries) {
           break;
         }
 
-        if (Utils.cellsOnSamePosition(nextCell, currentCell)) {
+        if (Utils.squaresOnSamePosition(nextSquare, currentSquare)) {
           continue;
         }
 
-        const nextBoardCell = boardCells[nextCell.rowIndex][nextCell.columnIndex];
-        const nextCellChessPiece = nextBoardCell.chessPiece;
-        const currentCellChessPiece = currentCell.chessPiece;
+        const nextBoardSquare = boardSquares[nextSquare.rowIndex][nextSquare.columnIndex];
+        const nextSquareChessPiece = nextBoardSquare.chessPiece;
+        const currentSquareChessPiece = currentSquare.chessPiece;
 
-        if (nextCellChessPiece && currentCellChessPiece) {
-          if (nextCellChessPiece.color !== currentCellChessPiece.color) {
-            availableCells.push(nextBoardCell);
+        if (nextSquareChessPiece && currentSquareChessPiece) {
+          if (nextSquareChessPiece.color !== currentSquareChessPiece.color) {
+            availableSquares.push(nextBoardSquare);
           }
 
           break;
         }
 
-        availableCells.push(nextBoardCell);
+        availableSquares.push(nextBoardSquare);
       }
     }
 
-    return availableCells;
+    return availableSquares;
   }
 
   public getMovementSquaresCount(direction: number, squaresCount: number): number {
@@ -125,57 +125,57 @@ export abstract class Movements {
     return direction + (direction === -1 ? squaresCount * -1 : squaresCount);
   }
 
-  public getAdjustedAvailableCellsWithCheckChecking(
-    initialAvailableCells: Cell[],
+  public getAdjustedAvailableSquaresWithCheckChecking(
+    initialAvailableSquares: Square[],
     boardState: BoardState,
-    currentCell: Cell,
-  ): Cell[] {
-    const currentChessPiece = cloneDeep(currentCell.chessPiece) as ChessPiece;
+    currentSquare: Square,
+  ): Square[] {
+    const currentChessPiece = cloneDeep(currentSquare.chessPiece) as ChessPiece;
     const boardStateCopy = cloneDeep(boardState);
 
-    boardStateCopy.board[currentCell.rowIndex][currentCell.columnIndex].chessPiece = undefined;
+    boardStateCopy.board[currentSquare.rowIndex][currentSquare.columnIndex].chessPiece = undefined;
 
-    initialAvailableCells.forEach(availableCell => {
-      const previousCell = cloneDeep(
-        boardStateCopy.board[availableCell.rowIndex][availableCell.columnIndex],
+    initialAvailableSquares.forEach(availableSquare => {
+      const previousSquare = cloneDeep(
+        boardStateCopy.board[availableSquare.rowIndex][availableSquare.columnIndex],
       );
 
-      this.makeTestMovement(boardStateCopy.board, availableCell, currentChessPiece);
-      const allyKingCell = Movements.getKingCell(boardStateCopy.board, currentChessPiece.color);
+      this.makeTestMovement(boardStateCopy.board, availableSquare, currentChessPiece);
+      const allyKingSquare = Movements.getKingSquare(boardStateCopy.board, currentChessPiece.color);
 
-      initialAvailableCells = this.getAdjustedCells(
-        initialAvailableCells,
+      initialAvailableSquares = this.getAdjustedSquares(
+        initialAvailableSquares,
         boardStateCopy,
-        allyKingCell as Cell,
-        availableCell,
+        allyKingSquare as Square,
+        availableSquare,
       );
 
-      boardStateCopy.board[availableCell.rowIndex][availableCell.columnIndex] = previousCell;
+      boardStateCopy.board[availableSquare.rowIndex][availableSquare.columnIndex] = previousSquare;
     });
 
-    return initialAvailableCells;
+    return initialAvailableSquares;
   }
 
-  private makeTestMovement(board: Cell[][], cellToMove: Cell, chessPiece: ChessPiece): void {
-    board[cellToMove.rowIndex][cellToMove.columnIndex].chessPiece = cloneDeep(chessPiece);
+  private makeTestMovement(board: Square[][], squareToMove: Square, chessPiece: ChessPiece): void {
+    board[squareToMove.rowIndex][squareToMove.columnIndex].chessPiece = cloneDeep(chessPiece);
   }
 
-  private getAdjustedCells(
-    initialAvailableCells: Cell[],
+  private getAdjustedSquares(
+    initialAvailableSquares: Square[],
     boardState: BoardState,
-    allyKingCell: Cell,
-    availableSquare: Cell,
-  ): Cell[] {
+    allyKingSquare: Square,
+    availableSquare: Square,
+  ): Square[] {
     boardState.board.forEach(boardRow => {
-      boardRow.forEach(boardCell => {
-        if (Movements.isKingInCheck(boardCell, boardState, allyKingCell)) {
-          initialAvailableCells = initialAvailableCells.filter(cell => {
-            return !Utils.cellsOnSamePosition(cell, availableSquare);
+      boardRow.forEach(boardSquare => {
+        if (Movements.isKingInCheck(boardSquare, boardState, allyKingSquare)) {
+          initialAvailableSquares = initialAvailableSquares.filter(square => {
+            return !Utils.squaresOnSamePosition(square, availableSquare);
           });
         }
       });
     });
 
-    return initialAvailableCells;
+    return initialAvailableSquares;
   }
 }

@@ -2,8 +2,8 @@ import { isEqual, xorWith } from "lodash";
 
 import { King } from "../../chess-pieces/king";
 import { BoardState } from "../../models/board-state";
-import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
+import { Square } from "../../models/square";
 import { Movements } from "./movements";
 
 export class TestAssistance {
@@ -20,8 +20,8 @@ export class TestAssistance {
     this.boardState.board[0][4].chessPiece = new King(Color.White);
   }
 
-  public assertAvailableMovementCells(expected: Cell[], currentCell: Cell): void {
-    const actual = this.movements.getAvailable(this.boardState, currentCell, true);
+  public assertAvailableMovementSquares(expected: Square[], currentSquare: Square): void {
+    const actual = this.movements.getAvailable(this.boardState, currentSquare, true);
     expect(xorWith(actual, expected, isEqual).length).toBe(0);
   }
 }

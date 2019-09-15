@@ -1,74 +1,78 @@
 import { ChessPiece } from "../../chess-pieces/chess-piece";
 import { Pawn } from "../../chess-pieces/pawn";
 import { BoardState } from "../../models/board-state";
-import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
+import { Square } from "../../models/square";
 import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
 
 export class PawnMovements extends Movements {
   public getAvailable(
     boardState: BoardState,
-    currentCell: Cell,
+    currentSquare: Square,
     checkCheckingNeeded: boolean,
-  ): Cell[] {
-    Guard.validateGetAvailableArguments(boardState.board, currentCell);
+  ): Square[] {
+    Guard.validateGetAvailableArguments(boardState.board, currentSquare);
 
-    const availableCells: Cell[] = [];
+    const availableSquares: Square[] = [];
 
-    if (this.isInitialPosition(currentCell)) {
-      this.getAvailableForInitialPosition(boardState.board, currentCell).forEach(cell => {
-        availableCells.push(cell);
+    if (this.isInitialPosition(currentSquare)) {
+      this.getAvailableForInitialPosition(boardState.board, currentSquare).forEach(square => {
+        availableSquares.push(square);
       });
     } else {
-      const enPassantCell = this.getEnPassant(boardState, currentCell);
-      if (enPassantCell) {
-        availableCells.push(enPassantCell);
+      const enPassantSquare = this.getEnPassant(boardState, currentSquare);
+      if (enPassantSquare) {
+        availableSquares.push(enPassantSquare);
       }
     }
 
-    const frontCell = this.getFrontAvailableCell(boardState.board, currentCell);
-    if (frontCell && frontCell.isEmpty) {
-      availableCells.push(frontCell);
+    const frontSquare = this.getFrontAvailableSquare(boardState.board, currentSquare);
+    if (frontSquare && frontSquare.isEmpty) {
+      availableSquares.push(frontSquare);
     }
 
-    this.getDiagonalWithEnemy(boardState.board, currentCell).forEach(cell => {
-      availableCells.push(cell);
+    this.getDiagonalWithEnemy(boardState.board, currentSquare).forEach(square => {
+      availableSquares.push(square);
     });
 
     if (!checkCheckingNeeded) {
-      return availableCells;
+      return availableSquares;
     }
 
-    return this.getAdjustedAvailableCellsWithCheckChecking(availableCells, boardState, currentCell);
+    return this.getAdjustedAvailableSquaresWithCheckChecking(
+      availableSquares,
+      boardState,
+      currentSquare,
+    );
   }
 
-  private getEnPassant(boardState: BoardState, currentCell: Cell): Cell | undefined {
-    if (!currentCell.chessPiece) {
+  private getEnPassant(boardState: BoardState, currentSquare: Square): Square | undefined {
+    if (!currentSquare.chessPiece) {
       return undefined;
     }
 
-    const initialEnPassantRow = currentCell.chessPiece.color === Color.White ? 4 : 3;
+    const initialEnPassantRow = currentSquare.chessPiece.color === Color.White ? 4 : 3;
 
-    if (currentCell.rowIndex !== initialEnPassantRow) {
+    if (currentSquare.rowIndex !== initialEnPassantRow) {
       return undefined;
     }
 
-    const neighborColumns = [currentCell.columnIndex - 1, currentCell.columnIndex + 1];
+    const neighborColumns = [currentSquare.columnIndex - 1, currentSquare.columnIndex + 1];
 
-    const neighborCellsOnTheSameRow: Cell[] = neighborColumns.map(
-      column => new Cell(initialEnPassantRow, column),
+    const neighborSquaresOnTheSameRow: Square[] = neighborColumns.map(
+      column => new Square(initialEnPassantRow, column),
     );
 
-    let enPassantCell: Cell | undefined;
+    let enPassantSquare: Square | undefined;
 
-    neighborCellsOnTheSameRow.forEach(cell => {
-      if (!currentCell.chessPiece || !cell.isInBoardBoundaries) {
+    neighborSquaresOnTheSameRow.forEach(square => {
+      if (!currentSquare.chessPiece || !square.isInBoardBoundaries) {
         return;
       }
 
-      const boardCell = boardState.board[cell.rowIndex][cell.columnIndex];
-      const boardChessPiece = boardCell.chessPiece;
+      const boardSquare = boardState.board[square.rowIndex][square.columnIndex];
+      const boardChessPiece = boardSquare.chessPiece;
 
       if (
         !boardChessPiece ||
@@ -79,78 +83,84 @@ export class PawnMovements extends Movements {
         return;
       }
 
-      const nextRow = currentCell.chessPiece.color === Color.White ? 5 : 2;
+      const nextRow = currentSquare.chessPiece.color === Color.White ? 5 : 2;
 
-      enPassantCell = boardState.board[nextRow][cell.columnIndex];
+      enPassantSquare = boardState.board[nextRow][square.columnIndex];
     });
 
-    return enPassantCell;
+    return enPassantSquare;
   }
 
-  private getDiagonalWithEnemy(boardCells: Cell[][], currentCell: Cell): Cell[] {
-    const pawn: Pawn = currentCell.chessPiece as Pawn;
-    const currentRow = currentCell.rowIndex;
-    const currentColumn = currentCell.columnIndex;
+  private getDiagonalWithEnemy(boardSquares: Square[][], currentSquare: Square): Square[] {
+    const pawn: Pawn = currentSquare.chessPiece as Pawn;
+    const currentRow = currentSquare.rowIndex;
+    const currentColumn = currentSquare.columnIndex;
 
     const multiplier = pawn.color === Color.White ? 1 : -1;
 
     const nextAvailableRow = currentRow + 1 * multiplier;
     const nextAvailableColumns = [currentColumn + 1, currentColumn - 1];
 
-    const availableCells: Cell[] = [];
+    const availableSquares: Square[] = [];
 
     nextAvailableColumns.forEach(column => {
-      const nextCell = new Cell(nextAvailableRow, column);
+      const nextSquare = new Square(nextAvailableRow, column);
 
-      if (!nextCell.isInBoardBoundaries) {
+      if (!nextSquare.isInBoardBoundaries) {
         return;
       }
 
-      const nextBoardCell = boardCells[nextCell.rowIndex][nextCell.columnIndex];
+      const nextBoardSquare = boardSquares[nextSquare.rowIndex][nextSquare.columnIndex];
 
-      if (nextBoardCell.chessPiece && nextBoardCell.chessPiece.color !== pawn.color) {
-        availableCells.push(nextBoardCell);
+      if (nextBoardSquare.chessPiece && nextBoardSquare.chessPiece.color !== pawn.color) {
+        availableSquares.push(nextBoardSquare);
       }
     });
 
-    return availableCells;
+    return availableSquares;
   }
 
-  private getFrontAvailableCell(boardCells: Cell[][], currentCell: Cell): Cell | undefined {
-    const pawn: Pawn = currentCell.chessPiece as Pawn;
-    const currentRow = currentCell.rowIndex;
+  private getFrontAvailableSquare(
+    boardSquares: Square[][],
+    currentSquare: Square,
+  ): Square | undefined {
+    const pawn: Pawn = currentSquare.chessPiece as Pawn;
+    const currentRow = currentSquare.rowIndex;
     const multiplier = pawn.color === Color.White ? 1 : -1;
     const nextAvailableRow = currentRow + 1 * multiplier;
 
-    return boardCells[nextAvailableRow][currentCell.columnIndex] || undefined;
+    return boardSquares[nextAvailableRow][currentSquare.columnIndex] || undefined;
   }
 
-  private getAvailableForInitialPosition(boardCells: Cell[][], currentCell: Cell): Cell[] {
-    const availableCells: Cell[] = [];
-    const pawn: Pawn = currentCell.chessPiece as Pawn;
+  private getAvailableForInitialPosition(
+    boardSquares: Square[][],
+    currentSquare: Square,
+  ): Square[] {
+    const availableSquares: Square[] = [];
+    const pawn: Pawn = currentSquare.chessPiece as Pawn;
 
     const initialRow = this.getInitialPositionRow(pawn);
     const multiplier = pawn.color === Color.White ? 1 : -1;
     const nextAvailableRows = [initialRow + 1 * multiplier, initialRow + 2 * multiplier];
 
     nextAvailableRows.some(row => {
-      const nextCell = boardCells[row][currentCell.columnIndex];
+      const nextSquare = boardSquares[row][currentSquare.columnIndex];
 
-      if (!nextCell.isEmpty) {
+      if (!nextSquare.isEmpty) {
         return true;
       }
 
-      availableCells.push(nextCell);
+      availableSquares.push(nextSquare);
     });
 
-    return availableCells;
+    return availableSquares;
   }
 
-  private isInitialPosition(currentCell: Cell): boolean {
-    Guard.validateChessPiece(currentCell.chessPiece);
-    const pawn = currentCell.chessPiece as ChessPiece;
+  private isInitialPosition(currentSquare: Square): boolean {
+    Guard.validateChessPiece(currentSquare.chessPiece);
+    const pawn = currentSquare.chessPiece as ChessPiece;
 
-    return currentCell.rowIndex === this.getInitialPositionRow(pawn) && !pawn.moved;
+    return currentSquare.rowIndex === this.getInitialPositionRow(pawn) && !pawn.moved;
   }
 
   private getInitialPositionRow(pawn: Pawn): number {

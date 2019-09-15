@@ -9,36 +9,36 @@ import { King } from "./chess-pieces/king";
 import { Pawn } from "./chess-pieces/pawn";
 import { Rook } from "./chess-pieces/rook";
 import { BoardState } from "./models/board-state";
-import { Cell } from "./models/cell";
 import { Color } from "./models/color";
 import { GameStatus } from "./models/game-status";
 import { MovedChessPiece } from "./models/moved-chess-piece";
+import { Square } from "./models/square";
 import { Guard } from "./validators/guard";
 
 let validateGameStatus: any;
-let validateChessPieceOnCell: any;
+let validateChessPieceOnSquare: any;
 let validateChessPieceColor: any;
 let validateMovement: any;
-let validateCell: any;
+let validateSquare: any;
 
 let createInitial: any;
 
 beforeEach(() => {
   validateGameStatus = Guard.validateGameStatus;
-  validateChessPieceOnCell = Guard.validateChessPieceOnCell;
+  validateChessPieceOnSquare = Guard.validateChessPieceOnSquare;
   validateChessPieceColor = Guard.validateChessPieceColor;
   validateMovement = Guard.validateMovement;
-  validateCell = Guard.validateCell;
+  validateSquare = Guard.validateSquare;
 
   createInitial = BoardBuilder.createInitial;
 });
 
 afterEach(() => {
   Guard.validateGameStatus = validateGameStatus.bind(Guard);
-  Guard.validateChessPieceOnCell = validateChessPieceOnCell.bind(Guard);
+  Guard.validateChessPieceOnSquare = validateChessPieceOnSquare.bind(Guard);
   Guard.validateChessPieceColor = validateChessPieceColor.bind(Guard);
   Guard.validateMovement = validateMovement.bind(Guard);
-  Guard.validateCell = validateCell.bind(Guard);
+  Guard.validateSquare = validateSquare.bind(Guard);
 
   BoardBuilder.createInitial = createInitial.bind(BoardBuilder);
 });
@@ -64,31 +64,31 @@ test("chessBoardState should return correct board state object", () => {
 
 test("getAcceptableMovements should call GetAcceptableMovementsInputValidator.validate", () => {
   const chessLead = new ChessLead();
-  const cell = new Cell(0, 0);
-  const validateMock = setupValidateCellMock();
+  const square = new Square(0, 0);
+  const validateMock = setupValidateSquareMock();
 
-  chessLead.getAcceptableMovements(cell);
+  chessLead.getAcceptableMovements(square);
 
-  expect(validateMock).toHaveBeenCalledWith(cell);
+  expect(validateMock).toHaveBeenCalledWith(square);
 });
 
-test("getAcceptableMovements should return empty array when cell is empty", () => {
+test("getAcceptableMovements should return empty array when square is empty", () => {
   const chessLead = new ChessLead(new BoardState());
-  const cell = new Cell(0, 0);
+  const square = new Square(0, 0);
 
-  expect(chessLead.getAcceptableMovements(cell)).toStrictEqual([]);
+  expect(chessLead.getAcceptableMovements(square)).toStrictEqual([]);
 });
 
 test("getAcceptableMovements should return empty array when game is finished", () => {
   const finishedGameStatuses = [GameStatus.Win, GameStatus.Draw];
   const boardState = new BoardState();
-  const cell = new Cell(4, 2);
+  const square = new Square(4, 2);
 
   finishedGameStatuses.forEach(status => {
     boardState.gameStatus = status;
     const chessLead = new ChessLead(boardState);
 
-    expect(chessLead.getAcceptableMovements(cell)).toStrictEqual([]);
+    expect(chessLead.getAcceptableMovements(square)).toStrictEqual([]);
   });
 });
 
@@ -158,7 +158,7 @@ test("move should call switchNextTurn", () => {
 
 test("move should call validators", () => {
   const validateGameStatusMock = setupValidateGameStatusMock();
-  const validateChessPieceOnCellMock = setupValidateChessPieceOnCellMock();
+  const validateChessPieceOnSquareMock = setupValidateChessPieceOnSquareMock();
   const validateChessPieceColorMock = setupValidateChessPieceColorMock();
   const validateMovementMock = setupValidateMovementMock();
 
@@ -168,7 +168,7 @@ test("move should call validators", () => {
   chessLead.move(boardState.board[0][0], boardState.board[1][1]);
 
   expect(validateGameStatusMock).toHaveBeenCalled();
-  expect(validateChessPieceOnCellMock).toHaveBeenCalled();
+  expect(validateChessPieceOnSquareMock).toHaveBeenCalled();
   expect(validateChessPieceColorMock).toHaveBeenCalled();
   expect(validateMovementMock).toHaveBeenCalled();
 });
@@ -212,8 +212,8 @@ test("move should add new MovedChessPiece to performed list of movements", () =>
 
   let chessPieceId = (boardState.board[1][4].chessPiece as ChessPiece).id;
   let movement = new MovedChessPiece(chessPieceId);
-  movement.fromCell = boardState.board[1][4];
-  movement.toCell = boardState.board[3][4];
+  movement.fromSquare = boardState.board[1][4];
+  movement.toSquare = boardState.board[3][4];
 
   chessLead.move(boardState.board[1][4], boardState.board[3][4]);
   expectedMovements.push(movement);
@@ -222,8 +222,8 @@ test("move should add new MovedChessPiece to performed list of movements", () =>
 
   chessPieceId = (boardState.board[6][4].chessPiece as ChessPiece).id;
   movement = new MovedChessPiece(chessPieceId);
-  movement.fromCell = boardState.board[6][4];
-  movement.toCell = boardState.board[5][4];
+  movement.fromSquare = boardState.board[6][4];
+  movement.toSquare = boardState.board[5][4];
 
   chessLead.move(boardState.board[6][4], boardState.board[5][4]);
   expectedMovements.push(movement);
@@ -497,14 +497,14 @@ test("move should perform castling - Black - Right", () => {
 
 function setupMoveValidatorMocks(): void {
   setupValidateGameStatusMock();
-  setupValidateChessPieceOnCellMock();
+  setupValidateChessPieceOnSquareMock();
   setupValidateChessPieceColorMock();
   setupValidateMovementMock();
 }
 
-function setupValidateCellMock(): any {
+function setupValidateSquareMock(): any {
   const validateMock = jest.fn();
-  Guard.validateCell = validateMock.bind(Guard);
+  Guard.validateSquare = validateMock.bind(Guard);
 
   return validateMock;
 }
@@ -516,11 +516,11 @@ function setupValidateGameStatusMock(): any {
   return validateGameStatusMock;
 }
 
-function setupValidateChessPieceOnCellMock(): any {
-  const validateChessPieceOnCellMock = jest.fn();
-  Guard.validateChessPieceOnCell = validateChessPieceOnCellMock.bind(Guard);
+function setupValidateChessPieceOnSquareMock(): any {
+  const validateChessPieceOnSquareMock = jest.fn();
+  Guard.validateChessPieceOnSquare = validateChessPieceOnSquareMock.bind(Guard);
 
-  return validateChessPieceOnCellMock;
+  return validateChessPieceOnSquareMock;
 }
 
 function setupValidateChessPieceColorMock(): any {

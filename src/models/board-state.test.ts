@@ -5,10 +5,10 @@ import { Pawn } from "../chess-pieces/pawn";
 import { Rook } from "../chess-pieces/rook";
 import { Color } from "../models/color";
 import { BoardState } from "./board-state";
-import { Cell } from "./cell";
 import { DrawType } from "./draw-type";
 import { GameStatus } from "./game-status";
 import { MovedChessPiece } from "./moved-chess-piece";
+import { Square } from "./square";
 import { WinType } from "./win-type";
 
 let boardState: BoardState;
@@ -24,12 +24,12 @@ beforeEach(() => {
   whitePawn = new Pawn(Color.White);
 
   blackPawnMovements = new MovedChessPiece(blackPawn.id);
-  blackPawnMovements.fromCell = new Cell(6, 4);
-  blackPawnMovements.fromCell = new Cell(4, 4);
+  blackPawnMovements.fromSquare = new Square(6, 4);
+  blackPawnMovements.fromSquare = new Square(4, 4);
 
   whitePawnMovements = new MovedChessPiece(whitePawn.id);
-  whitePawnMovements.fromCell = new Cell(3, 3);
-  whitePawnMovements.fromCell = new Cell(4, 3);
+  whitePawnMovements.fromSquare = new Square(3, 3);
+  whitePawnMovements.fromSquare = new Square(4, 3);
 });
 
 test("isLastMovementsPerformedBy should return true", () => {

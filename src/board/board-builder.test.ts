@@ -7,9 +7,9 @@ import { Pawn } from "../chess-pieces/pawn";
 import { Queen } from "../chess-pieces/queen";
 import { Rook } from "../chess-pieces/rook";
 import { BoardState } from "../models/board-state";
-import { Cell } from "../models/cell";
 import { Color } from "../models/color";
 import { GameStatus } from "../models/game-status";
+import { Square } from "../models/square";
 import { BoardBuilder } from "./board-builder";
 
 //   _________________________________
@@ -52,11 +52,11 @@ test("createInitial should return initial board state", () => {
   const actualBoardState = BoardBuilder.createInitial();
 
   actualBoardState.board.forEach(row => {
-    row.forEach(cell => {
-      const chessPiece = expectedBoardState.board[cell.rowIndex][cell.columnIndex].chessPiece;
+    row.forEach(square => {
+      const chessPiece = expectedBoardState.board[square.rowIndex][square.columnIndex].chessPiece;
 
-      if (chessPiece && cell.chessPiece) {
-        chessPiece["chessPieceId"] = cell.chessPiece.id;
+      if (chessPiece && square.chessPiece) {
+        chessPiece["chessPieceId"] = square.chessPiece.id;
       }
     });
   });
@@ -64,7 +64,7 @@ test("createInitial should return initial board state", () => {
   expect(actualBoardState).toEqual(expectedBoardState);
 });
 
-function setPawns(board: Cell[][], row: number, color: Color): void {
+function setPawns(board: Square[][], row: number, color: Color): void {
   board[row][0].chessPiece = new Pawn(color);
   board[row][1].chessPiece = new Pawn(color);
   board[row][2].chessPiece = new Pawn(color);
@@ -75,7 +75,7 @@ function setPawns(board: Cell[][], row: number, color: Color): void {
   board[row][7].chessPiece = new Pawn(color);
 }
 
-function setMainChessPieces(board: Cell[][], row: number, color: Color): void {
+function setMainChessPieces(board: Square[][], row: number, color: Color): void {
   board[row][0].chessPiece = new Rook(color);
   board[row][1].chessPiece = new Knight(color);
   board[row][2].chessPiece = new Bishop(color);

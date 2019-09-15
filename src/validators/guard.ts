@@ -2,10 +2,10 @@ import { ChessLead } from "..";
 import { ChessPiece } from "../chess-pieces/chess-piece";
 import { ChessPieceType } from "../chess-pieces/chess-piece-type";
 import { BoardState } from "../models/board-state";
-import { Cell } from "../models/cell";
 import { Color } from "../models/color";
 import { Direction } from "../models/direction";
 import { GameStatus } from "../models/game-status";
+import { Square } from "../models/square";
 import { Utils } from "../utils/utils";
 
 export class Guard {
@@ -13,8 +13,8 @@ export class Guard {
     throw Error("Ally King was not found.");
   }
 
-  public static validateCell(cell: Cell): void {
-    Guard.validateProperty(cell, "cell");
+  public static validateSquare(square: Square): void {
+    Guard.validateProperty(square, "square");
   }
 
   public static validateBoardIndexes(rowIndex: number, columnIndex: number): void {
@@ -31,9 +31,12 @@ export class Guard {
     Guard.validateProperty(directions, "directions");
   }
 
-  public static validateGetAvailableArguments(boardCells: Cell[][], currentCell: Cell): void {
-    if (!boardCells || !currentCell || !currentCell.chessPiece) {
-      throw new Error("boardCells, currentCell and chessPiece on it should be defined.");
+  public static validateGetAvailableArguments(
+    boardSquares: Square[][],
+    currentSquare: Square,
+  ): void {
+    if (!boardSquares || !currentSquare || !currentSquare.chessPiece) {
+      throw new Error("boardSquares, currentSquare and chessPiece on it should be defined.");
     }
   }
 
@@ -56,27 +59,27 @@ export class Guard {
     }
   }
 
-  public static validateMovement(chessLead: ChessLead, fromCell: Cell, toCell: Cell): void {
-    const acceptableMovements = chessLead.getAcceptableMovements(fromCell);
-    const acceptableToCell = acceptableMovements.find(cell =>
-      Utils.cellsOnSamePosition(cell, toCell),
+  public static validateMovement(chessLead: ChessLead, fromSquare: Square, toSquare: Square): void {
+    const acceptableMovements = chessLead.getAcceptableMovements(fromSquare);
+    const acceptableToSquare = acceptableMovements.find(square =>
+      Utils.squaresOnSamePosition(square, toSquare),
     );
 
-    if (!acceptableToCell) {
-      throw Error("Movement to specified cell is forbidden.");
+    if (!acceptableToSquare) {
+      throw Error("Movement to specified square is forbidden.");
     }
   }
 
   public static validatePromotion(
-    fromCell: Cell,
-    toCell: Cell,
+    fromSquare: Square,
+    toSquare: Square,
     newChessPieceType?: ChessPieceType,
   ): void {
-    const chessPiece = fromCell.chessPiece as ChessPiece;
+    const chessPiece = fromSquare.chessPiece as ChessPiece;
 
     if (
       chessPiece.chessPieceType === ChessPieceType.Pawn &&
-      (toCell.rowIndex === 7 || toCell.rowIndex === 0)
+      (toSquare.rowIndex === 7 || toSquare.rowIndex === 0)
     ) {
       if (newChessPieceType === undefined) {
         throw Error("Pawn must be promoted. New ChessPiece type should be specified.");
@@ -90,9 +93,9 @@ export class Guard {
     }
   }
 
-  public static validateChessPieceOnCell(cell: Cell): void {
-    if (!cell.chessPiece) {
-      throw Error("fromCell cannot be empty.");
+  public static validateChessPieceOnSquare(square: Square): void {
+    if (!square.chessPiece) {
+      throw Error("fromSquare cannot be empty.");
     }
   }
 
@@ -102,9 +105,9 @@ export class Guard {
     }
   }
 
-  public static validateChessPieceColor(boardState: BoardState, cell: Cell): void {
-    if ((cell.chessPiece as ChessPiece).color !== boardState.nextTurn) {
-      throw Error("Wrong turn color for specified fromCell.");
+  public static validateChessPieceColor(boardState: BoardState, square: Square): void {
+    if ((square.chessPiece as ChessPiece).color !== boardState.nextTurn) {
+      throw Error("Wrong turn color for specified fromSquare.");
     }
   }
 

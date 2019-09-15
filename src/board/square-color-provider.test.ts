@@ -1,22 +1,22 @@
 import { Color } from "../models/color";
-import { CellColorProvider } from "./cell-color-provider";
+import { SquareColorProvider } from "./square-color-provider";
 
 const errorMessage = "row and column indexes should be 0 to 7";
 
-test("getCellColor should throw error in case when row index is negative", () => {
-  expect(() => CellColorProvider.getCellColor(-1, 0)).toThrow(errorMessage);
+test("getSquareColor should throw error in case when row index is negative", () => {
+  expect(() => SquareColorProvider.getSquareColor(-1, 0)).toThrow(errorMessage);
 });
 
-test("getCellColor should throw error in case when row index is more than 7", () => {
-  expect(() => CellColorProvider.getCellColor(8, 0)).toThrow(errorMessage);
+test("getSquareColor should throw error in case when row index is more than 7", () => {
+  expect(() => SquareColorProvider.getSquareColor(8, 0)).toThrow(errorMessage);
 });
 
-test("getCellColor should throw error in case when column index is negative", () => {
-  expect(() => CellColorProvider.getCellColor(0, -1)).toThrow(errorMessage);
+test("getSquareColor should throw error in case when column index is negative", () => {
+  expect(() => SquareColorProvider.getSquareColor(0, -1)).toThrow(errorMessage);
 });
 
-test("getCellColor should throw error in case when column index is more than 7", () => {
-  expect(() => CellColorProvider.getCellColor(0, 8)).toThrow(errorMessage);
+test("getSquareColor should throw error in case when column index is more than 7", () => {
+  expect(() => SquareColorProvider.getSquareColor(0, 8)).toThrow(errorMessage);
 });
 
 //   _________________________________
@@ -37,8 +37,8 @@ test("getCellColor should throw error in case when column index is more than 7",
 // 0 |BLK|   |BLK|   |BLK|   |BLK|   |
 //   _________________________________
 //     0   1   2   3   4   5   6   7
-test("getCellColor should return correct color", () => {
-  const whiteColorCellIndexes = [
+test("getSquareColor should return correct color", () => {
+  const whiteColorSquareIndexes = [
     [0, 1],
     [0, 3],
     [0, 5],
@@ -73,7 +73,7 @@ test("getCellColor should return correct color", () => {
     [7, 6],
   ];
 
-  const blackColorCellIndexes = [
+  const blackColorSquareIndexes = [
     [0, 0],
     [0, 2],
     [0, 4],
@@ -108,11 +108,15 @@ test("getCellColor should return correct color", () => {
     [7, 7],
   ];
 
-  whiteColorCellIndexes.forEach(cellIndexes => {
-    expect(CellColorProvider.getCellColor(cellIndexes[0], cellIndexes[1])).toBe(Color.White);
+  whiteColorSquareIndexes.forEach(squareIndexes => {
+    expect(SquareColorProvider.getSquareColor(squareIndexes[0], squareIndexes[1])).toBe(
+      Color.White,
+    );
   });
 
-  blackColorCellIndexes.forEach(cellIndexes => {
-    expect(CellColorProvider.getCellColor(cellIndexes[0], cellIndexes[1])).toBe(Color.Black);
+  blackColorSquareIndexes.forEach(squareIndexes => {
+    expect(SquareColorProvider.getSquareColor(squareIndexes[0], squareIndexes[1])).toBe(
+      Color.Black,
+    );
   });
 });

@@ -2,9 +2,9 @@ import { BoardBuilder } from "./board/board-builder";
 import { ChessPiece } from "./chess-pieces/chess-piece";
 import { ChessPieceType } from "./chess-pieces/chess-piece-type";
 import { BoardState } from "./models/board-state";
-import { Cell } from "./models/cell";
 import { Color } from "./models/color";
 import { MovedChessPiece } from "./models/moved-chess-piece";
+import { Square } from "./models/square";
 import { Guard } from "./validators/guard";
 
 export class ChessLead {
@@ -17,40 +17,40 @@ export class ChessLead {
     this.boardState = boardState ? boardState : BoardBuilder.createInitial();
   }
 
-  public getAcceptableMovements(cell: Cell): Cell[] {
-    Guard.validateCell(cell);
+  public getAcceptableMovements(square: Square): Square[] {
+    Guard.validateSquare(square);
 
-    if (cell.isEmpty || !cell.chessPiece || this.chessBoardState.isGameFinished()) {
+    if (square.isEmpty || !square.chessPiece || this.chessBoardState.isGameFinished()) {
       return [];
     }
 
-    return cell.chessPiece.movements().getAvailable(this.chessBoardState, cell, true);
+    return square.chessPiece.movements().getAvailable(this.chessBoardState, square, true);
   }
 
-  public move(fromCell: Cell, toCell: Cell, newChessPieceType?: ChessPieceType): void {
+  public move(fromSquare: Square, toSquare: Square, newChessPieceType?: ChessPieceType): void {
     Guard.validateGameStatus(this);
-    Guard.validateChessPieceOnCell(fromCell);
-    Guard.validateChessPieceColor(this.boardState, fromCell);
-    Guard.validateMovement(this, fromCell, toCell);
-    Guard.validatePromotion(fromCell, toCell, newChessPieceType);
+    Guard.validateChessPieceOnSquare(fromSquare);
+    Guard.validateChessPieceColor(this.boardState, fromSquare);
+    Guard.validateMovement(this, fromSquare, toSquare);
+    Guard.validatePromotion(fromSquare, toSquare, newChessPieceType);
 
     if (newChessPieceType) {
-      toCell.chessPiece = BoardBuilder.createChessPiece(newChessPieceType, this.chessBoardState
+      toSquare.chessPiece = BoardBuilder.createChessPiece(newChessPieceType, this.chessBoardState
         .nextTurn as Color);
     } else {
-      toCell.chessPiece = fromCell.chessPiece as ChessPiece;
-      toCell.chessPiece.movedNumber++;
+      toSquare.chessPiece = fromSquare.chessPiece as ChessPiece;
+      toSquare.chessPiece.movedNumber++;
 
-      this.performCastlingIfNeeded(fromCell, toCell, toCell.chessPiece.chessPieceType);
+      this.performCastlingIfNeeded(fromSquare, toSquare, toSquare.chessPiece.chessPieceType);
     }
 
-    fromCell.chessPiece = undefined;
+    fromSquare.chessPiece = undefined;
 
     this.chessBoardState.setNewGameStatus();
 
-    const movement = new MovedChessPiece(toCell.chessPiece.id);
-    movement.fromCell = fromCell;
-    movement.toCell = toCell;
+    const movement = new MovedChessPiece(toSquare.chessPiece.id);
+    movement.fromSquare = fromSquare;
+    movement.toSquare = toSquare;
     this.chessBoardState.movements.push(movement);
 
     this.chessBoardState.switchNextTurn();
@@ -64,29 +64,29 @@ export class ChessLead {
     this.chessBoardState.setDrawByAgreement();
   }
 
-  public performCastlingIfNeeded(
-    fromCell: Cell,
-    toCell: Cell,
+  private performCastlingIfNeeded(
+    fromSquare: Square,
+    toSquare: Square,
     chessPieceType: ChessPieceType,
   ): void {
     const isCastling =
       chessPieceType === ChessPieceType.King &&
-      Math.abs(fromCell.columnIndex - toCell.columnIndex) === 2;
+      Math.abs(fromSquare.columnIndex - toSquare.columnIndex) === 2;
 
     if (!isCastling) {
       return;
     }
 
-    const isLeftCastling = fromCell.columnIndex > toCell.columnIndex;
+    const isLeftCastling = fromSquare.columnIndex > toSquare.columnIndex;
     const fromRookColumn = isLeftCastling ? 0 : 7;
     const toRookColumn = isLeftCastling ? 3 : 5;
 
-    const fromRookCell = this.boardState.board[fromCell.rowIndex][fromRookColumn];
-    const toRookCell = this.boardState.board[fromCell.rowIndex][toRookColumn];
+    const fromRookSquare = this.boardState.board[fromSquare.rowIndex][fromRookColumn];
+    const toRookSquare = this.boardState.board[fromSquare.rowIndex][toRookColumn];
 
-    toRookCell.chessPiece = fromRookCell.chessPiece as ChessPiece;
-    toRookCell.chessPiece.movedNumber++;
+    toRookSquare.chessPiece = fromRookSquare.chessPiece as ChessPiece;
+    toRookSquare.chessPiece.movedNumber++;
 
-    fromRookCell.chessPiece = undefined;
+    fromRookSquare.chessPiece = undefined;
   }
 }

@@ -1,8 +1,8 @@
 import { ChessPiece } from "../../chess-pieces/chess-piece";
 import { ChessPieceType } from "../../chess-pieces/chess-piece-type";
 import { BoardState } from "../../models/board-state";
-import { Cell } from "../../models/cell";
 import { Color } from "../../models/color";
+import { Square } from "../../models/square";
 import { Utils } from "../../utils/utils";
 import { Guard } from "../../validators/guard";
 import { Movements } from "./movements";
@@ -28,58 +28,62 @@ export class KingMovements extends Movements {
 
   public getAvailable(
     boardState: BoardState,
-    currentCell: Cell,
+    currentSquare: Square,
     checkCheckingNeeded: boolean,
-  ): Cell[] {
-    Guard.validateGetAvailableArguments(boardState.board, currentCell);
+  ): Square[] {
+    Guard.validateGetAvailableArguments(boardState.board, currentSquare);
 
-    const availableCells = this.getAvailableBasedOnDirections(boardState.board, currentCell);
+    const availableSquares = this.getAvailableBasedOnDirections(boardState.board, currentSquare);
 
     if (!checkCheckingNeeded) {
-      return availableCells;
+      return availableSquares;
     }
 
-    const castlingAvailableCells = this.getCastlingAcceptableCells(boardState, currentCell);
+    const castlingAvailableSquares = this.getCastlingAcceptableSquares(boardState, currentSquare);
 
-    castlingAvailableCells.forEach(castlingCell => availableCells.push(castlingCell));
+    castlingAvailableSquares.forEach(castlingSquare => availableSquares.push(castlingSquare));
 
-    return this.getAdjustedAvailableCellsWithCheckChecking(availableCells, boardState, currentCell);
+    return this.getAdjustedAvailableSquaresWithCheckChecking(
+      availableSquares,
+      boardState,
+      currentSquare,
+    );
   }
 
-  private getCastlingAcceptableCells(boardState: BoardState, currentCell: Cell): Cell[] {
-    Guard.validateChessPiece(currentCell.chessPiece);
+  private getCastlingAcceptableSquares(boardState: BoardState, currentSquare: Square): Square[] {
+    Guard.validateChessPiece(currentSquare.chessPiece);
 
-    const acceptableCells: Cell[] = [];
-    const currentChessPiece = currentCell.chessPiece as ChessPiece;
+    const acceptableSquares: Square[] = [];
+    const currentChessPiece = currentSquare.chessPiece as ChessPiece;
 
     if (currentChessPiece.moved) {
-      return acceptableCells;
+      return acceptableSquares;
     }
 
-    if (this.isCellInCheck(boardState, currentCell, currentChessPiece.color)) {
-      return acceptableCells;
+    if (this.isSquareInCheck(boardState, currentSquare, currentChessPiece.color)) {
+      return acceptableSquares;
     }
 
     [0, 7].forEach(rookInitialColumn => {
-      const castlingCell = this.getCastlingCell(
+      const castlingSquare = this.getCastlingSquare(
         boardState,
         rookInitialColumn,
-        currentCell.chessPiece as ChessPiece,
+        currentSquare.chessPiece as ChessPiece,
       );
 
-      if (castlingCell) {
-        acceptableCells.push(castlingCell);
+      if (castlingSquare) {
+        acceptableSquares.push(castlingSquare);
       }
     });
 
-    return acceptableCells;
+    return acceptableSquares;
   }
 
-  private getCastlingCell(
+  private getCastlingSquare(
     boardState: BoardState,
     rookInitialColumn: number,
     chessPiece: ChessPiece,
-  ): Cell | undefined {
+  ): Square | undefined {
     const initialKingRow = this.getInitialRow(chessPiece.color);
     const rook = boardState.board[initialKingRow][rookInitialColumn].chessPiece;
 
@@ -92,22 +96,22 @@ export class KingMovements extends Movements {
     }
 
     if (
-      !this.cellsBetweenRookAndKingAreEmpty(boardState.board, rookInitialColumn, initialKingRow)
+      !this.squaresBetweenRookAndKingAreEmpty(boardState.board, rookInitialColumn, initialKingRow)
     ) {
       return undefined;
     }
 
     const isLeftCastling = rookInitialColumn === 0;
 
-    if (!this.areKingCellsNotInCheckWhileCastling(boardState, isLeftCastling, chessPiece.color)) {
+    if (!this.areKingSquaresNotInCheckWhileCastling(boardState, isLeftCastling, chessPiece.color)) {
       return undefined;
     }
 
     return boardState.board[initialKingRow][this.getNewKingColumn(isLeftCastling)];
   }
 
-  private cellsBetweenRookAndKingAreEmpty(
-    board: Cell[][],
+  private squaresBetweenRookAndKingAreEmpty(
+    board: Square[][],
     rookStartColumn: number,
     initialKingRow: number,
   ): boolean {
@@ -125,7 +129,7 @@ export class KingMovements extends Movements {
     return true;
   }
 
-  private areKingCellsNotInCheckWhileCastling(
+  private areKingSquaresNotInCheckWhileCastling(
     boardState: BoardState,
     isLeftCastling: boolean,
     color: Color,
@@ -137,7 +141,7 @@ export class KingMovements extends Movements {
     const stop = isLeftCastling ? this.initialColumn : newKingColumn;
 
     for (let column = start; column < stop; column++) {
-      if (this.isCellInCheck(boardState, boardState.board[initialRow][column], color)) {
+      if (this.isSquareInCheck(boardState, boardState.board[initialRow][column], color)) {
         return false;
       }
     }
@@ -149,19 +153,19 @@ export class KingMovements extends Movements {
     return isLeftCastling ? 2 : 6;
   }
 
-  private isCellInCheck(boardState: BoardState, kingCell: Cell, color: Color): boolean {
-    return this.getAllEnemiesAvailableCells(boardState, color).some(enemyAvailableCell =>
-      Utils.cellsOnSamePosition(enemyAvailableCell, kingCell),
+  private isSquareInCheck(boardState: BoardState, kingSquare: Square, color: Color): boolean {
+    return this.getAllEnemiesAvailableSquares(boardState, color).some(enemyAvailableSquare =>
+      Utils.squaresOnSamePosition(enemyAvailableSquare, kingSquare),
     );
   }
 
-  private getAllEnemiesAvailableCells(boardState: BoardState, color: Color): Cell[] {
-    const cells: Cell[] = [];
+  private getAllEnemiesAvailableSquares(boardState: BoardState, color: Color): Square[] {
+    const squares: Square[] = [];
 
     for (let row = 0; row < 8; row++) {
       for (let column = 0; column < 8; column++) {
-        const cell = boardState.board[row][column];
-        const chessPiece = cell.chessPiece;
+        const square = boardState.board[row][column];
+        const chessPiece = square.chessPiece;
 
         if (!chessPiece || chessPiece.color === color) {
           continue;
@@ -169,16 +173,20 @@ export class KingMovements extends Movements {
 
         chessPiece
           .movements()
-          .getAvailable(boardState, cell, false)
-          .forEach(availableCell => {
-            if (!cells.find(currentCell => Utils.cellsOnSamePosition(currentCell, availableCell))) {
-              cells.push(availableCell);
+          .getAvailable(boardState, square, false)
+          .forEach(availableSquare => {
+            if (
+              !squares.find(currentSquare =>
+                Utils.squaresOnSamePosition(currentSquare, availableSquare),
+              )
+            ) {
+              squares.push(availableSquare);
             }
           });
       }
     }
 
-    return cells;
+    return squares;
   }
 
   private getInitialRow(color: Color): number {

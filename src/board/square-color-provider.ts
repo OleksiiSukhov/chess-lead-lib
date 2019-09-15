@@ -1,8 +1,8 @@
 import { Color } from "../models/color";
 import { Guard } from "../validators/guard";
 
-export class CellColorProvider {
-  public static getCellColor(rowIndex: number, columnIndex: number): Color {
+export class SquareColorProvider {
+  public static getSquareColor(rowIndex: number, columnIndex: number): Color {
     Guard.validateBoardIndexes(rowIndex, columnIndex);
 
     const indexesSum = rowIndex + columnIndex;
