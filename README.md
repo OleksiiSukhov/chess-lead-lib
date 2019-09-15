@@ -1,5 +1,5 @@
 
-[![Current Version](https://img.shields.io/badge/version-1.0.0-yellow.svg)](https://github.com/OleksiiSukhov/chess-lead-lib)
+[![Current Version](https://img.shields.io/badge/version-1.0.1-yellow.svg)](https://github.com/OleksiiSukhov/chess-lead-lib)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-green.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
