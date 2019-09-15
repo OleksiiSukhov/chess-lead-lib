@@ -100,7 +100,7 @@ export class Guard {
   }
 
   public static validateGameStatus(chessLead: ChessLead): void {
-    if (chessLead.chessBoardState.isGameFinished()) {
+    if (chessLead.chessBoardState.isGameOver()) {
       throw Error("The game is over. Movement is not possible.");
     }
   }

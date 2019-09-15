@@ -20,7 +20,7 @@ export class ChessLead {
   public getAcceptableMovements(square: Square): Square[] {
     Guard.validateSquare(square);
 
-    if (square.isEmpty || !square.chessPiece || this.chessBoardState.isGameFinished()) {
+    if (square.isEmpty || !square.chessPiece || this.chessBoardState.isGameOver()) {
       return [];
     }
 

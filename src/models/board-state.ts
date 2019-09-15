@@ -41,13 +41,12 @@ export class BoardState {
     this.winType = WinType.Resignation;
   }
 
-  // todo: rename to isGameOver
-  public isGameFinished(): boolean {
+  public isGameOver(): boolean {
     return this.gameStatus === GameStatus.Win || this.gameStatus === GameStatus.Draw;
   }
 
   public switchNextTurn(): void {
-    if (this.isGameFinished()) {
+    if (this.isGameOver()) {
       this.nextTurn = undefined;
     } else {
       this.nextTurn = this.nextTurn === Color.White ? Color.Black : Color.White;

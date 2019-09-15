@@ -50,7 +50,7 @@ chessLead.move(square, squaresToMove[7], ChessPieceType.Queen);
 
 #### Check game status
 ```typescript
-if (chessLead.isGameFinished()) {
+if (chessLead.isGameOver()) {
   // Game is over. Check GameStatus, DrawType or WinType.
 }
 ```

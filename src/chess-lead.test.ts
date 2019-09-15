@@ -545,7 +545,7 @@ function getBoardStateMock(): BoardState {
     movements: [],
     isLastMovementsPerformedBy: jest.fn(),
     resign: jest.fn(),
-    isGameFinished: jest.fn(),
+    isGameOver: jest.fn(),
     switchNextTurn: jest.fn(),
     setDrawByAgreement: jest.fn(),
     setNewGameStatus: jest.fn(),
