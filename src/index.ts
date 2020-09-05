@@ -1,4 +1,5 @@
 export * from "./chess-lead";
+export * from "./board/board-builder";
 
 export * from "./models/board-state";
 export * from "./models/color";
